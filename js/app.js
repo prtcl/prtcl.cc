@@ -30,8 +30,8 @@ var prtcl = angular.module('prtcl', [])
                         h = window.innerHeight;
                     ps.size(w, h);
                 }
-                window.addEventListener('resize', resize);
                 resize();
+                window.addEventListener('resize', resize);
                 window.addEventListener('mousemove', function (e) {
                     mouseX = e.screenX;
                     mouseY = e.screenY;
