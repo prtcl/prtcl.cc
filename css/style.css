@@ -11,13 +11,15 @@ html, body {
 }
 
 h1 {
-    margin: 0 0 0.5em 0;
     font-size: 1.25em;
     line-height: 1em;
 }
 
+h1.title {
+    margin: 0 0 0.5em 0;
+}
+
 h2, h3, h4 {
-    margin: 0 0 1em 0;
     font-size: 1.2em;
     line-height: 1em;
 }
@@ -40,11 +42,11 @@ a:hover {
 }
 
 li {
-    margin: 0.25em 0;
     list-style: none;
 }
 
 .nav li {
+    margin: 0.25em 0;
     display: inline-block;
 }
 
@@ -58,6 +60,13 @@ li {
 }
 
 #info {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+#info .info-box {
     padding: 2em;
     position: absolute;
     top: 0;
@@ -77,4 +86,44 @@ li {
 #lines canvas {
     width: 100%;
     height: 100%;
+}
+
+#cv {
+    padding: 1em 2em 1em 1em;
+    height: 90%;
+    background-color: white;
+    border: 1px solid #ececec;
+    overflow: auto;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    z-index: 1000;
+}
+
+#cv .close {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+}
+
+#cv .close a {
+    color: #3c3c3c;
+}
+
+#cv .block {
+    margin: 0 0 1em 0;
+}
+
+#cv h2,
+#cv h3,
+#cv p {
+    margin: 0 0 0.5em 0;
+}
+
+#cv,
+#cv a {
+    color: #1c1c1c;
+    text-shadow: none;
 }

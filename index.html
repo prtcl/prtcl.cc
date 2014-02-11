@@ -23,17 +23,52 @@
 <body>
 <div id="container">
 
-    <div id="info">
+    <div id="info" ng-controller="Info">
 
-        <h1>Cory O'Brien</h1>
-        <p>Snare drum, post-digital noise, interactive sound installation</p>
-        <ul class="nav">
-            <li><a href="http://soundcloud.com/prtcl">SoundCloud</a></li>
-            <li>|</li>
-            <li><a href="https://github.com/prtcl">GitHub</a></li>
-            <li>|</li>
-            <li><a href="mailto:cory@prtcl.cc">cory@prtcl.cc</a></li>
-        </ul>
+        <div class="info-box">
+            <h1 class="title">Cory O'Brien</h1>
+            <p>Snare drum, post-digital noise, interactive sound installation</p>
+            <ul class="nav">
+                <li><a href="http://soundcloud.com/prtcl">SoundCloud</a></li>
+                <li>|</li>
+                <li><a href="https://github.com/prtcl">GitHub</a></li>
+                <li>|</li>
+                <li><a href="#cv" ng-click="cvVisible = !cvVisible" onclick="return false;">CV</a></li>
+                <li>|</li>
+                <li><a href="mailto:cory@prtcl.cc">cory@prtcl.cc</a></li>
+            </ul>
+        </div>
+
+        <div id="cv" ng-show="cvVisible">
+            <div class="close">
+                <a href="#" ng-click="cvVisible = false;" onclick="return false;">X</a>
+            </div>
+            <h2>CV</h2>
+            <div class="block">
+                <h3>Recordings</h3>
+                <ul>
+                    <li ng-repeat="r in cv.recordings"><em>{{ r.title }}</em>, {{ r.label }}, {{ r.year }}</li>
+                </ul>
+            </div>
+            <div class="block">
+                <h3>Installation</h3>
+                <ul>
+                    <li ng-repeat="r in cv.installation"><em>{{ r.title }}</em>, {{ r.location }}, {{ r.year }}</li>
+                </ul>
+            </div>
+            <div class="block">
+                <h3>Web</h3>
+                <ul>
+                    <li ng-repeat="r in cv.web"><em>{{ r.title }}</em> (<a href="{{ r.link }}">{{ r.link }}</a>), {{ r.year }}</li>
+                </ul>
+            </div>
+            <div class="block">
+                <h3>Performance</h3>
+                <ul>
+                    <li ng-repeat="r in cv.concerts"><em>{{ r.venue }}</em>, {{ r.location }}, {{ r.date | date:'M/d/yyyy'}}</li>
+                </ul>
+            </div>
+        </div>
 
     </div>
 

@@ -9,6 +9,14 @@ var prtcl = angular.module('prtcl', [])
         };
     })
 
+    .controller('Info', function ($scope, $http) {
+        $scope.cvVisible = false;
+        $http.get('/data/cv.json')
+            .success(function (data) {
+                $scope.cv = data || {};
+            });
+    })
+
     .controller('Lines', function ($scope) {
         $scope.sketch = function (ps) {
             function e (n) { return Math.pow(n, Math.E); }
