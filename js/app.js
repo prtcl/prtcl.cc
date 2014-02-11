@@ -20,7 +20,7 @@ var prtcl = angular.module('prtcl', [])
     .controller('Lines', function ($scope) {
         $scope.sketch = function (ps) {
             function e (n) { return Math.pow(n, Math.E); }
-            var n1 = 1000, n2 = 1;
+            var n1 = 1000, n2 = 1, mouseX = 0, mouseY = 0;
             ps.setup = function () {
                 ps.frameRate(30);
                 ps.background(0, 0, 0);
@@ -32,11 +32,15 @@ var prtcl = angular.module('prtcl', [])
                 }
                 window.addEventListener('resize', resize);
                 resize();
+                window.addEventListener('mousemove', function (e) {
+                    mouseX = e.screenX;
+                    mouseY = e.screenY;
+                });
             };
             ps.draw = function () {
                 var c = 0, v = 0, o = 255,
-                    x = (ps.height / 2) + (ps.mouseX * 0.01),
-                    y = (ps.width / 2) + (ps.mouseY * 0.01);
+                    x = (ps.height / 2) + (mouseX * 0.01),
+                    y = (ps.width / 2) + (mouseY * 0.01);
                 for (var i = ps.width - Math.round(ps.width / 5); i >= 0; i = i - ps.map(e(Math.random()), 1, 0, 0, 59)) {
                     n1 = n1 + 0.01;
                     n2 = n2 + 0.1;
