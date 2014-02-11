@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="prtcl">
+<head>
+
+    <title>Cory O'Brien</title>
+
+    <meta name="description" content="Sound artist and Web Developer from Washington, DC" />
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="Ydq_4fjxlJ7tZVQZzS4DXQ1VDqWU7lCIT_fiw_HUJlQ" />
+
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+
+    <script src="/lib/angular.min.js"></script>
+    <script src="/lib/processing-1.4.1-api.min.js"></script>
+
+    <script src="/js/app.js"></script>
+
+</head>
+<body>
+<div id="container">
+
+    <div id="info">
+
+        <h1>Cory O'Brien</h1>
+        <p>Snare drum, post-digital noise, interactive sound installation</p>
+        <ul class="nav">
+            <li><a href="http://soundcloud.com/prtcl">SoundCloud</a></li>
+            <li>|</li>
+            <li><a href="https://github.com/prtcl">GitHub</a></li>
+            <li>|</li>
+            <li><a href="mailto:cory@prtcl.cc">cory@prtcl.cc</a></li>
+        </ul>
+
+    </div>
+
+    <div id="lines" ng-controller="Lines">
+        <canvas processing="sketch"></canvas>
+    </div>
+
+</div>
+</body>
+</html>
