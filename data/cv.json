@@ -1,9 +1,15 @@
 {
-    "recordings": [
+    "soloRecordings": [
+        { "title": "Denser Materials", "format": "CD", "label": "Senufo Editions", "year": 2014 },
         { "title": "Critical Hydrogen", "format": "mp3", "label": "Particle Liberation", "year": 2012 },
         { "title": "Mnemonic Fragmentation", "format": "mp3", "label": "Zeromoon", "year": 2011 },
         { "title": "Memory Gospel", "format": "CD", "label": "Zeromoon", "year": 2010 },
         { "title": "Light", "format": "mp3", "label": "Zeromoon", "year": 2007 }
+    ],
+    "collabRecordings": [
+        { "title": "CoLo/Cory O'Brien - Laser Acoustic", "format": "mp3", "label": "Zeromoon", "year": 2013 },
+        { "title": "Jeff Carey/Bonnie Jones/Cory O'Brien/Jeff Surak - Live", "format": "mp3", "label": "Zeromoon", "year": 2010 },
+        { "title": "Makioki Sisters - Angry Asian Chick on Mobile Device", "format": "mp3", "label": "Zeromoon", "year": 2010 }
     ],
     "installation": [
         { "title": "Turbulent Spaces", "location": "Sonic Circuits Festival", "year": 2012 }
@@ -14,6 +20,7 @@
         { "title": "TiberSynth", "link": "http://tibersynth.prtcl.cc", "year": 2012 }
     ],
     "concerts": [
+        { "venue": "Red Room", "location": "Baltimore, MD", "date": "2014-03-24", "description": "w/ Greg Gorlen" },
         { "venue": "SCOBY House", "location": "Washington, DC", "date": "2013-11-19", "description": "w/ Juice Machine, Caustic Castle" },
         { "venue": "Sonic Circuits Festival", "location": "Washington, DC", "date": "2013-10-06" },
         { "venue": "Dog Days Festival", "location": "Washington, DC", "description": "Dog Days Festival", "date": "2013-08-03" },

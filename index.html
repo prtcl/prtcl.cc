@@ -47,9 +47,15 @@
             </div>
             <h2>CV</h2>
             <div class="block">
-                <h3>Recordings</h3>
+                <h3>Solo Recordings</h3>
                 <ul>
-                    <li ng-repeat="r in cv.recordings"><em>{{ r.title }}</em>, {{ r.label }}, {{ r.year }}</li>
+                    <li ng-repeat="r in cv.soloRecordings"><em>{{ r.title }}</em>, {{ r.label }}, {{ r.year }}</li>
+                </ul>
+            </div>
+            <div class="block">
+                <h3>Collaborative Recordings</h3>
+                <ul>
+                    <li ng-repeat="r in cv.collabRecordings"><em>{{ r.title }}</em>, {{ r.label }}, {{ r.year }}</li>
                 </ul>
             </div>
             <div class="block">
