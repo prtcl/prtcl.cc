@@ -21,6 +21,9 @@
         { "title": "TiberSynth", "link": "http://tibersynth.prtcl.cc", "year": 2012 }
     ],
     "concerts": [
+	{ "venue": "Pyramid Atlantic", "location": "Silver Spring, MD", "date": "2014-06-21", "description": "Never Work" },
+        { "venue": "Club K", "location": "Baltimore, MD", "date": "2014-05-18", "description": "duo w/ Patrick Cain" },
+        { "venue": "Goethe Institut", "location": "Washington, DC", "date": "2014-05-17", "description": "w/ AGF" },
         { "venue": "Red Room", "location": "Baltimore, MD", "date": "2014-03-24", "description": "w/ Greg Gorlen" },
         { "venue": "SCOBY House", "location": "Washington, DC", "date": "2013-11-19", "description": "w/ Juice Machine, Caustic Castle" },
         { "venue": "Sonic Circuits Festival", "location": "Washington, DC", "date": "2013-10-06" },
