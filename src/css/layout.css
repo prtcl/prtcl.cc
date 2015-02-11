@@ -1,0 +1,34 @@
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    position: relative;
+}
+
+.visualization {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.floating-box {
+    position: absolute;
+    z-index: 100;
+}
+
+.floating-box.top-left {
+    top: 0;
+    left: 0;
+}
+
+.floating-box.bottom-left {
+    bottom: 0;
+    left: 0;
+}

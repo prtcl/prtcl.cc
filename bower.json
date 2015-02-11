@@ -1,0 +1,21 @@
+{
+  "name": "prtcl.cc",
+  "version": "0.0.1",
+  "authors": ["Cory O'Brien <cory@prtcl.cc>"],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "~2.1.15",
+    "jquery": "~2.1.1",
+    "plonk": "*",
+    "processing": "~1.4.8"
+  }
+}
