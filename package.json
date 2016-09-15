@@ -1,17 +1,55 @@
 {
   "name": "prtcl.cc",
   "version": "2.0.0",
-  "description": "",
-  "main": "Gruntfile.js",
-  "dependencies": {
-
+  "description": "Code for prtcl.cc",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:prtcl/iching.io.git"
   },
+  "main": "www/index.html",
+  "author": "Cory O'Brien <cory@prtcl.cc>",
+  "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
-
+    "autoprefixer": "^6.4.1",
+    "babel-core": "^6.14.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-runtime": "^6.11.6",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "cssnano-cli": "^1.0.4",
+    "eslint": "^3.5.0",
+    "node-sass": "^3.10.0",
+    "nodemon": "^1.10.2",
+    "parallelshell": "^2.0.0",
+    "postcss": "^5.2.0",
+    "postcss-cli": "^2.6.0",
+    "static-server": "^2.0.3",
+    "uglifyjs": "^2.4.10",
+    "vue-hot-reload-api": "^2.0.6",
+    "vueify": "^8.7.0",
+    "vueify-insert-css": "^1.0.0",
+    "watchify": "^3.7.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "init": "rm -r ./node_modules ; npm install && cd node_modules && ln -nsf ../app && cd .. && npm run build",
+    "build": "rm -r ./www/dist ; mkdir -p ./www/dist && npm run browserify && npm run sass",
+    "compress": "npm run uglify && npm run cssnano",
+    "browserify": "$(npm bin)/browserify ./app/app.js -s app -d > ./www/dist/app.js",
+    "watchify": "$(npm bin)/watchify ./app/app.js -v -s app -d -o ./www/dist/app.js",
+    "uglify": "$(npm bin)/uglifyjs ./www/dist/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > ./www/dist/app.min.js",
+    "sass": "$(npm bin)/node-sass ./scss/main.scss > ./www/dist/main.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r ./www/dist/main.css",
+    "cssnano": "$(npm bin)/cssnano ./www/dist/main.css ./www/dist/main.min.css",
+    "watch": "$(npm bin)/parallelshell 'npm run watchify' 'npm run watch:sass'",
+    "watch:sass": "$(npm bin)/nodemon -q -w ./scss/ --ext '.scss' --exec 'npm run sass'",
+    "server": "cd ./www && $(npm bin)/static-server -p 3000",
+    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run server'"
   },
-  "author": "",
-  "license": "ISC"
+  "browserify": {
+    "transform": [
+      "vueify",
+      "babelify"
+    ]
+  }
 }
