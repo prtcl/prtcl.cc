@@ -1,2 +1,2 @@
 
-basic static app structure with grunt, bower, require, etc
+Code for [prtcl.cc](http://prtcl.cc)
