@@ -5,20 +5,23 @@ module.exports = [
     title: 'Sound',
     items: [
       {
-        audioEmbed: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/218688839&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>'
+        embedCode: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/218688839&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>',
+        embedType: 'audio'
       },
       {
-        image: 'http://www.senufoeditions.com/wordpress/wp-content/uploads/2014/06/Senufo49Cover.jpg',
         link: 'http://www.senufoeditions.com/wordpress/?page_id=792',
-        audioEmbed: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/154012299&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>'
+        embedCode: '<iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/154012299&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>',
+        embedType: 'audio'
       },
       {
         link: 'http://bc.prtcl.cc/album/critical-hydrogen',
-        audioEmbed: '<iframe style="border: 0; width: 100%; height: 120px;" src="http://bandcamp.com/EmbeddedPlayer/album=2994530282/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="http://bc.prtcl.cc/album/critical-hydrogen">Critical Hydrogen by Cory O&#39;Brien</a></iframe>'
+        embedCode: '<iframe style="border: 0; width: 100%; height: 120px;" src="http://bandcamp.com/EmbeddedPlayer/album=2994530282/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="http://bc.prtcl.cc/album/critical-hydrogen">Critical Hydrogen by Cory O&#39;Brien</a></iframe>',
+        embedType: 'audio'
       },
       {
         link: 'http://bc.prtcl.cc/album/memory-gospel',
-        audioEmbed: '<iframe style="border: 0; width: 100%; height: 120px;" src="http://bandcamp.com/EmbeddedPlayer/album=2035781221/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="http://bc.prtcl.cc/album/memory-gospel">Memory Gospel by Cory O&#39;Brien</a></iframe>'
+        embedCode: '<iframe style="border: 0; width: 100%; height: 120px;" src="http://bandcamp.com/EmbeddedPlayer/album=2035781221/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/" seamless><a href="http://bc.prtcl.cc/album/memory-gospel">Memory Gospel by Cory O&#39;Brien</a></iframe>',
+        embedType: 'audio'
       }
     ]
   },
@@ -27,13 +30,16 @@ module.exports = [
     title: 'Video',
     items: [
       {
-        videoEmbed: '<iframe src="https://player.vimeo.com/video/163325079" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
+        embedCode: '<iframe src="https://player.vimeo.com/video/163325079" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+        embedType: 'video'
       },
       {
-        videoEmbed: '<iframe width="560" height="315" src="https://www.youtube.com/embed/qATD8vFzV6g" frameborder="0" allowfullscreen></iframe>'
+        embedCode: '<iframe width="560" height="315" src="https://www.youtube.com/embed/qATD8vFzV6g" frameborder="0" allowfullscreen></iframe>',
+        embedType: 'video'
       },
       {
-        videoEmbed: '<iframe src="https://player.vimeo.com/video/44462935" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
+        embedCode: '<iframe src="https://player.vimeo.com/video/44462935" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
+        embedType: 'video'
       }
     ]
   },
