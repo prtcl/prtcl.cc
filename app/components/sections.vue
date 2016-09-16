@@ -34,16 +34,10 @@
           {{ item.title }}
         </h3>
         <div
-          v-if="item.audioEmbed"
-          v-html="item.audioEmbed"
-          class="embed audio-embed"
+          v-if="item.embedCode"
+          class="embed {{ item.embedType }}"
           >
-        </div>
-        <div
-          v-if="item.videoEmbed"
-          v-html="item.videoEmbed"
-          class="embed video-embed"
-          >
+          {{{ item.embedCode }}}
         </div>
         <p>
           <span
@@ -56,7 +50,7 @@
             v-if="item.link"
             class="link"
             >
-              <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
+            <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
           </span>
         </p>
       </div>
