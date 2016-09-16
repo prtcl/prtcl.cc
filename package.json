@@ -9,7 +9,12 @@
   "main": "www/index.html",
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "font-awesome": "^4.6.3",
+    "plonk": "^1.0.0",
+    "vue": "^1.0.26",
+    "webworkify": "^1.4.0"
+  },
   "devDependencies": {
     "autoprefixer": "^6.4.1",
     "babel-core": "^6.14.0",
@@ -34,13 +39,14 @@
   },
   "scripts": {
     "init": "rm -r ./node_modules ; npm install && cd node_modules && ln -nsf ../app && cd .. && npm run build",
-    "build": "rm -r ./www/dist ; mkdir -p ./www/dist && npm run browserify && npm run sass",
+    "build": "rm -r ./www/dist ; mkdir -p ./www/dist && npm run browserify && npm run fonts && npm run sass",
     "compress": "npm run uglify && npm run cssnano",
     "browserify": "$(npm bin)/browserify ./app/app.js -s app -d > ./www/dist/app.js",
     "watchify": "$(npm bin)/watchify ./app/app.js -v -s app -d -o ./www/dist/app.js",
     "uglify": "$(npm bin)/uglifyjs ./www/dist/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > ./www/dist/app.min.js",
     "sass": "$(npm bin)/node-sass ./scss/main.scss > ./www/dist/main.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r ./www/dist/main.css",
     "cssnano": "$(npm bin)/cssnano ./www/dist/main.css ./www/dist/main.min.css",
+    "fonts": "rm -r ./www/dist/fonts ; cp -vR ./node_modules/font-awesome/fonts ./www/dist/fonts/",
     "watch": "$(npm bin)/parallelshell 'npm run watchify' 'npm run watch:sass'",
     "watch:sass": "$(npm bin)/nodemon -q -w ./scss/ --ext '.scss' --exec 'npm run sass'",
     "server": "cd ./www && $(npm bin)/static-server -p 3000",
