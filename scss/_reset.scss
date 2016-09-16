@@ -18,7 +18,6 @@ html, body {
   text-rendering: optimizeLegibility;
   z-index: 0;
   position: relative;
-  overflow: hidden;
 }
 
 ::selection {
@@ -27,20 +26,8 @@ html, body {
 }
 
 h1, h2, h3, h4, h5 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1em;
-}
-
-h3 {
-  font-size: $root-font-size;
-  font-weight: normal;
-}
-
-h5 {
-  font-size: $root-font-size;
-  line-height: 1em;
-  font-weight: normal;
-  text-transform: uppercase;
 }
 
 p {
