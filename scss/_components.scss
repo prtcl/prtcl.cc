@@ -5,43 +5,42 @@
       margin: 0 0.25em 0 0;
       display: inline-block;
 
-      .fa {
-        font-size: 1.5em;
+      a {
         color: inherit;
 
-        &:hover {
-          opacity: 0.75;
-        }
+        .fa {
+          color: inherit;
+          transition: opacity 0.5s;
 
-        &.fa-soundcloud {
-          color: #ff5500;
-        }
+          &.fa-soundcloud {
+            color: #ff5500;
+          }
 
-        &.fa-github {
-          color: black;
-        }
+          &.fa-github {
+            color: black;
+          }
 
-        &.fa-bandcamp {
-          margin: 0.1em;
-          font-size: 1.45em;
-
-          &::before {
-            content: "b";
-            background-color: #639aa9;
-            width: 1em;
-            color: transparent;
-            display: inline-block;
-            height: 1em;
-            transform: skew(-25deg);
-            -webkit-transform: skew(-25deg);
-            -moz-transform: skew(-25deg);
-            -ms-transform: skew(-25deg);
-            -o-transform: skew(-25deg);
+          &.fa-bandcamp {
+            &::before {
+              content: "b";
+              background-color: #639aa9;
+              width: 1em;
+              color: transparent;
+              display: inline-block;
+              height: 1em;
+              transform: skew(-25deg);
+              -webkit-transform: skew(-25deg);
+              -moz-transform: skew(-25deg);
+              -ms-transform: skew(-25deg);
+              -o-transform: skew(-25deg);
+            }
           }
         }
 
-        &.fa-paper-plane-o {
-          color: black;
+        &:hover {
+          .fa {
+            opacity: 0.85;
+          }
         }
       }
     }
@@ -49,13 +48,18 @@
 }
 
 .sections {
-  margin: 1em 0;
+  margin: 2em 0;
 
   section {
     margin: 1em 0;
 
     h2 {
+      font-size: 1.45em;
       cursor: pointer;
+
+      .fa {
+        font-size: 0.75em;
+      }
     }
 
     .content {
