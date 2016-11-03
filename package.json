@@ -40,7 +40,7 @@
   },
   "scripts": {
     "init": "rm -r ./node_modules ; npm install && cd node_modules && ln -nsf ../app && cd .. && rm -r ./www ; mkdir ./www ; npm run hbs:dev && npm run build",
-    "build": "rm -r ./www/assets ; mkdir -p ./www/assets && npm run browserify && npm run fonts && npm run sass",
+    "build": "rm -r ./www/assets ; mkdir -p ./www/assets && npm run browserify && npm run fonts && npm run sass && npm run hbs:prod",
     "browserify": "$(npm bin)/browserify ./app/app.js -s app -d > ./www/assets/app.js",
     "watchify": "$(npm bin)/watchify ./app/app.js -v -s app -d -o ./www/assets/app.js",
     "uglify": "$(npm bin)/uglifyjs ./www/assets/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > ./www/assets/app.min.js",
@@ -54,8 +54,7 @@
     "watch:sass": "$(npm bin)/nodemon -q -w ./scss/ --ext '.scss' --exec 'npm run sass'",
     "watch:hbs": "$(npm bin)/nodemon -q -w ./templates/ --ext '.hbs' --exec 'npm run hbs:dev'",
     "server": "cd ./www && $(npm bin)/static-server -p 3000",
-    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run server'",
-    "prod": "npm run build && npm run compress && npm run hbs:prod"
+    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run server'"
   },
   "browserify": {
     "transform": [
