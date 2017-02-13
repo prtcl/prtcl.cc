@@ -2,46 +2,42 @@
 .social-links {
   ul {
     li {
-      margin: 0 0.25em 0 0;
       display: inline-block;
+      margin: 0 0.25em 0 0;
+    }
+  }
 
-      a {
-        color: inherit;
+  a {
+    color: inherit;
 
-        .fa {
-          color: inherit;
-          transition: opacity 0.5s;
+    .fa {
+      color: inherit;
+      transition: opacity 0.5s;
 
-          &.fa-soundcloud {
-            color: #ff5500;
-          }
+      &.fa-soundcloud {
+        color: #f50;
+      }
 
-          &.fa-github {
-            color: black;
-          }
+      &.fa-github {
+        color: #000;
+      }
 
-          &.fa-bandcamp {
-            &::before {
-              content: "b";
-              background-color: #639aa9;
-              width: 1em;
-              color: transparent;
-              display: inline-block;
-              height: 1em;
-              transform: skew(-25deg);
-              -webkit-transform: skew(-25deg);
-              -moz-transform: skew(-25deg);
-              -ms-transform: skew(-25deg);
-              -o-transform: skew(-25deg);
-            }
-          }
+      &.fa-bandcamp {
+        &::before {
+          background-color: #639aa9;
+          color: transparent;
+          content: 'b';
+          display: inline-block;
+          height: 1em;
+          transform: skew(-25deg);
+          width: 1em;
         }
+      }
+    }
 
-        &:hover {
-          .fa {
-            opacity: 0.85;
-          }
-        }
+    &:hover {
+      .fa {
+        opacity: 0.85;
       }
     }
   }
@@ -54,8 +50,8 @@
     margin: 1em 0;
 
     h2 {
-      font-size: 1.45em;
       cursor: pointer;
+      font-size: 1.25em;
 
       .fa {
         font-size: 0.75em;
@@ -75,26 +71,26 @@
         }
 
         .link {
-          white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .embed {
-          width: 100%;
           position: relative;
+          width: 100%;
 
           &.video {
-            padding: 0 0 56.25% 0;
             height: 0;
             overflow: hidden;
+            padding: 0 0 56.25%;
 
             iframe {
-              width: 100%;
               height: 100%;
+              left: 0;
               position: absolute;
               top: 0;
-              left: 0;
+              width: 100%;
             }
           }
         }
