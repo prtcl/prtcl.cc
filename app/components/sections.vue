@@ -64,16 +64,16 @@
 const store = require('app/store');
 
 module.exports = {
-  data: function () {
+  data () {
     return {};
   },
   computed: {
-    sections: function () {
+    sections () {
       return store.state.sections;
     }
   },
   methods: {
-    expandSection: function (id) {
+    expandSection (id) {
       store.expandSection(id);
     }
   }
