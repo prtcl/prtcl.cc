@@ -1,11 +1,11 @@
 
-const sections = require('app/data/sections');
+import sections from './data/sections';
 
 const state = {
   sections
 };
 
-module.exports = {
+export default {
   state,
   expandSection
 };

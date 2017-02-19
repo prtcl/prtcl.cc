@@ -1,8 +1,8 @@
 
-const Vue = require('vue');
+import Vue from 'vue';
 
-const store = require('app/store'),
-      sections = require('app/components/sections.vue');
+import store from './store';
+import sections from './components/sections.vue';
 
 const app = {
   run () {
@@ -17,8 +17,8 @@ const app = {
   }
 };
 
-module.exports = app;
+export default app;
 
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
   app && app.run();
 });

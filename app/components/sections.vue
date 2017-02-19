@@ -61,9 +61,9 @@
 
 <script>
 
-const store = require('app/store');
+import store from '../store';
 
-module.exports = {
+export default {
   data () {
     return {};
   },
