@@ -36,28 +36,27 @@
     "vueify-insert-css": "^1.0.0",
     "watchify": "^3.7.0"
   },
-  "scripts": {
-    "init": "rm -r ./node_modules ; npm install && cd node_modules && ln -nsf ../app && cd .. && rm -r ./www ; mkdir ./www ; npm run hbs:dev && npm run build",
-    "build": "rm -r ./www ; mkdir -p ./www/assets && npm run browserify && npm run fonts && npm run sass && npm run hbs:prod && npm run compress",
-    "browserify": "$(npm bin)/browserify ./app/app.js -s app -d > ./www/assets/app.js",
-    "watchify": "$(npm bin)/watchify ./app/app.js -v -s app -d -o ./www/assets/app.js",
-    "uglify": "$(npm bin)/uglifyjs ./www/assets/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > ./www/assets/app.min.js",
-    "sass": "$(npm bin)/node-sass ./scss/main.scss > ./www/assets/main.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r ./www/assets/main.css",
-    "cssnano": "$(npm bin)/cssnano ./www/assets/main.css ./www/assets/main.min.css",
-    "compress": "npm run uglify && npm run cssnano",
-    "fonts": "rm -r ./www/assets/fonts ; cp -vR ./node_modules/font-awesome/fonts ./www/assets/fonts/",
-    "hbs:dev": "$(npm bin)/handlebars --prod false < templates/index.hbs > www/index.html",
-    "hbs:prod": "$(npm bin)/handlebars --prod true < templates/index.hbs > www/index.html",
-    "watch": "$(npm bin)/parallelshell 'npm run watchify' 'npm run watch:sass' 'npm run watch:hbs'",
-    "watch:sass": "$(npm bin)/nodemon -q -w ./scss/ --ext '.scss' --exec 'npm run sass'",
-    "watch:hbs": "$(npm bin)/nodemon -q -w ./templates/ --ext '.hbs' --exec 'npm run hbs:dev'",
-    "start": "cd ./www && $(npm bin)/static",
-    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run start'"
-  },
   "browserify": {
     "transform": [
       "vueify",
       "babelify"
     ]
+  },
+  "scripts": {
+    "browserify": "$(npm bin)/browserify ./app/app.js -s app -d > ./www/assets/app.js",
+    "build": "rm -r ./www ; mkdir -p ./www/assets && npm run browserify && npm run sass && npm run fonts && npm run hbs:prod && npm run compress",
+    "compress": "npm run uglify && npm run cssnano",
+    "cssnano": "$(npm bin)/cssnano ./www/assets/main.css ./www/assets/main.min.css",
+    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run start'",
+    "fonts": "rm -r ./www/assets/fonts ; cp -vR ./node_modules/font-awesome/fonts ./www/assets/fonts/",
+    "hbs:dev": "$(npm bin)/handlebars --prod false < templates/index.hbs > www/index.html",
+    "hbs:prod": "$(npm bin)/handlebars --prod true < templates/index.hbs > www/index.html",
+    "sass": "$(npm bin)/node-sass ./scss/main.scss > ./www/assets/main.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r ./www/assets/main.css",
+    "start": "cd ./www && $(npm bin)/static",
+    "uglify": "$(npm bin)/uglifyjs ./www/assets/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > ./www/assets/app.min.js",
+    "watch": "$(npm bin)/parallelshell 'npm run watchify' 'npm run watch:sass' 'npm run watch:hbs'",
+    "watch:hbs": "$(npm bin)/nodemon -q -w ./templates/ --ext '.hbs' --exec 'npm run hbs:dev'",
+    "watch:sass": "$(npm bin)/nodemon -q -w ./scss/ --ext '.scss' --exec 'npm run sass'",
+    "watchify": "$(npm bin)/watchify ./app/app.js -v -s app -d -o ./www/assets/app.js"
   }
 }
