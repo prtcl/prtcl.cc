@@ -2,8 +2,8 @@
 module.exports = {
   "env": {
     "browser": true,
-    "node": true,
-    "commonjs": true,
+    "node": false,
+    "commonjs": false,
     "es6": true,
     "mocha": true
   },
@@ -12,7 +12,6 @@ module.exports = {
     "sourceType": "module",
   },
   "globals": {
-    "webkitAudioContext": true
   },
   "rules": {
     "accessor-pairs": "error",
