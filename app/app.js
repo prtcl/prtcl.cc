@@ -9,6 +9,7 @@ const app = {
       el: document.body.querySelector('#visualization')
     });
 
+    this.store.run();
     this.visualization.run();
     return this;
   }

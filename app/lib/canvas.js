@@ -30,7 +30,7 @@ export default class Canvas {
     this.context.fillStyle = color(...args);
   }
 
-  strokeWeight (w = 0) {
+  strokeWidth (w = 0) {
     this.context.lineWidth = Math.max(w, 0.0001);
   }
 
@@ -60,6 +60,7 @@ export default class Canvas {
       this.context.fill();
     }
   }
+
 }
 
 function color (r = 255, g = 255, b = 255) {
