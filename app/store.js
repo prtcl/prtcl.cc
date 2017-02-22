@@ -4,14 +4,13 @@ import times from 'lodash/times';
 
 const N_POLYGONS = 60,
       N_POINTS = 3,
-      BOUNDS_MIN = 0.25,
-      BOUNDS_MAX = 0.75;
+      BOUNDS_MIN = 0.3,
+      BOUNDS_MAX = 0.7;
 
 export const state = {
   direction: [],
   polygons: [],
   speed: 0.005
-  // speed: 0.1
 };
 
 export default {
@@ -54,10 +53,9 @@ function run () {
 
 function tick () {
 
-  // if (Math.floor(Math.random() * 50) === 0) {
-  //   // state.speed = rand(0.0045, 0.0051);
-  //   state.speed = rand(0.004, 0.01);
-  // }
+  if (Math.floor(Math.random() * 50) === 0) {
+    state.speed = rand(0.0045, 0.0051);
+  }
 
   const previous = state.polygons.map((polygon) => {
     return polygon.points.map((point) => {
