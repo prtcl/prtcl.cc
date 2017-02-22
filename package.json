@@ -23,7 +23,7 @@
     "hbs:dev": "$(npm bin)/handlebars --prod false < templates/index.hbs > www/index.html",
     "hbs:prod": "$(npm bin)/handlebars --prod true < templates/index.hbs > www/index.html",
     "sass": "$(npm bin)/node-sass scss/main.scss > www/assets/main.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r www/assets/main.css",
-    "start": "cd www && $(npm bin)/static",
+    "start": "cd www && $(npm bin)/static -a 0.0.0.0",
     "uglify": "$(npm bin)/uglifyjs www/assets/app.js --compress warnings=false,sequences=true,properties=true,dead_code=true,booleans=true,drop_console=true --mangle --screw-ie8 > www/assets/app.min.js",
     "watch": "$(npm bin)/parallelshell 'npm run watchify' 'npm run watch:sass' 'npm run watch:hbs'",
     "watch:hbs": "$(npm bin)/nodemon -q -w templates/ --ext '.hbs' --exec 'npm run hbs:dev'",
