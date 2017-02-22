@@ -1,7 +1,13 @@
 
 html,
 body {
-  background-color: #f9f9f9;
+  background-color: $color-smoke;
+}
+
+a,
+a:active,
+a:visited {
+  color: $color-smoke;
 }
 
 .hidden {
@@ -24,8 +30,13 @@ body {
   }
 }
 
-.article__copy {
-  margin-top: -2em;
-  padding: 1em;
-  text-align: center;
+article {
+  mix-blend-mode: exclusion;
+
+  .article__copy {
+    color: $color-smoke;
+    margin-top: -2em;
+    padding: 1em;
+    text-align: center;
+  }
 }

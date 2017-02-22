@@ -1,5 +1,5 @@
 
-import { frames, rand } from 'plonk';
+import { frames } from 'plonk';
 import debounce from 'lodash/debounce';
 
 import Canvas from '../lib/canvas';
@@ -25,17 +25,17 @@ export default class Visualization {
     }
 
     this.canvas.clear();
+    this.canvas.stroke(0, 0, 0);
+    this.canvas.fill(0, 0, 0);
 
     const w = this.canvas.width,
           h = this.canvas.height;
 
-    store.state.triangles.forEach((tri) => {
+    store.state.polygons.forEach((polygon) => {
 
-      this.canvas.stroke(tri.color[0], tri.color[1], tri.color[2]);
-      this.canvas.fill(tri.color[0], tri.color[1], tri.color[2]);
-      this.canvas.alpha(tri.strength);
+      this.canvas.alpha(polygon.strength);
 
-      const points = tri.points.map((p) => [p[0] * w, p[1] * h]);
+      const points = polygon.points.map((p) => [p[0] * w, p[1] * h]);
       this.canvas.drawPolygon(points, { fill: true });
 
     });

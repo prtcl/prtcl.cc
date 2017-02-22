@@ -1,16 +1,17 @@
 
-import {
-  drunk,
-  env,
-  exp,
-  metro,
-  ms,
-  rand,
-  scale
-} from 'plonk';
+import { exp, metro, ms, rand, scale } from 'plonk';
+import times from 'lodash/times';
+
+const N_POLYGONS = 60,
+      N_POINTS = 3,
+      BOUNDS_MIN = 0.25,
+      BOUNDS_MAX = 0.75;
 
 export const state = {
-  triangles: []
+  direction: [],
+  polygons: [],
+  speed: 0.005
+  // speed: 0.1
 };
 
 export default {
@@ -18,84 +19,73 @@ export default {
   run
 };
 
-// var stepAmount = 0;
-
-const stepAmounts = [0.1, 0.1, 0.1, 0.1];
-
-const positionDrunks = [
-  { x: drunk(0.45, 0.8, 0.1), y: drunk(0.05, 0.4, 0.1) },
-  { x: drunk(0.7, 0.8, 0.1), y: drunk(0.7, 0.8, 0.1) },
-  { x: drunk(0.05, 0.4, 0.1), y: drunk(0.6, 0.8, 0.1) },
-  { x: drunk(0.05, 0.4, 0.1), y: drunk(0.6, 0.8, 0.1) }
-];
+function createPolygon () {
+  const polygon = {
+    fill: true,
+    strength: 1,
+    points: times(N_POINTS, () => [0, 0])
+  };
+  return polygon;
+}
 
 function run () {
+
+  state.direction = times(N_POINTS, () => [rand(-1, 1), rand(-1, 1)]);
+
+  const origin = times(N_POINTS, () => [rand(BOUNDS_MIN, BOUNDS_MAX), rand(BOUNDS_MIN, BOUNDS_MAX)]);
+
+  times(N_POLYGONS, (i) => {
+    const polygon = createPolygon();
+
+    polygon.points.forEach((point, j) => {
+      point[0] = origin[j][0];
+      point[1] = origin[j][1];
+    });
+
+    if (i !== 0) {
+      polygon.strength = exp(scale(i, 1, N_POLYGONS, 1, 0)) * 0.15;
+    }
+
+    state.polygons.push(polygon);
+  });
+
   metro(ms('60fps'), tick);
-  // runStepEnvelope(0);
-  // runStepEnvelope(1);
-  // runStepEnvelope(2);
-  // runStepEnvelope(3);
 }
 
 function tick () {
 
-  const points = positionDrunks.map((d, i) => {
-    const x = d.x(stepAmounts[i]),
-          y = d.y(stepAmounts[i]);
-    return [x, y];
-  });
+  // if (Math.floor(Math.random() * 50) === 0) {
+  //   // state.speed = rand(0.0045, 0.0051);
+  //   state.speed = rand(0.004, 0.01);
+  // }
 
-  const tri = {
-    color: [rand(0, 255), rand(0, 255), rand(0, 255)],
-    fill: true,
-    points,
-    strength: 0.5
-  };
-
-  addTriangle(tri);
-
-}
-
-function addTriangle (tri) {
-
-  if (state.triangles.length > 20) {
-    state.triangles = state.triangles.slice(1);
-  }
-
-  state.triangles.forEach((t, i) => {
-    t.strength = exp(scale(i, 0, state.triangles.length - 1, 0, 1)) * 0.25;
-  });
-
-  state.triangles.push(tri);
-}
-
-function runStepEnvelope (i) {
-  const time = rand(100, 3400);
-
-  env(0, 0.05, time * 0.8)
-    .progress(setStepAmount)
-    .then((val) => {
-      setStepAmount(val);
-      return env(0.05, 1, time * 0.025);
-    })
-    .progress(setStepAmount)
-    .then((val) => {
-      setStepAmount(val);
-      return env(1, 0.25, time * 0.025);
-    })
-    .progress(setStepAmount)
-    .then((val) => {
-      setStepAmount(val);
-      return env(0.25, 0, time * 0.15);
-    })
-    .progress(setStepAmount)
-    .then((val) => {
-      setStepAmount(val);
-      runStepEnvelope(i);
+  const previous = state.polygons.map((polygon) => {
+    return polygon.points.map((point) => {
+      return [point[0], point[1]];
     });
+  });
 
-  function setStepAmount (val) {
-    // const amt = scale(val, 0, 1, 0, 1);
-    stepAmounts[i] = val;
-  }
+  state.polygons.forEach((polygon, i) => {
+    if (i === 0) {
+      polygon.points.forEach((point, j) => {
+        if (point[0] >= BOUNDS_MAX) {
+          state.direction[j][0] = rand(-1, 0);
+        } else if (point[0] <= BOUNDS_MIN) {
+          state.direction[j][0] = rand(0, 1);
+        }
+        if (point[1] >= BOUNDS_MAX) {
+          state.direction[j][1] = rand(-1, 0);
+        } else if (point[1] <= BOUNDS_MIN) {
+          state.direction[j][1] = rand(0, 1);
+        }
+        point[0] += (state.direction[j][0] * state.speed);
+        point[1] += (state.direction[j][1] * state.speed);
+      });
+    } else {
+      polygon.points.forEach((point, j) => {
+        point[0] = previous[i - 1][j][0];
+        point[1] = previous[i - 1][j][1];
+      });
+    }
+  });
 }

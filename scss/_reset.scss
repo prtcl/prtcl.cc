@@ -9,11 +9,11 @@
 
 html,
 body {
-  font-family: $root-font-family;
-  font-size: $root-font-size;
+  font-family: $font-family;
+  font-size: $font-size;
   font-weight: normal;
   height: 100%;
-  line-height: $root-line-height;
+  line-height: $line-height;
   position: relative;
   text-rendering: optimizeLegibility;
   width: 100%;
