@@ -25,8 +25,8 @@ export default class Visualization {
     }
 
     this.canvas.clear();
-    this.canvas.stroke(0, 0, 0);
-    this.canvas.fill(0, 0, 0);
+    this.canvas.stroke(255, 255, 255);
+    this.canvas.fill(255, 255, 255);
 
     const w = this.canvas.width,
           h = this.canvas.height;
@@ -44,9 +44,7 @@ export default class Visualization {
   run () {
     if (this.isRunning) return this;
 
-    frames((...args) => {
-      this._frameHandler(...args);
-    });
+    frames(this._frameHandler.bind(this));
     this.isRunning = true;
 
     return this;

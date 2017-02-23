@@ -1,13 +1,13 @@
 
 html,
 body {
-  background-color: $color-smoke;
+  background-color: #000;
 }
 
 a,
 a:active,
 a:visited {
-  color: $color-smoke;
+  color: #000;
 }
 
 .hidden {
@@ -17,6 +17,7 @@ a:visited {
 
 .container {
   height: 100%;
+  overflow: hidden;
   position: relative;
   width: 100%;
 
@@ -30,11 +31,13 @@ a:visited {
   }
 }
 
-article {
-  mix-blend-mode: exclusion;
+canvas {
+  mix-blend-mode: overlay;
+}
 
+article {
   .article__copy {
-    color: $color-smoke;
+    color: #000;
     margin-top: -2em;
     padding: 1em;
     text-align: center;
