@@ -2,12 +2,14 @@
 html,
 body {
   background-color: #000;
+  color: #fff;
+  font-family: 'Neuton';
 }
 
 a,
 a:active,
 a:visited {
-  color: #000;
+  color: #fff;
 }
 
 .hidden {
@@ -36,10 +38,25 @@ canvas {
 }
 
 article {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+
   .article__copy {
-    color: #000;
-    margin-top: -2em;
     padding: 1em;
     text-align: center;
+  }
+
+  h1,
+  ul,
+  li {
+    display: inline-block;
+    font-size: 1em;
+  }
+
+  h1,
+  li {
+    margin: 0 0.25em 0 0;
   }
 }
