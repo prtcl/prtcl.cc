@@ -1,6 +1,6 @@
 
 import { drunk, exp, metro, ms, rand, scale } from 'plonk';
-import times from 'lodash/times';
+import times from 'lodash-es/times';
 
 const N_POLYGONS = 60,
       N_POINTS = 5,

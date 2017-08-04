@@ -1,6 +1,6 @@
 
 import { frames } from 'plonk';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 import Canvas from '../lib/canvas';
 import store from '../store';
