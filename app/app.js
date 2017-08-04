@@ -1,16 +1,19 @@
 
 import store from './store';
-import Visualization from './ui/visualization';
+import visualization from './visualization';
 
 const app = {
   store,
+  visualization,
   run () {
-    this.visualization = new Visualization({
-      el: document.body.querySelector('#visualization')
-    });
+    store.run();
 
-    this.store.run();
-    this.visualization.run();
+    const canvas = document.body.querySelector('canvas');
+
+    visualization
+      .attach(canvas)
+      .run();
+
     return this;
   }
 };
@@ -18,5 +21,5 @@ const app = {
 export default app;
 
 window.addEventListener('load', () => {
-  window.app = app.run();
+  app.run();
 });
