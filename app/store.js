@@ -2,18 +2,17 @@
 import { drunk, exp, metro, ms, rand, scale } from 'plonk';
 import times from 'lodash-es/times';
 
-const N_POLYGONS = 60,
-      N_POINTS = 5,
-      BOUNDS_MIN = 0.32,
-      BOUNDS_MAX = 0.68;
+const N_POLYGONS = 100,
+      N_POINTS = 4,
+      BOUNDS_MIN = 0.05,
+      BOUNDS_MAX = 0.95;
 
-const speedDrunk = drunk(0.006, 0.006, 0.005),
-      driftDrunk = drunk(0.0005, 0.002);
+const driftDrunk = drunk(-0.0001, 0.0001);
 
 export const state = {
   direction: times(N_POINTS, () => [rand(-1, 1), rand(-1, 1)]),
   polygons: createPolygons(),
-  speed: 0
+  speed: 0.002
 };
 
 export default {
@@ -61,9 +60,6 @@ function createPolygon () {
 }
 
 function tickHandler () {
-
-  state.speed = speedDrunk();
-
   const polygons = state.polygons,
         first = polygons[0];
 
@@ -95,7 +91,7 @@ function tickHandler () {
       const point = polygon.points[j];
 
       point[0] = previous[i - 1][j][0];
-      point[1] = previous[i - 1][j][1] - driftDrunk();
+      point[1] = previous[i - 1][j][1] - (0.001 + driftDrunk());
     }
   }
 }

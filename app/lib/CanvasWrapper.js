@@ -89,6 +89,8 @@ export default class CanvasWrapper {
 
     if (fill === true) {
       this.context.fill();
+      this.context.closePath();
+      this.context.stroke();
     } else {
       this.context.closePath();
       this.context.stroke();

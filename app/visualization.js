@@ -22,7 +22,7 @@ export default {
     const tickHandler = () => {
       canvas.clear();
       canvas.stroke(255, 255, 255);
-      canvas.fill(255, 255, 255);
+      canvas.strokeWidth(1);
 
       const w = canvas.width,
             h = canvas.height;
@@ -34,7 +34,7 @@ export default {
               points = polygon.points.map((p) => [p[0] * w, p[1] * h]);
 
         canvas.alpha(polygon.strength);
-        canvas.drawPolygon(points, true);
+        canvas.drawPolygon(points, false);
       }
     };
 

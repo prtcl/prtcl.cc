@@ -8,10 +8,8 @@ const app = {
   run () {
     store.run();
 
-    const canvas = document.body.querySelector('canvas');
-
     visualization
-      .attach(canvas)
+      .attach(document.body.querySelector('canvas'))
       .run();
 
     return this;
