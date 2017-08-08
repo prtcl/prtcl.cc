@@ -1,5 +1,4 @@
 
-import isArray from 'lodash-es/isArray';
 import toNumber from 'lodash-es/toNumber';
 
 
@@ -67,18 +66,10 @@ export default class CanvasWrapper {
   }
 
   drawPolygon (points = [], fill = false) {
-    if (!isArray(points)) {
-      return;
-    }
-
     this.context.beginPath();
 
     for (var i = 0; i < points.length; i++) {
       let point = points[i];
-
-      if (!isArray(point) || point.length !== 2) {
-        break;
-      }
 
       if (i === 0) {
         this.context.moveTo(...point);
@@ -89,12 +80,10 @@ export default class CanvasWrapper {
 
     if (fill === true) {
       this.context.fill();
-      this.context.closePath();
-      this.context.stroke();
-    } else {
-      this.context.closePath();
-      this.context.stroke();
     }
+
+    this.context.closePath();
+    this.context.stroke();
 
     return this;
   }

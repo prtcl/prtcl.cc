@@ -1,6 +1,7 @@
 
 import { frames } from 'plonk';
 import debounce from 'lodash-es/debounce';
+import times from 'lodash-es/times';
 
 import CanvasWrapper from './lib/CanvasWrapper';
 import store from './store';
@@ -17,6 +18,12 @@ export default {
   },
 
   run () {
+    const polygons = store.state.polygons,
+          nPolygons = polygons.length,
+          nPoints = polygons[0].points.length;
+
+    this._scaledPolygons = times(polygons.length, () => times(nPoints, () => [0, 0]));
+
     const canvas = this.canvas.resize();
 
     const tickHandler = () => {
@@ -27,14 +34,21 @@ export default {
       const w = canvas.width,
             h = canvas.height;
 
-      const polygons = store.state.polygons;
+      for (let i = 0; i < nPolygons; i++) {
+        const polygon = polygons[i],
+              polyPoints = polygon.points,
+              scaledPolygon = this._scaledPolygons[i];
 
-      for (let j = 0; j < polygons.length; j++) {
-        const polygon = polygons[j],
-              points = polygon.points.map((p) => [p[0] * w, p[1] * h]);
+        for (let k = 0; k < nPoints; k++) {
+          const point = polyPoints[k],
+                scaledPoint = scaledPolygon[k];
+
+          scaledPoint[0] = point[0] * w;
+          scaledPoint[1] = point[1] * h;
+        }
 
         canvas.alpha(polygon.strength);
-        canvas.drawPolygon(points, false);
+        canvas.drawPolygon(scaledPolygon, false);
       }
     };
 
