@@ -11,30 +11,27 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run rollup && npm run sass && npm run compress && npm run copy",
+    "build": "npm run webpack && npm run sass && npm run compress && npm run copy",
     "compress": "npm run uglify && npm run cssnano",
     "copy": "npm run copy:img",
     "copy:img": "cp img/* www/assets/",
     "cssnano": "$(npm bin)/cssnano www/assets/style.css www/assets/style.css",
-    "dev": "$(npm bin)/parallelshell 'npm run watch' 'npm run start'",
+    "dev": "npm run prebuild && $(npm bin)/parallelshell 'npm run watch' 'npm run start'",
     "postuglify": "rm www/assets/_app.js",
     "prebuild": "rm -r www/assets ; mkdir -p www/assets",
     "preuglify": "mv www/assets/app.js www/assets/_app.js",
-    "rollup": "rollup -c",
     "sass": "$(npm bin)/node-sass scss/style.scss > www/assets/style.css && $(npm bin)/postcss --use autoprefixer -c .postcss.json -m -r www/assets/style.css",
+    "sass:watch": "$(npm bin)/nodemon -q -w scss/ --ext '.scss' --exec 'npm run sass'",
     "start": "cd www && $(npm bin)/static -a 0.0.0.0",
     "uglify": "$(npm bin)/uglifyjs -mc -- www/assets/_app.js > www/assets/app.js",
-    "watch": "$(npm bin)/parallelshell 'npm run watch:js' 'npm run watch:sass'",
-    "watch:js": "rollup -c --watch -m inline",
-    "watch:sass": "$(npm bin)/nodemon -q -w scss/ --ext '.scss' --exec 'npm run sass'"
+    "watch": "$(npm bin)/parallelshell 'npm run webpack:watch' 'npm run sass:watch'",
+    "webpack": "NODE_ENV=production $(npm bin)/webpack --progress --colors",
+    "webpack:watch": "NODE_ENV=development $(npm bin)/webpack --progress --colors --watch"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.3",
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "babel-runtime": "^6.23.0",
+    "buble": "^0.15.2",
+    "buble-loader": "^0.4.1",
     "cssnano-cli": "^1.0.5",
     "eslint": "^3.15.0",
     "handlebars-cmd": "^0.1.4",
@@ -44,15 +41,12 @@
     "parallelshell": "^2.0.0",
     "postcss": "^5.2.14",
     "postcss-cli": "^3.0.0-beta",
-    "rollup": "^0.45.2",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-commonjs": "^8.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-watch": "^4.3.1",
-    "uglify-js": "^3.0.27"
+    "uglify-js": "^3.0.27",
+    "webpack": "^3.5.5"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "lodash-es": "^4.17.4",
-    "plonk": "prtcl/plonk#dev"
+    "plonk": "^1.1.0"
   }
 }
