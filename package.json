@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "prtcl.cc",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "description": "Code for prtcl.cc",
   "repository": {
     "type": "git",
@@ -14,8 +14,6 @@
     "build": "npm run clean ; npm install ; npm run webpack",
     "clean": "rm -r ./node_modules | true ; rm -r ./www/dist | true",
     "dev": "$(npm bin)/parallelshell 'npm run webpack:watch' 'npm run start'",
-    "server:dev": "NODE_ENV=development PORT=3000 HEALTH_CHECK=true DEBUG=supermoon:* nodemon ./index.js",
-    "server": "NODE_ENV=production PORT=9999 HEALTH_CHECK=true node ./index.js",
     "start": "cd www && $(npm bin)/static -a 0.0.0.0",
     "webpack:watch": "$(npm bin)/webpack --watch",
     "webpack": "$(npm bin)/webpack"
