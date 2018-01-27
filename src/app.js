@@ -31,7 +31,6 @@ const run = () => {
   const resize = () => {
     canvas.width = state.width = canvas.clientWidth;
     canvas.height = state.height = canvas.clientHeight;
-    reset();
   };
 
   const alpha = (alpha) => {
@@ -55,9 +54,10 @@ const run = () => {
   };
 
   const drawPolygon = (points, fill = false) => {
-    context.beginPath();
     const len = points.length;
     let i = 0;
+
+    context.beginPath();
 
     while (i < len) {
       const x = points[i] * state.width;
@@ -102,10 +102,10 @@ const run = () => {
   };
 
   frames(draw)
-    .catch((err) => console.error(err));
+    .catch(console.error);
 
   dust(2200, 10000, reset)
-    .catch((err) => console.error(err));
+    .catch(console.error);
 
   reset();
   resize();
