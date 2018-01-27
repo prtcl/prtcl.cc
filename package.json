@@ -11,7 +11,8 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -r ./node_modules ; rm -r ./static/dist",
+    "build": "npm run clean ; npm install ; npm run webpack",
+    "clean": "rm -r ./node_modules | true ; rm -r ./www/dist | true",
     "dev": "$(npm bin)/parallelshell 'npm run webpack:watch' 'npm run start'",
     "server:dev": "NODE_ENV=development PORT=3000 HEALTH_CHECK=true DEBUG=supermoon:* nodemon ./index.js",
     "server": "NODE_ENV=production PORT=9999 HEALTH_CHECK=true node ./index.js",
@@ -20,27 +21,20 @@
     "webpack": "$(npm bin)/webpack"
   },
   "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.1",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "buble": "^0.18.0",
+    "buble-loader": "^0.4.1",
     "css-loader": "^0.28.9",
-    "eslint": "^4.15.0",
-    "eslint-plugin-babel": "^4.1.2",
+    "eslint": "^4.16.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "node-static": "^0.7.10",
     "nodemon": "^1.14.11",
     "parallelshell": "^3.0.2",
-    "style-loader": "^0.19.1",
+    "style-loader": "^0.20.1",
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "lodash-es": "^4.17.4",
     "plonk": "^1.1.0"
   }
 }

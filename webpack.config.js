@@ -2,7 +2,7 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './app/app.js',
+  entry: './src/app.js',
   output: {
     path: path.resolve('www', 'dist'),
     publicPath: '/dist/',
@@ -12,8 +12,8 @@ module.exports = {
     loaders: [
       {
         test: /.js$/,
-        loaders: 'babel-loader',
-        include: path.resolve('app')
+        loaders: 'buble-loader',
+        include: path.resolve('src')
       },
       {
         test: /\.less$/,

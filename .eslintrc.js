@@ -10,7 +10,6 @@ module.exports = {
   "extends": [
     "eslint:recommended"
   ],
-  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 6,
@@ -18,9 +17,6 @@ module.exports = {
       "experimentalObjectRestSpread": true
     }
   },
-  "plugins": [
-    "babel"
-  ],
   "rules": {
     "accessor-pairs": "error",
     "array-bracket-spacing": [
