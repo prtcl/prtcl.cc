@@ -1,23 +1,7 @@
+import './app.less';
 
-import store from './store';
-import visualization from './visualization';
-
-const app = {
-  store,
-  visualization,
-  run () {
-    store.run();
-
-    visualization
-      .attach(document.body.querySelector('canvas'))
-      .run();
-
-    return this;
-  }
+const run = () => {
+  console.log('herro!');
 };
 
-export default app;
-
-window.addEventListener('load', () => {
-  app.run();
-});
+window.addEventListener('load', run);

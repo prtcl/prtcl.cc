@@ -7,12 +7,20 @@ module.exports = {
     "es6": true,
     "mocha": false
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   },
-  "globals": {
-  },
+  "plugins": [
+    "babel"
+  ],
   "rules": {
     "accessor-pairs": "error",
     "array-bracket-spacing": [
@@ -179,7 +187,7 @@ module.exports = {
     "no-script-url": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
-    "no-shadow": "error",
+    "no-shadow": "off",
     "no-shadow-restricted-names": "error",
     "no-spaced-func": "error",
     "no-sync": "error",
@@ -213,7 +221,10 @@ module.exports = {
       "error",
       "always"
     ],
-    "operator-linebreak": "error",
+    "operator-linebreak": [
+      "error",
+      "after"
+    ],
     "padded-blocks": "off",
     "prefer-arrow-callback": "off",
     "prefer-const": "off",

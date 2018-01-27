@@ -1,10 +1,9 @@
 
-$font-size: 15px;
-$font-family: 'Times', serif;
-$line-height: 1.55em;
-
-$color-black: #0c0c0b;
-$color-white: #fff;
+@font-size: 15px;
+@font-family: 'Times', serif;
+@line-height: 1.55em;
+@color-black: #0c0c0b;
+@color-white: #fff;
 
 * {
   margin: 0;
@@ -19,13 +18,13 @@ $color-white: #fff;
 
 html,
 body {
-  background-color: $color-black;
-  color: $color-white;
-  font-family: $font-family;
-  font-size: $font-size;
+  background-color: @color-black;
+  color: @color-white;
+  font-family: @font-family;
+  font-size: @font-size;
   font-weight: 400;
   height: 100%;
-  line-height: $line-height;
+  line-height: @line-height;
   position: relative;
   text-rendering: optimizeLegibility;
   width: 100%;
@@ -44,7 +43,7 @@ p {
 a,
 a:active,
 a:visited {
-  color: $color-white;
+  color: @color-white;
   text-decoration: underline;
 }
 
@@ -58,7 +57,7 @@ ol {
 }
 
 li {
-  line-height: $line-height;
+  line-height: @line-height;
   list-style: none;
   margin: 0;
 }
