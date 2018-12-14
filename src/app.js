@@ -101,11 +101,9 @@ const run = () => {
     drawPolygon(poly, true);
   };
 
-  frames(draw)
-    .catch(console.error);
+  frames(draw).catch(console.error);
 
-  dust(2200, 10000, reset)
-    .catch(console.error);
+  dust(2200, 10000, reset).catch(console.error);
 
   reset();
   resize();

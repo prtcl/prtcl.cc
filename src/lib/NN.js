@@ -16,21 +16,18 @@ export const create = (...size) => {
   while (index++ < end) {
     const layerSize = size[index];
     const prevSize = size[index - 1];
-    biases[index] = new Float32Array(layerSize)
-      .map(createDrunk(-0.4, 0.4, 0.5));
-    weights[index] = new Array(layerSize).fill(null)
-      .map(() => new Float32Array(prevSize)
-        .map(createDrunk(-0.8, 0.8, 0.5)));
+    biases[index] = new Float32Array(layerSize).map(
+      createDrunk(-0.4, 0.4, 0.5)
+    );
+    weights[index] = new Array(layerSize)
+      .fill(null)
+      .map(() => new Float32Array(prevSize).map(createDrunk(-0.8, 0.8, 0.5)));
   }
 
   return { biases, size, weights };
 };
 
-export const process = ({
-  biases,
-  size,
-  weights
-}, input = []) => {
+export const process = ({ biases, size, weights }, input = []) => {
   const values = size.map((s) => new Float32Array(s));
 
   for (let i = 1; i < size.length; i++) {
