@@ -1,10 +1,11 @@
-@font-size: 15px;
-@font-family: "Times", serif;
-@line-height: 1.55em;
-@color-sage: #d1d4d2;
-@color-gray: #868686;
 @color-black: #0c0c0b;
+@color-gray: #868686;
+@color-sage: #d1d4d2;
 @color-white: #fff;
+@font-family: "Merriweather", "Times", serif;
+@font-size: 14px;
+@font-weight: 400;
+@line-height: 24px;
 
 * {
   margin: 0;
@@ -23,12 +24,12 @@ body {
   color: @color-white;
   font-family: @font-family;
   font-size: @font-size;
-  font-weight: 400;
-  height: 100%;
+  font-weight: @font-weight;
+  height: 100vh;
   line-height: @line-height;
   position: relative;
   text-rendering: optimizeLegibility;
-  width: 100%;
+  width: 100vw;
   z-index: 0;
 }
 
@@ -37,72 +38,63 @@ body {
   color: #fff;
 }
 
-p {
-  margin: 0 0 0.3em;
-}
-
-a,
-a:active,
-a:visited {
-  color: @color-gray;
-  text-decoration: underline;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-ul,
-ol {
-  margin: 0;
-}
-
-li {
-  line-height: @line-height;
-  list-style: none;
-  margin: 0;
-}
-
-@media (max-width: 600px) {
-  li {
-    display: inline-block;
-    line-height: 1em;
-    margin: 0 0.5em 0 0;
-  }
-}
-
-ol > li {
-  list-style: upper-roman inside;
-}
-
-article,
-section {
-  z-index: 0;
-}
-
-img {
-  display: inline-block;
-  vertical-align: middle;
-  width: auto;
-}
-
-canvas {
-  left: 0;
-  position: absolute;
-  top: 0;
-}
-
-article {
-  left: 0;
-  max-width: 20em;
-  padding: 1em;
-  position: absolute;
-  top: 0;
-}
-
 .container {
   height: 100%;
   overflow: hidden;
   position: relative;
   width: 100%;
+  z-index: 0;
+}
+
+.visualization {
+  left: 0;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+}
+
+.content {
+  left: 0;
+  margin: @font-size * 1.5;
+  max-width: @font-size * 20;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+
+  @media (max-width: 600px) {
+    margin: @font-size * 1.25;
+  }
+
+  p {
+    margin: 0 0 @font-size * 0.3 0;
+  }
+
+  a,
+  a:active,
+  a:visited {
+    color: @color-gray;
+    text-decoration: underline;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  ul {
+    margin: 0;
+  }
+
+  li {
+    line-height: @line-height;
+    list-style: none;
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    li {
+      display: inline-block;
+      line-height: @font-size;
+      margin: 0 @line-height / 4 0 0;
+    }
+  }
 }
