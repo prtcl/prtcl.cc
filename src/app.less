@@ -1,11 +1,14 @@
 @colorBlack: #0c0c0b;
 @colorSage: #d1d4d2;
-@colorTransparentSmoke: rgba(255, 255, 255, 0.1);
+@colorShadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
+@colorTransparentSmoke: rgba(0, 0, 0, 0.15);
 @colorWhite: #fff;
 @fontFamily: Helvetica Neue, Helvetica, sans-serif;
-@fontSize: 18px;
+@fontSize: 32px;
 @fontWeight: 400;
-@lineHeight: 30px;
+@lineHeight: 53px;
+@mobileFontSize: 24px;
+@mobileLineHeight: 40px;
 
 * {
   margin: 0;
@@ -39,8 +42,17 @@ body {
 
 .app-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+
+  .rain {
+    height: 100%;
+    left: 0;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
 }
 
 .container {
@@ -51,26 +63,29 @@ body {
   z-index: 0;
 }
 
-.visualization {
-  left: 0;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-}
-
 .content {
   background-color: @colorTransparentSmoke;
   border-radius: 4px;
   display: flex;
-  margin: @fontSize;
-  max-width: @fontSize * 32;
-  padding: @fontSize * 2;
+  flex-direction: column;
+  margin: @fontSize / 2;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: @fontSize;
+  text-shadow: @colorShadow;
   z-index: 2;
 
   .copy {
-    margin-right: @fontSize * 1.5;
-    padding-right: @fontSize * 1.5;
-    border-right: 1px solid @colorTransparentSmoke;
+    flex: 1;
+  }
+
+  .links {
+    ul {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
   }
 
   &,
@@ -79,7 +94,7 @@ body {
   }
 
   p {
-    margin: 0 0 @fontSize * 0.3 0;
+    margin: 0 0 @fontSize / 2 0;
   }
 
   a,
@@ -102,17 +117,35 @@ body {
     margin: 0;
   }
 
-  @media (max-width: 600px) {
+  @media only screen and (max-width: 414px) {
     flex-direction: column;
-    margin: @fontSize / 2;
-    max-width: 100%;
-    padding: @fontSize * 1.5;
+    font-size: @mobileFontSize;
+    line-height: @mobileLineHeight;
+    margin: @fontSize / 4;
+    padding: @fontSize / 2;
+    width: 100%;
 
     .copy {
-      border-bottom: 1px solid @colorTransparentSmoke;
-      border-right: none;
-      margin: 0 0 @fontSize 0;
-      padding: 0 0 @fontSize 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .links {
+      li {
+        line-height: @mobileLineHeight;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .links {
+      li {
+        flex-basis: 50%;
+
+        &:nth-child(even) {
+          text-align: right;
+        }
+      }
     }
   }
 }
