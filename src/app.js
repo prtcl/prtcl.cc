@@ -5,6 +5,10 @@ const run = () => {
 
   video.play();
   video.playbackRate = 0.9;
+
+  document.addEventListener('touchend', () => {
+    video.play();
+  });
 };
 
 window.addEventListener('load', run);
