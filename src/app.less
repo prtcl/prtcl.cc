@@ -1,11 +1,11 @@
-@color-black: #0c0c0b;
-@color-gray: #868686;
-@color-sage: #d1d4d2;
-@color-white: #fff;
-@font-family: "Merriweather", "Times", serif;
-@font-size: 14px;
-@font-weight: 400;
-@line-height: 24px;
+@colorBlack: #0c0c0b;
+@colorSage: #d1d4d2;
+@colorTransparentSmoke: rgba(255, 255, 255, 0.1);
+@colorWhite: #fff;
+@fontFamily: Helvetica Neue, Helvetica, sans-serif;
+@fontSize: 18px;
+@fontWeight: 400;
+@lineHeight: 30px;
 
 * {
   margin: 0;
@@ -20,13 +20,12 @@
 
 html,
 body {
-  background-color: @color-black;
-  color: @color-white;
-  font-family: @font-family;
-  font-size: @font-size;
-  font-weight: @font-weight;
+  background-color: @colorBlack;
+  font-family: @fontFamily;
+  font-size: @fontSize;
+  font-weight: @fontWeight;
   height: 100vh;
-  line-height: @line-height;
+  line-height: @lineHeight;
   position: relative;
   text-rendering: optimizeLegibility;
   width: 100vw;
@@ -36,6 +35,12 @@ body {
 ::selection {
   background-color: rgba(84, 171, 255, 0.95);
   color: #fff;
+}
+
+.app-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
@@ -54,25 +59,32 @@ body {
 }
 
 .content {
-  left: 0;
-  margin: @font-size * 1.25;
-  max-width: @font-size * 20;
-  position: absolute;
-  top: 0;
+  background-color: @colorTransparentSmoke;
+  border-radius: 4px;
+  display: flex;
+  margin: @fontSize;
+  max-width: @fontSize * 32;
+  padding: @fontSize * 2;
   z-index: 2;
 
-  @media (max-width: 600px) {
-    margin: @font-size * 1.25;
+  .copy {
+    margin-right: @fontSize * 1.5;
+    padding-right: @fontSize * 1.5;
+    border-right: 1px solid @colorTransparentSmoke;
+  }
+
+  &,
+  a {
+    color: @colorWhite;
   }
 
   p {
-    margin: 0 0 @font-size * 0.3 0;
+    margin: 0 0 @fontSize * 0.3 0;
   }
 
   a,
   a:active,
   a:visited {
-    color: @color-gray;
     text-decoration: underline;
   }
 
@@ -85,16 +97,22 @@ body {
   }
 
   li {
-    line-height: @line-height;
+    line-height: @lineHeight;
     list-style: none;
     margin: 0;
   }
 
   @media (max-width: 600px) {
-    li {
-      display: inline-block;
-      line-height: @font-size;
-      margin: 0 @line-height / 4 0 0;
+    flex-direction: column;
+    margin: @fontSize / 2;
+    max-width: 100%;
+    padding: @fontSize * 1.5;
+
+    .copy {
+      border-bottom: 1px solid @colorTransparentSmoke;
+      border-right: none;
+      margin: 0 0 @fontSize 0;
+      padding: 0 0 @fontSize 0;
     }
   }
 }
