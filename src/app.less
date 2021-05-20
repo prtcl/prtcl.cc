@@ -1,5 +1,4 @@
 @colorBlack: #0c0c0b;
-@colorShadow: 1px 1px 1px rgba(0, 0, 0, 0.35);
 @colorTransparentSmoke: rgba(0, 0, 0, 0.15);
 @colorWhite: #fff;
 @fontFamily: Helvetica Neue, Helvetica, sans-serif;
@@ -62,41 +61,20 @@ body {
 .content {
   background-color: @colorTransparentSmoke;
   border-radius: 4px;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
   font-size: @fontSize;
   line-height: @lineHeight;
   margin: @fontSize / 2;
   mix-blend-mode: overlay;
-  overflow-x: hidden;
-  overflow-y: auto;
   padding: @fontSize / 2;
-  text-shadow: @colorShadow;
   z-index: 2;
 
-  .copy {
-    flex: 1;
+  h1 {
+    margin-bottom: 0.25em;
   }
 
-  .links {
-    ul {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin: 0;
-    }
-
-    li {
-      flex-basis: 50%;
-      line-height: @lineHeight;
-      list-style: none;
-      margin: 0;
-
-      &:nth-child(even) {
-        text-align: right;
-      }
-    }
+  li {
+    list-style: none;
   }
 
   &,
