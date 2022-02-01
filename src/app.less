@@ -1,12 +1,7 @@
-@colorBlack: #0c0c0b;
-@colorTransparentSmoke: rgba(0, 0, 0, 0.15);
-@colorWhite: #fff;
 @fontFamily: Helvetica Neue, Helvetica, sans-serif;
-@fontSize: 41px;
+@fontSize: 16px;
 @fontWeight: 400;
-@lineHeight: 63px;
-@mobileFontSize: 24px;
-@mobileLineHeight: 40px;
+@lineHeight: 1.5em;
 
 * {
   margin: 0;
@@ -21,7 +16,6 @@
 
 html,
 body {
-  background-color: @colorBlack;
   font-family: @fontFamily;
   font-weight: @fontWeight;
   height: 100%;
@@ -33,7 +27,7 @@ body {
 
 ::selection {
   background-color: rgba(84, 253, 255, 0.95);
-  color: @colorBlack;
+  color: #000;
 }
 
 .container {
@@ -42,115 +36,4 @@ body {
   position: relative;
   width: 100%;
   z-index: 0;
-}
-
-.app-container {
-  display: flex;
-  justify-content: flex-start;
-
-  .rain {
-    height: 100%;
-    left: 0;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-}
-
-.content {
-  background-color: @colorTransparentSmoke;
-  border-radius: 4px;
-  flex: 1;
-  font-size: @fontSize;
-  line-height: @lineHeight;
-  margin: @fontSize / 2;
-  mix-blend-mode: overlay;
-  padding: @fontSize / 2;
-  z-index: 2;
-
-  h1 {
-    margin-bottom: 0.25em;
-  }
-
-  li {
-    list-style: none;
-  }
-
-  &,
-  a {
-    color: @colorWhite;
-  }
-
-  p {
-    margin: 0 0 @fontSize / 2 0;
-  }
-
-  a,
-  a:active,
-  a:visited {
-    text-decoration: underline;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-
-  @media (max-width: 1023px) {
-    font-size: @fontSize * 0.9;
-    line-height: @lineHeight * 0.9;
-    margin: @fontSize * 0.9 / 2;
-    padding: @fontSize * 0.9 / 2;
-
-    .links {
-      li {
-        line-height: @lineHeight * 0.9;
-      }
-    }
-  }
-
-  @media (max-width: 414px) {
-    font-size: @mobileFontSize;
-    line-height: @mobileLineHeight;
-    margin: @fontSize / 4;
-    padding: @fontSize / 4;
-    width: 100%;
-
-    .copy {
-      margin: 0;
-      padding: 0;
-    }
-
-    .links {
-      li {
-        line-height: @mobileLineHeight;
-      }
-    }
-  }
-
-  @media (min-width: 1281px) {
-    font-size: @fontSize * 1.15;
-    line-height: @lineHeight * 1.15;
-    margin: @fontSize * 1.15 / 2;
-    padding: @fontSize * 1.15 / 2;
-
-    .links {
-      li {
-        line-height: @lineHeight * 1.15;
-      }
-    }
-  }
-
-  @media (min-width: 1521px) {
-    font-size: @fontSize * 1.37;
-    line-height: @lineHeight * 1.37;
-    // margin: @fontSize * 1.37 / 2;
-    padding: @fontSize * 1.37 / 2;
-
-    .links {
-      li {
-        line-height: @lineHeight * 1.37;
-      }
-    }
-  }
 }
