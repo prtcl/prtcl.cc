@@ -1,5 +1,7 @@
+@colorBlack: #0c0c0c;
+@colorWhite: #fff;
 @fontFamily: Helvetica Neue, Helvetica, sans-serif;
-@fontSize: 16px;
+@fontSize: 24px;
 @fontWeight: 400;
 @lineHeight: 1.5em;
 
@@ -17,6 +19,7 @@
 html,
 body {
   font-family: @fontFamily;
+  font-size: @fontSize;
   font-weight: @fontWeight;
   height: 100%;
   overflow: hidden;
@@ -36,4 +39,32 @@ body {
   position: relative;
   width: 100%;
   z-index: 0;
+}
+
+.main {
+  align-items: flex-start;
+  background-image: url(assets/tree.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding: 1em;
+  width: 100%;
+
+  p,
+  a {
+    background-color: rgba(84, 253, 255, 0.75);
+  }
+
+  p {
+    color: @colorBlack;
+    padding: 0.05em 0.15em;
+  }
+
+  a {
+    color: @colorWhite;
+  }
 }
