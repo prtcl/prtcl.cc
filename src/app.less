@@ -4,6 +4,8 @@
 @fontSize: 24px;
 @fontWeight: 400;
 @lineHeight: 1.5em;
+@paddingSmall: 0.05em;
+@paddingLessSmall: 0.15em;
 
 * {
   margin: 0;
@@ -51,29 +53,46 @@ main {
   flex-direction: column;
   height: 100%;
   justify-content: center;
-  padding: 0.5em;
+  padding: @paddingLessSmall * 2;
   width: 100%;
 
-  article {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-    justify-self: center;
-    padding: 0.5em;
+  article,
+  section {
+    padding: @paddingLessSmall;
+  }
 
-    p,
-    a {
-      background-color: rgba(84, 253, 255, 0.75);
+  p,
+  a,
+  h1,
+  h2 {
+    background-color: rgba(84, 253, 255, 0.75);
+    color: @colorBlack;
+  }
+
+  h1,
+  h2 {
+    display: inline-block;
+    font-size: @fontSize;
+    font-weight: @fontWeight;
+    margin: 0 0 @paddingLessSmall * 2 0;
+    padding: @paddingSmall;
+  }
+
+  p {
+    padding: @paddingSmall @paddingLessSmall;
+  }
+
+  a {
+    color: @colorWhite;
+    padding: @paddingSmall;
+
+    &:hover {
+      background-color: rgba(195, 162, 225, 65%)
     }
-  
-    p {
-      color: @colorBlack;
-      padding: 0.05em 0.15em;
-    }
-  
-    a {
-      color: @colorWhite;
-    }
+  }
+
+  li {
+    margin: 0 0 @paddingLessSmall 0;
+    padding: @paddingSmall
   }
 }
