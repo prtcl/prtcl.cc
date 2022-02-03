@@ -50,6 +50,7 @@ const state = {
 
 const App = ({ projects, links }) =>
   h('main', { class: 'container' }, [
+    h('div', { class: 'drift' }, []),
     h('article', { style: { maxWidth: '250px' } }, [
       h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
     ]),
