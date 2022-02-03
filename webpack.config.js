@@ -1,42 +1,20 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src/app.js',
   output: {
-    path: path.resolve('www', 'dist'),
-    publicPath: '/dist/',
+    path: path.resolve('dist', 'assets'),
+    publicPath: '/assets/',
     filename: 'app.js'
   },
+  plugins: [new MiniCssExtractPlugin()],
   module: {
-    loaders: [
-      {
-        test: /.js$/,
-        loaders: 'buble-loader',
-        include: path.resolve('src')
-      },
+    rules: [
       {
         test: /\.less$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader' },
-            { loader: 'less-loader' }
-          ]
-        })
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader' }
-          ]
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
     ]
   },
-  plugins: [
-    new ExtractTextPlugin('main.css')
-  ]
 };

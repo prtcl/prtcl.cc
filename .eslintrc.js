@@ -1,4 +1,3 @@
-
 module.exports = {
   "env": {
     "browser": true,
@@ -25,10 +24,7 @@ module.exports = {
     ],
     "array-callback-return": "error",
     "arrow-body-style": "off",
-    "arrow-parens": [
-      "error",
-      "always"
-    ],
+    "arrow-parens": "off",
     "arrow-spacing": [
       "error",
       {
@@ -206,6 +202,16 @@ module.exports = {
     "no-warning-comments": "warn",
     "no-whitespace-before-property": "error",
     "no-with": "error",
+    "no-async-promise-executor": "off",
+    "no-dupe-else-if": "off",
+    "no-import-assign" : "off",
+    "no-loss-of-precision" : "off",
+    "no-misleading-character-class": "off",
+    "no-nonoctal-decimal-escape": "off",
+    "no-setter-return": "off",
+    "no-unsafe-optional-chaining": "off",
+    "no-useless-backreference": "off",
+    "no-useless-catch": "off",
     "object-curly-spacing": [
       "error",
       "always"

@@ -1,11 +1,11 @@
-@color-black: #0c0c0b;
-@color-gray: #868686;
-@color-sage: #d1d4d2;
-@color-white: #fff;
-@font-family: "Merriweather", "Times", serif;
-@font-size: 14px;
-@font-weight: 400;
-@line-height: 24px;
+@colorBlack: #0c0c0c;
+@colorWhite: #fff;
+@fontFamily: Helvetica Neue, Helvetica, sans-serif;
+@fontSize: 24px;
+@fontWeight: 400;
+@lineHeight: 1.5em;
+@paddingSmall: 0.05em;
+@paddingLessSmall: 0.15em;
 
 * {
   margin: 0;
@@ -20,22 +20,19 @@
 
 html,
 body {
-  background-color: @color-black;
-  color: @color-white;
-  font-family: @font-family;
-  font-size: @font-size;
-  font-weight: @font-weight;
-  height: 100vh;
-  line-height: @line-height;
+  font-family: @fontFamily;
+  font-size: @fontSize;
+  font-weight: @fontWeight;
+  height: 100%;
+  overflow: hidden;
   position: relative;
   text-rendering: optimizeLegibility;
-  width: 100vw;
-  z-index: 0;
+  width: 100%;
 }
 
 ::selection {
-  background-color: rgba(84, 171, 255, 0.95);
-  color: #fff;
+  background-color: rgba(84, 253, 255, 0.95);
+  color: #000;
 }
 
 .container {
@@ -46,55 +43,56 @@ body {
   z-index: 0;
 }
 
-.visualization {
-  left: 0;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-}
+main {
+  align-items: flex-start;
+  background-image: url(assets/tree.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding: @paddingLessSmall * 2;
+  width: 100%;
 
-.content {
-  left: 0;
-  margin: @font-size * 1.25;
-  max-width: @font-size * 20;
-  position: absolute;
-  top: 0;
-  z-index: 2;
+  article,
+  section {
+    padding: @paddingLessSmall;
+  }
 
-  @media (max-width: 600px) {
-    margin: @font-size * 1.25;
+  p,
+  a,
+  h1,
+  h2 {
+    background-color: rgba(84, 253, 255, 0.75);
+    color: @colorBlack;
+  }
+
+  h1,
+  h2 {
+    display: inline-block;
+    font-size: @fontSize;
+    font-weight: @fontWeight;
+    margin: 0 0 @paddingLessSmall * 2 0;
+    padding: @paddingSmall;
   }
 
   p {
-    margin: 0 0 @font-size * 0.3 0;
+    padding: @paddingSmall @paddingLessSmall;
   }
 
-  a,
-  a:active,
-  a:visited {
-    color: @color-gray;
-    text-decoration: underline;
-  }
+  a {
+    color: @colorWhite;
+    padding: @paddingSmall;
 
-  a:hover {
-    text-decoration: none;
-  }
-
-  ul {
-    margin: 0;
+    &:hover {
+      background-color: rgba(195, 162, 225, 65%)
+    }
   }
 
   li {
-    line-height: @line-height;
-    list-style: none;
-    margin: 0;
-  }
-
-  @media (max-width: 600px) {
-    li {
-      display: inline-block;
-      line-height: @font-size;
-      margin: 0 @line-height / 4 0 0;
-    }
+    margin: 0 0 @paddingLessSmall 0;
+    padding: @paddingSmall
   }
 }
