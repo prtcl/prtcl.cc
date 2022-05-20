@@ -18,6 +18,10 @@ const state = {
   ],
   projects: [
     {
+      title: 'Release: Two Boats with Acoustic and Digital Resonators',
+      url: 'https://coryobrien.bandcamp.com/album/two-boats-with-acoustic-and-digital-resonators'
+    },
+    {
       title: 'Release: Central Park Binaural',
       url: 'https://coryobrien.bandcamp.com/album/central-park-binaural',
     },
@@ -51,15 +55,17 @@ const state = {
 const App = ({ projects, links }) =>
   h('main', { class: 'container' }, [
     h('div', { class: 'drift' }, []),
-    h('article', { style: { maxWidth: '250px' } }, [
-      h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
-    ]),
-    h('section', { class: 'links' }, [
-      h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
-    ]),
-    h('section', { class: 'links' }, [
-      h('h2', {}, text('Projects')),
-      h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+    h('div', { class: 'scroll-container' }, [
+      h('article', { style: { maxWidth: '250px' } }, [
+        h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
+      ]),
+      h('section', { class: 'links' }, [
+        h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+      ]),
+      h('section', { class: 'links' }, [
+        h('h2', {}, text('Projects')),
+        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+      ]),
     ]),
   ]);
 
