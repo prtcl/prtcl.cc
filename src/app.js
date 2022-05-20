@@ -18,6 +18,10 @@ const state = {
   ],
   projects: [
     {
+      title: 'Release: Two Boats with Acoustic and Digital Resonators',
+      url: 'https://coryobrien.bandcamp.com/album/two-boats-with-acoustic-and-digital-resonators'
+    },
+    {
       title: 'Release: Central Park Binaural',
       url: 'https://coryobrien.bandcamp.com/album/central-park-binaural',
     },
