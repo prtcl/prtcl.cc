@@ -1,6 +1,22 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
 
+const embeds = {
+  asliomar: {
+    width: '100%',
+    height: '300',
+    scrolling: 'no',
+    frameborder: 'no',
+    allow: 'autoplay',
+    src: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1069275841&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+  },
+  twoBoats: {
+    style: { border: 0, width: '100%', height: '120px' },
+    src: 'https://bandcamp.com/EmbeddedPlayer/album=2683632007/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/',
+    seamless: true,
+  },
+};
+
 const state = {
   links: [
     {
@@ -39,7 +55,7 @@ const state = {
     },
     {
       title: 'Software: TiberSynth',
-      url: 'https://github.com/prtcl/TiberSynth'
+      url: 'https://tibersynth.cc/'
     },
     {
       title: 'Release: Sympathetic Field Matrix',
@@ -52,20 +68,39 @@ const state = {
   ],
 };
 
+const embed = (props) =>
+  h('div', { class: 'embed' }, [
+    h('iframe', embeds[props.type]),
+  ]);
+
+const content = (props, children) =>
+  h('div', { class: props.class ? `content ${props.class}` : 'content' }, children);
+
+const spacer = () => h('div', { style: { height: '1em' } }, []);
+
+const stripes = (props) =>
+  h('div', { class: props.class ? `stripes ${props.class}` : 'content' }, []);
+
 const App = ({ projects, links }) =>
   h('main', { class: 'container' }, [
-    h('div', { class: 'drift' }, []),
-    h('div', { class: 'scroll-container' }, [
-      h('article', { style: { maxWidth: '250px' } }, [
+    h('section', {}, [
+      content({ class: 'inverse' }, [
         h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
-      ]),
-      h('section', { class: 'links' }, [
         h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
       ]),
-      h('section', { class: 'links' }, [
+      stripes({ class: 'desktop' }),
+    ]),
+    h('section', {}, [
+      embed({ type: 'asliomar' }),
+      content({}, [
         h('h2', {}, text('Projects')),
-        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
       ]),
+      spacer(),
+      embed({ type: 'twoBoats' }),
+    ]),
+    h('section', {}, [
+      h('img', { src: '/assets/tree-compressed.jpg' })
     ]),
   ]);
 

@@ -1,21 +1,16 @@
 @colorBlack: #0c0c0c;
 @colorWhite: #fff;
-@fontFamily: Helvetica Neue, Helvetica, sans-serif;
-@fontSize: 24px;
+@colorBlue: #0033cc;
+@colorLumen: rgba(84, 253, 255, 0.95);
+@fontFamily: Charter, Times New Roman, Times, serif;
+@fontSize: 16px;
+@fontSizeLarge: 18px;
 @fontWeight: 400;
 @lineHeight: 1.5em;
-@paddingSmall: 0.05em;
-@paddingLessSmall: 0.15em;
-
-@keyframes backgroundDrift {
-  from {
-    background-position: calc(50% - -10px) center; 
-  }
-
-  to {
-    background-position: calc(50% - 10px) center; 
-  }
-}
+@spacing: 0.5em;
+@spacingLarge: 0.75em;
+@mobile: ~"only screen and (max-device-width: 768px)";
+@desktop: ~"not screen and (max-device-width: 768px)";
 
 * {
   margin: 0;
@@ -34,100 +29,163 @@ body {
   font-size: @fontSize;
   font-weight: @fontWeight;
   height: 100%;
-  overflow: hidden;
   position: relative;
   text-rendering: optimizeLegibility;
   width: 100%;
+
+  @media @mobile {
+    font-size: @fontSizeLarge;
+  }
 }
 
 ::selection {
-  background-color: rgba(84, 253, 255, 0.95);
-  color: #000;
-}
-
-.container {
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  z-index: 0;
-}
-
-.scroll-container {
-  height: '100%';
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: relative;
-  width: '100%';
+  background-color: @colorLumen;
+  color: @colorBlack;
 }
 
 main {
-  align-items: flex-start;
-  background-image: url(assets/tree.jpg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
-  justify-content: center;
-  padding: @paddingLessSmall * 2;
   width: 100%;
   z-index: 0;
 
-  article,
-  section {
-    padding: @paddingLessSmall;
-    z-index: 1;
+  @media @mobile {
+    flex-direction: column;
+    padding: @spacing 0;
+  }
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  padding: @spacingLarge;
+  z-index: 1;
+
+  &:nth-child(1) {
+    flex: 1;
+    order: 2;
   }
 
-  p,
-  a,
-  h1,
-  h2 {
-    background-color: rgba(84, 253, 255, 0.75);
-    color: @colorBlack;
+  &:nth-child(2) {
+    flex: 2;
+    order: 1;
   }
 
-  h1,
-  h2 {
-    display: inline-block;
-    font-size: @fontSize;
-    font-weight: @fontWeight;
-    margin: 0 0 @paddingLessSmall * 2 0;
-    padding: @paddingSmall;
+  &:nth-child(3) {
+    flex: 3;
+    order: 3;
   }
 
-  p {
-    padding: @paddingSmall @paddingLessSmall;
-  }
-
-  a {
-    color: @colorWhite;
-    padding: @paddingSmall;
-
-    &:hover {
-      background-color: rgba(195, 162, 225, 65%)
+  @media @desktop {
+    &:nth-child(1) {
+      padding: @spacingLarge 0;
     }
   }
 
-  li {
-    margin: 0 0 @paddingLessSmall 0;
-    padding: @paddingSmall
-  }
-
-  .drift {
-    animation: backgroundDrift 15s ease-in-out infinite alternate;
-    background-image: url(assets/tree.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; 
-    height: 100%;
-    left: 0;
-    opacity: 0.25;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 0;
+  @media @mobile {
+    &:nth-child(1) {
+      order: 1;
+    }
+  
+    &:nth-child(2) {
+      order: 2;
+    }
   }
 }
+
+p,
+h1,
+h2 {
+  color: @colorBlue;
+  margin: 0 0 @spacing 0;
+}
+
+h1,
+h2 {
+  font-size: 1.1rem;
+  font-weight: @fontWeight;
+}
+
+a {
+  color: @colorBlue;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+ul {
+  li {
+    list-style: none;
+    margin: 0 0 @spacing 0;
+  }
+}
+
+img {
+  width: 100%;
+}
+
+
+.container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  width: 100%;
+  z-index: 0;
+}
+
+.desktop {
+  @media @mobile {
+    display: none;
+  }
+}
+
+.embed {
+  margin: 0 0 0.5em 0;
+
+  @media @mobile {
+    margin: -0.5em 0 1em 0;    
+  }
+}
+
+.inverse {
+  @media @desktop {
+    background-color: @colorBlue;
+    padding: @spacing;
+
+    h1,
+    h2,
+    p,
+    a {
+      color: @colorWhite;
+    }
+  }
+}
+
+.stripes {
+  animation: stripesAnimation 60s linear infinite;
+  background: repeating-linear-gradient(
+    -44deg, 
+    @colorWhite, 
+    @colorWhite 4px, 
+    @colorBlue 4px,
+    @colorBlue 5px
+  );
+  background-size: 400% 100%;
+  flex: 1;
+  margin: 0.5em 0 0 0;
+  opacity: 0.25;
+  width: 100%;
+
+  @keyframes stripesAnimation {
+    0% {
+      background-position:100% 50%
+    }
+    100%{
+      background-position:-33% 50%
+    }
+  }  
+}
+

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "prtcl.cc",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Code for prtcl.cc",
   "repository": {
     "type": "git",
@@ -11,26 +11,23 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run webpack && npm run static",
+    "build": "$(npm bin)/webpack --mode=production",
     "clean": "rm -r ./node_modules | true ; rm -r ./dist | true",
-    "dev": "$(npm bin)/parallelshell 'npm run webpack:watch' 'npm run start'",
-    "setup": "npm run clean && npm install && npm run build",
-    "start": "cd dist && $(npm bin)/static -a 0.0.0.0",
-    "static": "cp ./src/html/* ./dist/ && cp ./src/assets/* ./dist/assets/",
-    "webpack": "$(npm bin)/webpack",
-    "webpack:watch": "$(npm bin)/webpack --watch"
+    "dev": "$(npm bin)/webpack serve  --mode=development --live-reload",
+    "setup": "npm run clean && npm ci && npm run build"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.5.1",
     "eslint": "^8.8.0",
+    "html-webpack-plugin": "^5.5.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.5.3",
-    "node-static": "^0.7.11",
-    "parallelshell": "3.0.1",
     "style-loader": "^3.3.1",
     "webpack": "^5.68.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
     "hyperapp": "^2.0.20"
