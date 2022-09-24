@@ -57,6 +57,8 @@ main {
 }
 
 section {
+  display: flex;
+  flex-direction: column;
   padding: @spacingLarge;
   z-index: 1;
 
@@ -124,13 +126,6 @@ img {
   width: 100%;
 }
 
-iframe {
-  margin: 0 0 0.5em 0;
-
-  @media @mobile {
-    margin: -0.5em 0 1em 0;    
-  }
-}
 
 .container {
   height: 100%;
@@ -139,6 +134,20 @@ iframe {
   position: relative;
   width: 100%;
   z-index: 0;
+}
+
+.desktop {
+  @media @mobile {
+    display: none;
+  }
+}
+
+.embed {
+  margin: 0 0 0.5em 0;
+
+  @media @mobile {
+    margin: -0.5em 0 1em 0;    
+  }
 }
 
 .inverse {
@@ -154,3 +163,29 @@ iframe {
     }
   }
 }
+
+.stripes {
+  animation: stripesAnimation 60s linear infinite;
+  background: repeating-linear-gradient(
+    -44deg, 
+    @colorWhite, 
+    @colorWhite 4px, 
+    @colorBlue 4px,
+    @colorBlue 5px
+  );
+  background-size: 400% 100%;
+  flex: 1;
+  margin: 0.5em 0 0 0;
+  opacity: 0.25;
+  width: 100%;
+
+  @keyframes stripesAnimation {
+    0% {
+      background-position:100% 50%
+    }
+    100%{
+      background-position:-33% 50%
+    }
+  }  
+}
+
