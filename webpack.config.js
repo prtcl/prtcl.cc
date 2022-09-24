@@ -18,7 +18,6 @@ module.exports = {
   entry: './src/app.js',
   output: {
     path: path.resolve('dist'),
-    publicPath: '/assets/',
     filename: '[name].[contenthash].js',
   },
   plugins: [

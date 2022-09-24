@@ -11,13 +11,10 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run webpack",
+    "build": "$(npm bin)/webpack --mode=production",
     "clean": "rm -r ./node_modules | true ; rm -r ./dist | true",
-    "dev": "$(npm bin)/parallelshell 'npm run webpack:watch' 'npm run start'",
-    "setup": "npm run clean && npm install && npm run build",
-    "start": "cd dist && $(npm bin)/static -a 0.0.0.0",
-    "webpack": "$(npm bin)/webpack",
-    "webpack:watch": "$(npm bin)/webpack --watch"
+    "dev": "$(npm bin)/webpack serve  --mode=development --live-reload",
+    "setup": "npm run clean && npm install && npm run build"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^11.0.0",
@@ -27,11 +24,10 @@
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.5.3",
-    "node-static": "^0.7.11",
-    "parallelshell": "3.0.1",
     "style-loader": "^3.3.1",
     "webpack": "^5.68.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
     "hyperapp": "^2.0.20"
