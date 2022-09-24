@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const AUTHOR = 'Cory O\'Brien';
 const DESCRIPTION = 'NYC-based artist and performer';
@@ -16,11 +17,19 @@ const IMAGE = {
 module.exports = {
   entry: './src/app.js',
   output: {
-    path: path.resolve('dist', 'assets'),
+    path: path.resolve('dist'),
     publicPath: '/assets/',
     filename: '[name].[contenthash].js',
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve('src', 'assets'),
+          to: path.resolve('dist', 'assets')
+        },
+      ],
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
