@@ -55,7 +55,7 @@ const state = {
     },
     {
       title: 'Software: TiberSynth',
-      url: 'https://github.com/prtcl/TiberSynth'
+      url: 'https://tibersynth.cc/'
     },
     {
       title: 'Release: Sympathetic Field Matrix',
@@ -94,7 +94,7 @@ const App = ({ projects, links }) =>
       embed({ type: 'asliomar' }),
       content({}, [
         h('h2', {}, text('Projects')),
-        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
       ]),
       spacer(),
       embed({ type: 'twoBoats' }),
