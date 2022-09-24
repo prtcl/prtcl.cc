@@ -100,7 +100,7 @@ const App = ({ projects, links }) =>
       embed({ type: 'twoBoats' }),
     ]),
     h('section', {}, [
-      h('img', { src: '/assets/tree.jpg' })
+      h('img', { src: '/assets/tree-compressed.jpg' })
     ]),
   ]);
 
