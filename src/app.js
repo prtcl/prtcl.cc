@@ -59,10 +59,20 @@ const App = ({ projects, links }) =>
       h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
     ]),
     h('section', { style: { flex: 2 } }, [
+      h('iframe', {
+        width: '100%',
+        height: '300',
+        scrolling: 'no',
+        frameborder: 'no',
+        allow: 'autoplay',
+        src: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1069275841&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+      }),
       h('h2', {}, text('Projects')),
       h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
     ]),
-    h('section', { style: { flex: 3 } }, [])
+    h('section', { style: { flex: 3 } }, [
+      h('img', { src: '/assets/tree.jpg' })
+    ])
   ]);
 
 app({

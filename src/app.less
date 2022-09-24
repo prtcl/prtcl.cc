@@ -28,7 +28,6 @@ body {
   font-size: @fontSize;
   font-weight: @fontWeight;
   height: 100%;
-  overflow: hidden;
   position: relative;
   text-rendering: optimizeLegibility;
   width: 100%;
@@ -45,8 +44,8 @@ body {
 
 .container {
   height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
   width: 100%;
   z-index: 0;
@@ -94,5 +93,15 @@ ul {
   li {
     list-style: none;
     margin: 0 0 @spacing 0;
+  }
+}
+
+img {
+  width: 100%;
+}
+
+iframe {
+  @media @mobile {
+    margin: -0.5em 0 1em 0;    
   }
 }
