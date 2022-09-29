@@ -15,11 +15,15 @@
   }
 
   a {
+    border-bottom: 1px solid @colorBlue;
     color: @colorBlue;
+    text-decoration: none;
 
     &:hover {
-      text-decoration: none;
+      border-bottom: none;
     }
+
+
   }
 
   ul {
@@ -39,6 +43,10 @@
       p,
       a {
         color: @colorWhite;
+      }
+
+      a {
+        border-color: @colorWhite;
       }
     }
   }
