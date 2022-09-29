@@ -23,7 +23,7 @@ const App = ({ projects, links }) =>
         h('h2', {}, text('Projects')),
         h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
       ]),
-      embed({ type: 'twoBoats', style: { marginTop: '0.5em' } }),
+      embed({ type: 'twoBoats' }),
     ]),
     section({}, [
       image({ type: 'trees' }),
