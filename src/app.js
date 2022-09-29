@@ -5,8 +5,7 @@ import main from './components/main';
 import section from './components/section';
 import content from './components/content';
 import embed from './components/embed';
-
-const spacer = () => h('div', { style: { height: '1em' } }, []);
+import spacer from './components/spacer';
 
 const stripes = (props) =>
   h('div', { class: props.class ? `stripes ${props.class}` : 'content' }, []);
