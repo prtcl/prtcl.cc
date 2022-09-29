@@ -5,7 +5,6 @@ import embed from './components/embed';
 import image from './components/image';
 import main from './components/main';
 import section from './components/section';
-import spacer from './components/spacer';
 import stripes from './components/stripes';
 import { LINKS, PROJECTS } from './data';
 
@@ -19,13 +18,12 @@ const App = ({ projects, links }) =>
       stripes({ class: 'desktop' }),
     ]),
     section({}, [
-      embed({ type: 'asliomar', class: 'nudge-up-mobile' }),
+      embed({ type: 'asliomar' }),
       content({}, [
         h('h2', {}, text('Projects')),
         h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
       ]),
-      spacer(),
-      embed({ type: 'twoBoats' }),
+      embed({ type: 'twoBoats', style: { marginTop: '0.5em' } }),
     ]),
     section({}, [
       image({ type: 'trees' }),
