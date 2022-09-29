@@ -19,7 +19,7 @@ const App = ({ projects, links }) =>
       stripes({ class: 'desktop' }),
     ]),
     section({}, [
-      embed({ type: 'asliomar' }),
+      embed({ type: 'asliomar', class: 'nudge-up-mobile' }),
       content({}, [
         h('h2', {}, text('Projects')),
         h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),

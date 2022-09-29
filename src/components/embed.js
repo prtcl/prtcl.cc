@@ -18,7 +18,7 @@ const EMBEDS = new Map([
 ]);
 
 const embed = (props) =>
-  h('div', { class: 'embed' }, [
+  h('div', { class: `embed ${props.class || ''}` }, [
     h('iframe', EMBEDS.get(props.type)),
   ]);
 
