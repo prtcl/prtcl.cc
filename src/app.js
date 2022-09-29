@@ -2,6 +2,7 @@ import { h, text, app } from 'hyperapp';
 import './app.less';
 import { embeds, links, projects } from './data';
 import main from './components/main';
+import section from './components/section';
 
 const embed = (props) =>
   h('div', { class: 'embed' }, [
@@ -18,14 +19,14 @@ const stripes = (props) =>
 
 const App = ({ projects, links }) =>
   main({}, [
-    h('section', {}, [
+    section({}, [
       content({ class: 'inverse' }, [
         h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
         h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
       ]),
       stripes({ class: 'desktop' }),
     ]),
-    h('section', {}, [
+    section({}, [
       embed({ type: 'asliomar' }),
       content({}, [
         h('h2', {}, text('Projects')),
@@ -34,7 +35,7 @@ const App = ({ projects, links }) =>
       spacer(),
       embed({ type: 'twoBoats' }),
     ]),
-    h('section', {}, [
+    section({}, [
       h('img', { src: '/assets/tree-compressed.jpg' })
     ]),
   ]);
