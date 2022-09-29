@@ -3,14 +3,12 @@ import './app.less';
 import { embeds, links, projects } from './data';
 import main from './components/main';
 import section from './components/section';
+import content from './components/content';
 
 const embed = (props) =>
   h('div', { class: 'embed' }, [
     h('iframe', embeds[props.type]),
   ]);
-
-const content = (props, children) =>
-  h('div', { class: props.class ? `content ${props.class}` : 'content' }, children);
 
 const spacer = () => h('div', { style: { height: '1em' } }, []);
 
@@ -20,7 +18,7 @@ const stripes = (props) =>
 const App = ({ projects, links }) =>
   main({}, [
     section({}, [
-      content({ class: 'inverse' }, [
+      content({ inverse: true }, [
         h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
         h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
       ]),
