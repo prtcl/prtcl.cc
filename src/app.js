@@ -2,6 +2,7 @@ import { h, text, app } from 'hyperapp';
 import './app.less';
 import content from './components/content';
 import embed from './components/embed';
+import image from './components/image';
 import main from './components/main';
 import section from './components/section';
 import spacer from './components/spacer';
@@ -27,7 +28,7 @@ const App = ({ projects, links }) =>
       embed({ type: 'twoBoats' }),
     ]),
     section({}, [
-      h('img', { src: '/assets/tree-compressed.jpg' })
+      image({ type: 'trees' }),
     ]),
   ]);
 
