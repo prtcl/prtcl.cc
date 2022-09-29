@@ -1,14 +1,12 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
-import { LINKS, PROJECTS } from './data';
-import main from './components/main';
-import section from './components/section';
 import content from './components/content';
 import embed from './components/embed';
+import main from './components/main';
+import section from './components/section';
 import spacer from './components/spacer';
-
-const stripes = (props) =>
-  h('div', { class: props.class ? `stripes ${props.class}` : 'content' }, []);
+import stripes from './components/stripes';
+import { LINKS, PROJECTS } from './data';
 
 const App = ({ projects, links }) =>
   main({}, [
