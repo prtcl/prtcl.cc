@@ -21,19 +21,6 @@ body {
   color: @colorBlack;
 }
 
-main {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  width: 100%;
-  z-index: 0;
-
-  @media @mobile {
-    flex-direction: column;
-    padding: @spacing 0;
-  }
-}
-
 section {
   display: flex;
   flex-direction: column;
@@ -102,16 +89,6 @@ ul {
 
 img {
   width: 100%;
-}
-
-
-.container {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: relative;
-  width: 100%;
-  z-index: 0;
 }
 
 .desktop {

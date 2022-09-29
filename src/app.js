@@ -1,6 +1,7 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
 import { embeds, links, projects } from './data';
+import main from './components/main';
 
 const embed = (props) =>
   h('div', { class: 'embed' }, [
@@ -16,7 +17,7 @@ const stripes = (props) =>
   h('div', { class: props.class ? `stripes ${props.class}` : 'content' }, []);
 
 const App = ({ projects, links }) =>
-  h('main', { class: 'container' }, [
+  main({}, [
     h('section', {}, [
       content({ class: 'inverse' }, [
         h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
