@@ -1,4 +1,4 @@
-export const links = [
+export const LINKS = [
   {
     title: 'Bandcamp',
     url: 'https://coryobrien.bandcamp.com',
@@ -13,7 +13,7 @@ export const links = [
   }
 ];
 
-export const projects = [
+export const PROJECTS = [
   {
     title: 'Release: Two Boats with Acoustic and Digital Resonators',
     url: 'https://coryobrien.bandcamp.com/album/two-boats-with-acoustic-and-digital-resonators'

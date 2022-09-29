@@ -1,6 +1,6 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
-import { links, projects } from './data';
+import { LINKS, PROJECTS } from './data';
 import main from './components/main';
 import section from './components/section';
 import content from './components/content';
@@ -35,7 +35,10 @@ const App = ({ projects, links }) =>
   ]);
 
 app({
-  init: { links, projects },
+  init: {
+    links: LINKS,
+    projects: PROJECTS
+  },
   node: document.getElementById('app'),
   view: App,
 });
