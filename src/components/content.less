@@ -1,0 +1,45 @@
+@import '../less/variables.less';
+
+.content {
+  h1,
+  h2,
+  p {
+    color: @colorBlue;
+    margin: 0 0 @spacing 0;
+  }
+
+  h1,
+  h2 {
+    font-size: 1.1rem;
+    font-weight: @fontWeight;
+  }
+
+  a {
+    color: @colorBlue;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  ul {
+    li {
+      list-style: none;
+      margin: 0 0 @spacing 0;
+    }
+  }
+
+  &.inverse {
+    @media @desktop {
+      background-color: @colorBlue;
+      padding: @spacing;
+
+      h1,
+      h2,
+      p,
+      a {
+        color: @colorWhite;
+      }
+    }
+  }
+}
