@@ -1,14 +1,10 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
-import { embeds, links, projects } from './data';
+import { links, projects } from './data';
 import main from './components/main';
 import section from './components/section';
 import content from './components/content';
-
-const embed = (props) =>
-  h('div', { class: 'embed' }, [
-    h('iframe', embeds[props.type]),
-  ]);
+import embed from './components/embed';
 
 const spacer = () => h('div', { style: { height: '1em' } }, []);
 
