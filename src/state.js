@@ -1,4 +1,4 @@
-const data = {
+const state = {
   links: [
     {
       title: 'Bandcamp',
@@ -67,4 +67,4 @@ const data = {
   }
 };
 
-export default data;
+export default state;

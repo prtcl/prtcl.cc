@@ -7,7 +7,7 @@ import main from './components/main';
 import projects from './components/projects';
 import section from './components/section';
 import stripes from './components/stripes';
-import data from './data';
+import state from './state';
 
 const App = (state) =>
   main([
@@ -26,7 +26,7 @@ const App = (state) =>
   ]);
 
 app({
-  init: data,
+  init: state,
   node: document.getElementById('app'),
   view: App,
 });
