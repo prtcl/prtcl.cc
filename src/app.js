@@ -1,5 +1,6 @@
 import { h, text, app } from 'hyperapp';
 import './app.less';
+import bio from './components/bio';
 import content from './components/content';
 import embed from './components/embed';
 import image from './components/image';
@@ -11,12 +12,7 @@ import { LINKS, PROJECTS, IMAGES, EMBEDS } from './data';
 const App = ({ projects, links, images, embeds }) =>
   main({}, [
     section([
-      content({ inverse: true }, [
-        h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
-        h('ul', {}, links.map(link =>
-          h('li', {}, h('a', { href: link.url }, text(link.title)))
-        )),
-      ]),
+      bio({ links }),
       stripes({ class: 'desktop' }),
     ]),
     section([
