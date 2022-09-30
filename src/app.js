@@ -6,34 +6,40 @@ import image from './components/image';
 import main from './components/main';
 import section from './components/section';
 import stripes from './components/stripes';
-import { LINKS, PROJECTS } from './data';
+import { LINKS, PROJECTS, IMAGES, EMBEDS } from './data';
 
-const App = ({ projects, links }) =>
+const App = ({ projects, links, images, embeds }) =>
   main({}, [
-    section({}, [
+    section([
       content({ inverse: true }, [
         h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
-        h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
+        h('ul', {}, links.map(link =>
+          h('li', {}, h('a', { href: link.url }, text(link.title)))
+        )),
       ]),
       stripes({ class: 'desktop' }),
     ]),
-    section({}, [
-      embed({ type: 'asliomar' }),
+    section([
+      embed(embeds.asliomar),
       content({}, [
         h('h2', {}, text('Projects')),
-        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
+        h('ul', {}, projects.map(link =>
+          h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title)))
+        )),
       ]),
-      embed({ type: 'twoBoats' }),
+      embed(embeds.twoBoats),
     ]),
-    section({}, [
-      image({ type: 'trees' }),
+    section([
+      image(images.tree),
     ]),
   ]);
 
 app({
   init: {
+    embeds: EMBEDS,
+    images: IMAGES,
     links: LINKS,
-    projects: PROJECTS
+    projects: PROJECTS,
   },
   node: document.getElementById('app'),
   view: App,

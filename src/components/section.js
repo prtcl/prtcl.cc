@@ -1,7 +1,7 @@
 import { h } from 'hyperapp';
 import './section.less';
 
-const section = (props, children) =>
-  h('section', props, children);
+const section = (children) =>
+  h('section', {}, children);
 
 export default section;
