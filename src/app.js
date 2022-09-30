@@ -7,7 +7,7 @@ import main from './components/main';
 import projects from './components/projects';
 import section from './components/section';
 import stripes from './components/stripes';
-import { LINKS, PROJECTS, IMAGES, EMBEDS } from './data';
+import data from './data';
 
 const App = (state) =>
   main({}, [
@@ -26,12 +26,7 @@ const App = (state) =>
   ]);
 
 app({
-  init: {
-    embeds: EMBEDS,
-    images: IMAGES,
-    links: LINKS,
-    projects: PROJECTS,
-  },
+  init: data,
   node: document.getElementById('app'),
   view: App,
 });
