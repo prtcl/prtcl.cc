@@ -1,40 +1,32 @@
-import { h, text, app } from 'hyperapp';
+import { app } from 'hyperapp';
 import './app.less';
-import content from './components/content';
+import bio from './components/bio';
 import embed from './components/embed';
 import image from './components/image';
 import main from './components/main';
+import projects from './components/projects';
 import section from './components/section';
 import stripes from './components/stripes';
-import { LINKS, PROJECTS } from './data';
+import state from './state';
 
-const App = ({ projects, links }) =>
-  main({}, [
-    section({}, [
-      content({ inverse: true }, [
-        h('p', {}, text('Cory O\'Brien is a software engineer and sound artist who lives in NYC')),
-        h('ul', {}, links.map(link => h('li', {}, h('a', { href: link.url }, text(link.title))))),
-      ]),
+const App = (state) =>
+  main([
+    section([
+      bio({ links: state.links }),
       stripes({ class: 'desktop' }),
     ]),
-    section({}, [
-      embed({ type: 'asliomar' }),
-      content({}, [
-        h('h2', {}, text('Projects')),
-        h('ul', {}, projects.map(link => h('li', {}, h('a', { href: link.url, target: '_blank' }, text(link.title))))),
-      ]),
-      embed({ type: 'twoBoats' }),
+    section([
+      embed(state.embeds.asliomar),
+      projects({ projects: state.projects }),
+      embed(state.embeds.twoBoats),
     ]),
-    section({}, [
-      image({ type: 'trees' }),
+    section([
+      image(state.images.tree),
     ]),
   ]);
 
 app({
-  init: {
-    links: LINKS,
-    projects: PROJECTS
-  },
+  init: state,
   node: document.getElementById('app'),
   view: App,
 });
