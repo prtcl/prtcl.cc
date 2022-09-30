@@ -1,7 +1,7 @@
 import { h } from 'hyperapp';
 import './main.less';
 
-const main = (props, children) =>
-  h('main', props, children);
+const main = (children) =>
+  h('main', {}, children);
 
 export default main;

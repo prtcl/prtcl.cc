@@ -10,7 +10,7 @@ import stripes from './components/stripes';
 import data from './data';
 
 const App = (state) =>
-  main({}, [
+  main([
     section([
       bio({ links: state.links }),
       stripes({ class: 'desktop' }),
