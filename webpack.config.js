@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 const AUTHOR = 'Cory O\'Brien';
-const DESCRIPTION = 'NYC-based artist and performer';
+const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who lives in NYC';
 const CANONICAL = 'http://prtcl.cc';
 
 const IMAGE = {
