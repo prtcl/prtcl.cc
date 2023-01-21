@@ -1,10 +1,11 @@
 import React from 'react';
-import './App.less';
+import Bio from './components/Bio';
+import styles from './App.less';
 
 const App = () => {
   return (
-    <div>Hello</div>
-  )
-}
+    <div className={styles.container}><Bio /></div>
+  );
+};
 
 export default App;
