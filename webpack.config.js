@@ -7,7 +7,7 @@ const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who l
 const CANONICAL = 'http://prtcl.cc';
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   devtool: 'inline-source-map',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
