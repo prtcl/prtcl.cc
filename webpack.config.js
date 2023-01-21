@@ -7,13 +7,6 @@ const AUTHOR = 'Cory O\'Brien';
 const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who lives in NYC';
 const CANONICAL = 'http://prtcl.cc';
 
-const IMAGE = {
-  URL: 'http://prtcl.cc/assets/tree.jpg',
-  TYPE: 'image/jpeg',
-  WIDTH: '1420',
-  HEIGHT: '1904',
-};
-
 module.exports = {
   entry: './src/app.js',
   output: {
@@ -43,10 +36,6 @@ module.exports = {
         'og:title': { property: 'og:title', content: AUTHOR, },
         'og:url': { property: 'og:url', content: CANONICAL },
         'og:description': { property: 'og:description', content: DESCRIPTION },
-        'og:image': { property: 'og:image', content: IMAGE.URL, },
-        'og:image:type': { property: 'og:image:type', content: IMAGE.TYPE, },
-        'og:image:width': { property: 'og:image:width', content: IMAGE.WIDTH, },
-        'og:image:height': { property: 'og:image:height', content: IMAGE.HEIGHT },
       }
     }),
   ],
