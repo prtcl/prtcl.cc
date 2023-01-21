@@ -1,27 +1,35 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 const AUTHOR = 'Cory O\'Brien';
 const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who lives in NYC';
 const CANONICAL = 'http://prtcl.cc';
 
 module.exports = {
-  entry: './src/app.js',
+  entry: './src/index.ts',
+  devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
   output: {
     path: path.resolve('dist'),
     filename: '[name].[contenthash].js',
   },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.less$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
+      },
+    ]
+  },
   plugins: [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve('src', 'assets'),
-          to: path.resolve('dist', 'assets')
-        },
-      ],
-    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
@@ -39,12 +47,4 @@ module.exports = {
       }
     }),
   ],
-  module: {
-    rules: [
-      {
-        test: /\.less$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
-      },
-    ]
-  },
 };
