@@ -11,9 +11,9 @@
   "author": "Cory O'Brien <cory@prtcl.cc>",
   "license": "MIT",
   "scripts": {
-    "build": "$(npm bin)/webpack --mode=production",
+    "build": "webpack --mode=production",
     "clean": "rm -r ./node_modules | true ; rm -r ./dist | true",
-    "dev": "$(npm bin)/webpack serve  --mode=development --live-reload",
+    "dev": "webpack serve  --mode=development --live-reload",
     "setup": "npm run clean && npm ci && npm run build"
   },
   "devDependencies": {
