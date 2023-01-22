@@ -3,7 +3,7 @@
 :local {
   .container {
     margin: @spacing * 3 @spacing * 2;
-    max-width: 266px;
+    max-width: @spacing * 32;
 
     @media @mobile {
       max-width: 100%;
@@ -11,12 +11,8 @@
   }
 
   .box {
-    background-color: rgba(255, 255, 255, 0.78);
-    border-radius: 3px;
-    box-shadow: 2px 2px 2px rgb(0 0 0 / 15%);
-    margin: 0 0 @spacing * 2 0;
-    padding: @spacing * 2 @spacing * 8 @spacing * 2 @spacing * 2;
     display: inline-block;
+    padding: @spacing @spacing * 2;
 
     p {
       margin: unit((@spacing / 2), em) 0;
@@ -25,7 +21,7 @@
 
   .listItem {
     a {
-      border-bottom: 1px dotted @colorMutedGray;
+      border-bottom: 1px dotted @colorBlack;
       color: @colorBlack;
       display: inline-block;
       margin: 0 0 unit((@spacing / 2), em) 0;
