@@ -15,7 +15,8 @@
     border-radius: 3px;
     box-shadow: 2px 2px 2px rgb(0 0 0 / 15%);
     margin: 0 0 @spacing * 2 0;
-    padding: @spacing * 2;
+    padding: @spacing * 2 @spacing * 8 @spacing * 2 @spacing * 2;
+    display: inline-block;
 
     p {
       margin: unit((@spacing / 4), em) 0;
@@ -24,12 +25,15 @@
 
   .listItem {
     a {
+      border-bottom: 1px dotted @colorMutedGray;
       color: @colorBlack;
-      display: block;
-      padding: unit((@spacing / 4), em) 0;
+      display: inline-block;
+      margin: unit((@spacing / 4), em) 0;
+      text-decoration: none;
+      transition: all @transitionDelay ease-in-out;
 
       &:hover {
-        text-decoration: none;
+        border-color: transparent;
       }
     }
   }
