@@ -15,11 +15,13 @@ export type Point = {
 export type Polygon = {
   id: string;
   points: Point[];
-  strength: number;
 }
+
+type PolygonStrengths = Record<string, number>
 
 type VisualizationState = {
   polygons: Polygon[];
+  polygonStrength: PolygonStrengths;
   speed: number;
 };
 
@@ -55,7 +57,6 @@ const initializePolygons = () => {
 
     polygons.push({
       id,
-      strength: 0,
       points,
     });
 
@@ -65,10 +66,27 @@ const initializePolygons = () => {
   return polygons;
 };
 
+const initializePolygonStrength = () => {
+  const polygonStrength: PolygonStrengths = {};
+  let p = 0;
+
+  while (p < N_POLYGONS) {
+    const strength = p === 0 ? 1 : exp(scale(p, 1, N_POLYGONS + 1, 1, 0)) * 0.25;
+
+    polygonStrength[p] = strength;
+
+    p++;
+  }
+
+  return polygonStrength;
+};
+
 const initializeState = (): VisualizationState => {
   const polygons = initializePolygons();
+  const polygonStrength = initializePolygonStrength();
 
   return {
+    polygonStrength,
     polygons,
     speed: (SPEED_MAX - SPEED_MIN) / 2,
   };
@@ -122,25 +140,11 @@ const updateFirstPolygon = (state: VisualizationState) => {
   }
 };
 
-const updatePolygonStrength = (state: VisualizationState) => {
-  const { polygons } = state;
-  const end = polygons.length;
-  let p = 0;
-
-  while (p < end) {
-    const polygon = polygons[p];
-    polygon.strength = p === 0 ? 1 : exp(scale(p, 1, N_POLYGONS + 1, 1, 0)) * 0.25;
-
-    p++;
-  }
-};
-
 const useVisualizationState = () => {
   const state = useRef<VisualizationState>(initializeState());
 
   const tickHandler = useCallback(() => {
     updateFirstPolygon(state.current);
-    updatePolygonStrength(state.current);
   }, [state]);
 
   useEffect(() => {

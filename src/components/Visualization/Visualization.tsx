@@ -29,7 +29,7 @@ const Visualization = () => {
   const handleTick = useCallback((dimensions: DOMRect, helpers: CanvasAPI) => {
     const { width, height } = dimensions;
     const { alpha, clear, drawPolygon, stroke, strokeWeight } = helpers;
-    const { polygons } = state.current;
+    const { polygons, polygonStrength } = state.current;
 
     clear(width, height);
     stroke(12, 12, 12);
@@ -40,10 +40,11 @@ const Visualization = () => {
 
     while (p < end) {
       const poly = polygons[p];
+      const strength = polygonStrength[p];
       const coords = scalePolygonToCoordinates(poly, dimensions);
       const shouldFill = p === 0;
 
-      alpha(poly.strength);
+      alpha(strength);
       drawPolygon(coords, shouldFill);
 
       p++;
