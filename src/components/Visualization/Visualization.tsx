@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import { scale } from 'plonk';
-import Canvas, { CanvasAPI, Dimensions, PolygonCoord } from '../Canvas';
+import Canvas, { CanvasAPI, PolygonCoord } from '../Canvas';
 import useVisualizationState, { Polygon } from './hooks/useVisualizationState';
 
-const scalePolygonToCoordinates = (polygon: Polygon, dimensions: Dimensions) => {
+const scalePolygonToCoordinates = (polygon: Polygon, dimensions: DOMRect) => {
   const { points } = polygon;
   const coords: PolygonCoord[] = [];
   const end = points.length;
@@ -28,7 +28,7 @@ const Visualization = () => {
 
   console.log(state.current);
 
-  const handleTick = useCallback((dimensions: Dimensions, helpers: CanvasAPI) => {
+  const handleTick = useCallback((dimensions: DOMRect, helpers: CanvasAPI) => {
     const { width, height } = dimensions;
     const { alpha, clear, drawPolygon, stroke, strokeWeight } = helpers;
 

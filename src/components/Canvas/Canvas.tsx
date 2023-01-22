@@ -1,30 +1,33 @@
 import React, { useCallback } from 'react';
-import useAnimationFrame from './hooks/useAnimationFrame';
-import useCanvasApi, { CanvasAPI, Dimensions } from './hooks/useCanvasApi';
+import useAnimationFrame from '../../hooks/useAnimationFrame';
+import useMeasure from '../../hooks/useMeasure';
+import useCanvasApi, { CanvasAPI } from './hooks/useCanvasApi';
+import styles from './Canvas.less';
 
-type CanvasProps = {
-  draw: (dimensions: Dimensions, helpers: CanvasAPI) => void;
-};
+interface CanvasProps {
+  draw: (dimensions: DOMRect, helpers: CanvasAPI) => void;
+}
 
 const Canvas = (props: CanvasProps) => {
   const { draw } = props;
 
-  const { canvasRef, dimensions, helpers } = useCanvasApi();
+  const { measureRef, bounds } = useMeasure();
+  const { canvasRef, helpers } = useCanvasApi({ containerRect: bounds });
 
   const handleTick = useCallback(() => {
     if (!helpers) {
       return;
     }
 
-    draw(dimensions, helpers);
-  }, [dimensions, helpers]);
+    draw(bounds, helpers);
+  }, [bounds, helpers]);
 
   useAnimationFrame({ onTick: handleTick });
 
-  console.log({ canvasRef, dimensions, helpers });
-
   return (
-    <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
+    <div ref={measureRef} className={styles.container}>
+      <canvas ref={canvasRef} />
+    </div>
   );
 };
 

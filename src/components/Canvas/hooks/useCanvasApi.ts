@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { alpha, clear, fill, drawPolygon, rect, stroke, strokeWeight } from '../lib/helpers';
 
 export interface CanvasAPI {
@@ -9,11 +9,6 @@ export interface CanvasAPI {
   rect: ReturnType<typeof rect>;
   stroke: ReturnType<typeof stroke>;
   strokeWeight: ReturnType<typeof strokeWeight>;
-}
-
-export type Dimensions = {
-  width: number;
-  height: number;
 }
 
 export const bindHelpers = (context: CanvasRenderingContext2D, helpers: {
@@ -28,33 +23,46 @@ export const bindHelpers = (context: CanvasRenderingContext2D, helpers: {
   );
 
 type CanvasApiState = {
-  dimensions: Dimensions;
   helpers: CanvasAPI;
   isReady: boolean;
 }
 
-const useCanvasApi = () => {
+interface UseCanvasApiProps {
+  containerRect?: DOMRect;
+}
+
+const useCanvasApi = (props: UseCanvasApiProps) => {
+  const { containerRect } = props;
+
   const canvasRef = useRef<HTMLCanvasElement>();
 
   const [state, setState] = useState<CanvasApiState>({
     isReady: false,
-    dimensions: null,
     helpers: null,
   });
 
-  const { isReady, helpers, dimensions } = state;
+  const { isReady, helpers } = state;
+
+  const resizeCanvas = useCallback((updatedBounds: DOMRect) => {
+    const { width, height } = updatedBounds;
+    const canvas = canvasRef.current;
+
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    canvas.width = width;
+    canvas.height = height;
+  }, []);
+
+  useEffect(() => {
+    if (containerRect) {
+      resizeCanvas(containerRect);
+    }
+  }, [containerRect]);
 
   useEffect(() => {
     if (!isReady && canvasRef.current) {
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
-
-      const { width, height } = canvas.getBoundingClientRect();
-
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      canvas.width = width;
-      canvas.height = height;
 
       const helpers = bindHelpers(context, {
         alpha,
@@ -68,7 +76,6 @@ const useCanvasApi = () => {
 
       setState(prevState => ({
         ...prevState,
-        dimensions: { width, height },
         helpers,
         isReady: true,
       }));
@@ -77,7 +84,6 @@ const useCanvasApi = () => {
 
   return {
     canvasRef,
-    dimensions,
     helpers,
   };
 };
