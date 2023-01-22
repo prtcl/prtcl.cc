@@ -17,6 +17,7 @@
     "setup": "npm run clean && npm ci && npm run build"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "@types/react-dom": "^18.0.10",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
@@ -35,6 +36,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "plonk": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
