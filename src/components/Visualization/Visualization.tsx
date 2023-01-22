@@ -26,21 +26,28 @@ const scalePolygonToCoordinates = (polygon: Polygon, dimensions: DOMRect) => {
 const Visualization = () => {
   const state = useVisualizationState();
 
-  console.log(state.current);
-
   const handleTick = useCallback((dimensions: DOMRect, helpers: CanvasAPI) => {
     const { width, height } = dimensions;
     const { alpha, clear, drawPolygon, stroke, strokeWeight } = helpers;
-
     const { polygons } = state.current;
-    const first = polygons[0];
-    const coords = scalePolygonToCoordinates(first, dimensions);
 
-    // clear(width, height);
-    stroke(0, 0, 0);
+    clear(width, height);
+    stroke(12, 12, 12);
     strokeWeight(1);
-    alpha(first.strength);
-    drawPolygon(coords, false);
+
+    const end = polygons.length;
+    let p = 0;
+
+    while (p < end) {
+      const poly = polygons[p];
+      const coords = scalePolygonToCoordinates(poly, dimensions);
+      const shouldFill = p === 0;
+
+      alpha(poly.strength);
+      drawPolygon(coords, shouldFill);
+
+      p++;
+    }
   }, [state]);
 
   return <Canvas draw={handleTick} />;

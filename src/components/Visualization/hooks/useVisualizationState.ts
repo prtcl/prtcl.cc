@@ -1,8 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { drunk, exp, ms, rand, scale } from 'plonk';
+import cloneDeep from 'lodash/cloneDeep';
+import uniqueId from 'lodash/uniqueId';
 
 export type Point = {
-  id: number;
   x: number;
   y: number;
   direction: {
@@ -12,7 +13,7 @@ export type Point = {
 };
 
 export type Polygon = {
-  id: number;
+  id: string;
   points: Point[];
   strength: number;
 }
@@ -22,24 +23,25 @@ type VisualizationState = {
   speed: number;
 };
 
-const N_POLYGONS = 100;
+const N_POLYGONS = 300;
+const INITIAL_POLYGONS = 1;
 const N_POINTS = 4;
 const BOUNDS_MIN = 0.05;
 const BOUNDS_MAX = 0.95;
 const SPEED_MIN = 0.001;
-const SPEED_MAX = 0.01;
+const SPEED_MAX = 0.007;
 
 const initializePolygons = () => {
   const polygons: Polygon[] = [];
   let polyCount = 0;
 
-  while (polyCount < N_POLYGONS) {
+  while (polyCount < INITIAL_POLYGONS) {
+    const id = uniqueId();
     const points: Point[] = [];
     let pointCount = 0;
 
     while (pointCount < N_POINTS) {
       points.push({
-        id: pointCount + 1,
         x: rand(BOUNDS_MIN, BOUNDS_MAX),
         y: rand(BOUNDS_MIN, BOUNDS_MAX),
         direction: {
@@ -52,8 +54,8 @@ const initializePolygons = () => {
     }
 
     polygons.push({
-      id: polyCount + 1,
-      strength: polyCount === 0 ? 1 : exp(scale(polyCount, 1, N_POLYGONS, 1, 0)) * 0.25,
+      id,
+      strength: 0,
       points,
     });
 
@@ -74,9 +76,12 @@ const initializeState = (): VisualizationState => {
 
 const speedDrunk = drunk(SPEED_MIN, SPEED_MAX);
 
+const clonePolygon = (poly: Polygon) => ({ ...cloneDeep(poly), id: uniqueId() });
+
 const updateFirstPolygon = (state: VisualizationState) => {
   const { polygons } = state;
-  const firstPolygon = polygons[0];
+
+  const firstPolygon = clonePolygon(polygons[0]);
   const end = firstPolygon.points.length;
   let p = 0;
 
@@ -109,6 +114,25 @@ const updateFirstPolygon = (state: VisualizationState) => {
 
     p++;
   }
+
+  polygons.unshift(firstPolygon);
+
+  if (end === N_POLYGONS) {
+    polygons.pop();
+  }
+};
+
+const updatePolygonStrength = (state: VisualizationState) => {
+  const { polygons } = state;
+  const end = polygons.length;
+  let p = 0;
+
+  while (p < end) {
+    const polygon = polygons[p];
+    polygon.strength = p === 0 ? 1 : exp(scale(p, 1, N_POLYGONS + 1, 1, 0)) * 0.25;
+
+    p++;
+  }
 };
 
 const useVisualizationState = () => {
@@ -116,6 +140,7 @@ const useVisualizationState = () => {
 
   const tickHandler = useCallback(() => {
     updateFirstPolygon(state.current);
+    updatePolygonStrength(state.current);
   }, [state]);
 
   useEffect(() => {
@@ -128,6 +153,5 @@ const useVisualizationState = () => {
 
   return state;
 };
-
 
 export default useVisualizationState;
