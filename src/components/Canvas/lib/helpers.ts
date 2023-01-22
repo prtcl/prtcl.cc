@@ -26,3 +26,26 @@ export const stroke = (context: CanvasRenderingContext2D) => (...args: ColorArgs
 export const rect = (context: CanvasRenderingContext2D) => (x: number, y: number, width: number, height: number) => {
   context.fillRect(x, y, width, height);
 };
+
+export type PolygonCoord = [number, number];
+
+export const drawPolygon = (context: CanvasRenderingContext2D) => (coords: PolygonCoord[], fill: boolean) => {
+  context.beginPath();
+
+  for (var i = 0; i < coords.length; i++) {
+    let coord = coords[i];
+
+    if (i === 0) {
+      context.moveTo(...coord);
+    } else {
+      context.lineTo(...coord);
+    }
+  }
+
+  if (fill === true) {
+    context.fill();
+  }
+
+  context.closePath();
+  context.stroke();
+};

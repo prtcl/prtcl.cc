@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { alpha, clear, fill, rect, stroke, strokeWeight } from '../lib/helpers';
+import { alpha, clear, fill, drawPolygon, rect, stroke, strokeWeight } from '../lib/helpers';
 
 export interface CanvasAPI {
   alpha: ReturnType<typeof alpha>;
   clear: ReturnType<typeof clear>;
   fill: ReturnType<typeof fill>;
+  drawPolygon: ReturnType<typeof drawPolygon>;
   rect: ReturnType<typeof rect>;
   stroke: ReturnType<typeof stroke>;
   strokeWeight: ReturnType<typeof strokeWeight>;
@@ -16,7 +17,7 @@ export type Dimensions = {
 }
 
 export const bindHelpers = (context: CanvasRenderingContext2D, helpers: {
-  [key: string]: typeof clear | typeof alpha | typeof fill | typeof strokeWeight | typeof stroke | typeof rect;
+  [key: string]: typeof clear | typeof alpha | typeof fill | typeof drawPolygon | typeof strokeWeight | typeof stroke | typeof rect;
 }): CanvasAPI =>
   Object.entries(helpers).reduce(
     (res, [name, helper]) => ({
@@ -51,6 +52,7 @@ const useCanvasApi = () => {
       const helpers = bindHelpers(context, {
         alpha,
         clear,
+        drawPolygon,
         fill,
         rect,
         stroke,
