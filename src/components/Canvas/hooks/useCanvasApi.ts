@@ -49,6 +49,13 @@ const useCanvasApi = () => {
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
 
+      const { width, height } = canvas.getBoundingClientRect();
+
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      canvas.width = width;
+      canvas.height = height;
+
       const helpers = bindHelpers(context, {
         alpha,
         clear,
@@ -61,7 +68,7 @@ const useCanvasApi = () => {
 
       setState(prevState => ({
         ...prevState,
-        dimensions: { width: canvas.width, height: canvas.height },
+        dimensions: { width, height },
         helpers,
         isReady: true,
       }));
