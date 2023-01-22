@@ -1,13 +1,17 @@
 import React from 'react';
 import Bio from './components/Bio';
 import styles from './App.less';
-import Canvas from './components/Canvas';
+import Visualization from './components/Visualization';
 
 const App = () => {
   return (
     <div className={styles.container}>
-      <Bio />
-      <Canvas draw={() => null} />
+      <div className={styles.visualization}>
+        <Visualization />
+      </div>
+      <div className={styles.bio}>
+        <Bio />
+      </div>
     </div>
   );
 };
