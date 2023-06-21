@@ -6,9 +6,15 @@ module.exports = {
     'es6': true,
     'mocha': false
   },
-  'extends': [
-    'eslint:recommended'
+  'plugins': [
+    '@typescript-eslint'
   ],
+  'extends': [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended'
+  ],
+  'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'sourceType': 'module',
     'ecmaVersion': 6,
@@ -17,6 +23,7 @@ module.exports = {
     }
   },
   'rules': {
+    '@typescript-eslint/no-var-requires': 0,
     'accessor-pairs': 'error',
     'array-bracket-spacing': [
       'error',

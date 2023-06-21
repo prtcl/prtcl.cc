@@ -6,6 +6,7 @@ body {
   font-family: @fontFamily;
   font-size: @fontSize;
   font-weight: @fontWeight;
+  line-height: @lineHeight;
   height: 100%;
   position: relative;
   text-rendering: optimizeLegibility;
@@ -14,10 +15,6 @@ body {
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: subpixel-antialiased;
   font-smoothing: subpixel-antialiased;
-
-  @media @mobile {
-    font-size: @fontSizeLarge;
-  }
 }
 
 ::selection {
@@ -25,8 +22,31 @@ body {
   color: @colorBlack;
 }
 
-.desktop {
-  @media @mobile {
-    display: none;
+:global {
+  #app {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+:local {
+  .container {
+    background-color: @colorDarkRose;
+    width: 100%;
+    height: 100%;
+  }
+
+  .visualization {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+  }
+
+  .bio {
+    z-index: 100;
+    position: absolute;
   }
 }
