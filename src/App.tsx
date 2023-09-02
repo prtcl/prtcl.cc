@@ -1,9 +1,10 @@
 import { Layout } from '~/components/Layout';
+import Bio from './components/Bio';
 
 const App = () => {
   return (
     <Layout>
-      <h1>Hello World</h1>
+      <Bio />
     </Layout>
   );
 };

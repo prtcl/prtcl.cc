@@ -1,49 +1,20 @@
-import { type PropsWithChildren } from 'react';
 import { Box } from 'theme-ui';
-
-type Link = {
-  title: string;
-  url: string;
-};
-
-const links: Link[] = [
-  {
-    title: 'Bandcamp',
-    url: 'https://coryobrien.bandcamp.com',
-  },
-  {
-    title: 'Github',
-    url: 'https://github.com/prtcl',
-  },
-  {
-    title: 'cory@prtcl.cc',
-    url: 'mailto:cory@prtcl.cc',
-  },
-];
-
-const ListItem = (props: PropsWithChildren<Link>) => (
-  <li>
-    <a href={props.url}>{props.title}</a>
-  </li>
-);
+import bio from '~/data/bio';
+import Stack from '~/components/Stack';
+import ListItem from '~/components/ListItem';
 
 const Bio = () => {
   return (
-    <div>
+    <Stack spacing={3} sx={{ maxWidth: ['100%', '18em'], px: 3, py: 4 }}>
       <Box>
-        <p>
-          Cory O&apos;Brien is a software engineer and sound artist who lives in
-          NYC
-        </p>
+        <p>{bio.tagline}</p>
       </Box>
-      <Box>
-        <ul>
-          {links.map((link) => (
-            <ListItem key={link.title} {...link} />
-          ))}
-        </ul>
-      </Box>
-    </div>
+      <Stack spacing={1}>
+        {bio.links.map((link) => (
+          <ListItem key={link.url} link={link} />
+        ))}
+      </Stack>
+    </Stack>
   );
 };
 

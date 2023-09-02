@@ -1,6 +1,8 @@
 import { system } from '@theme-ui/presets';
 import {
-  type Theme, type ThemeStyles, type ThemeUIStyleObject,
+  type Theme,
+  type ThemeStyles,
+  type ThemeUIStyleObject,
 } from 'theme-ui';
 
 const breakpoints: Theme['breakpoints'] = [
@@ -13,7 +15,7 @@ const breakpoints: Theme['breakpoints'] = [
 const colors: Theme['colors'] = {
   ...system.colors,
   text: '#3c3c3c',
-  primary: '#0022d1',
+  primary: '#1539f5',
   lighter: '#b1b1b1',
   darker: '#818181',
   background: {
@@ -33,12 +35,14 @@ const styles: ThemeStyles = {
   ...system.styles,
   root: {
     ...system.styles.root,
-    width: '100%',
+    fontSize: '18px',
     height: '100%',
-    textRendering: 'optimizeLegibility',
+    lineHeight: '1.42em',
     overflow: 'hidden',
-    WebkitFontSmoothing: 'antialiased',
+    textRendering: 'optimizeLegibility',
+    width: '100%',
     MozOsxFontSmoothing: 'grayscale',
+    WebkitFontSmoothing: 'antialiased',
     '*': {
       margin: 0,
       padding: 0,
