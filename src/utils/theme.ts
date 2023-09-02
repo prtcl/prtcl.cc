@@ -39,6 +39,10 @@ const styles: ThemeStyles = {
     overflow: 'hidden',
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmoothing: 'grayscale',
+    '*': {
+      margin: 0,
+      padding: 0,
+    },
     '> body': {
       width: '100%',
       height: '100%',
