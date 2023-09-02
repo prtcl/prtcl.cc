@@ -27,7 +27,7 @@ const useCanvasApi = () => {
 
   return {
     ...state,
-    canvasProps,
+    props: canvasProps,
   };
 };
 
