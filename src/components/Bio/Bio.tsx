@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from 'react';
-import styles from './Bio.less';
+import { type PropsWithChildren } from 'react';
+import { Box } from 'theme-ui';
 
 type Link = {
   title: string;
@@ -21,21 +21,17 @@ const links: Link[] = [
   }
 ];
 
-const Box = (props: PropsWithChildren) => (
-  <div className={styles.box}>{props.children}</div>
-);
-
 const ListItem = (props: PropsWithChildren<Link>) => (
-  <li className={styles.listItem}>
+  <li >
     <a href={props.url}>{props.title}</a>
   </li>
 );
 
 const Bio = () => {
   return (
-    <div className={styles.container}>
+    <div>
       <Box>
-        <p>Cory O'Brien is a software engineer and sound artist who lives in NYC</p>
+        <p>Cory O&apos;Brien is a software engineer and sound artist who lives in NYC</p>
       </Box>
       <Box>
         <ul>

@@ -1,18 +1,10 @@
-import React from 'react';
-import Bio from './components/Bio';
-import styles from './App.less';
-import Visualization from './components/Visualization';
+import { Layout } from '~/components/Layout';
 
 const App = () => {
   return (
-    <div className={styles.container}>
-      <div className={styles.visualization}>
-        <Visualization />
-      </div>
-      <div className={styles.bio}>
-        <Bio />
-      </div>
-    </div>
+    <Layout>
+      <h1>Hello World</h1>
+    </Layout>
   );
 };
 
