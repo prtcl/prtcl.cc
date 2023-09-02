@@ -1,7 +1,7 @@
 import type { BoxProps } from 'theme-ui';
 import { Box } from 'theme-ui';
 
-const Stack = (props: BoxProps & { spacing?: number }) => {
+const Stack = (props: BoxProps & { spacing?: number | number[] }) => {
   const { children, spacing = 2, ...boxProps } = props;
 
   return (

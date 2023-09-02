@@ -14,15 +14,10 @@ const breakpoints: Theme['breakpoints'] = [
 
 const colors: Theme['colors'] = {
   ...system.colors,
-  text: '#3c3c3c',
+  text: '#292929',
   primary: '#1539f5',
   lighter: '#b1b1b1',
   darker: '#818181',
-  background: {
-    0: '#f7f7f7',
-    50: '#f9f9f9',
-    100: '#ffffff',
-  },
 };
 
 const radii: Theme['radii'] = {
