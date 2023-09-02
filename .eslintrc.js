@@ -5,10 +5,7 @@ module.exports = {
     browser: true,
     node: true,
   },
-  plugins: [
-    '@typescript-eslint',
-    'react-hooks',
-  ],
+  plugins: ['@typescript-eslint', 'react-hooks'],
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -24,10 +21,7 @@ module.exports = {
   settings: {
     react: { version: 'detect' },
     'import/parsers': {
-      '@typescript-eslint/parser': [
-        '.ts',
-        '.tsx',
-      ],
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
     'import/resolver': {
       alias: {
@@ -60,7 +54,10 @@ module.exports = {
         sourceType: 'module',
       },
       rules: {
-        '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_*' }],
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          { varsIgnorePattern: '^_*' },
+        ],
         '@typescript-eslint/no-var-requires': 'error',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-misused-promises': [
@@ -68,10 +65,7 @@ module.exports = {
           { checksVoidReturn: false },
         ],
         '@typescript-eslint/ban-ts-comment': 'warn',
-        '@typescript-eslint/ban-types': [
-          'error',
-          { types: { '{}': false } },
-        ],
+        '@typescript-eslint/ban-types': ['error', { types: { '{}': false } }],
         '@typescript-eslint/consistent-type-imports': [
           'warn',
           {
@@ -101,10 +95,7 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'no-console': [
-      'warn',
-      { allow: ['warn', 'error'] },
-    ],
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-restricted-exports': 'off',
     'no-underscore-dangle': 'off',
     'no-nested-ternary': 'off',
@@ -120,10 +111,8 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'error',
     'react/destructuring-assignment': 'off',
     'react/function-component-definition': 'off',
-    'react/jsx-filename-extension': [
-      'error',
-      { extensions: ['.tsx'] },
-    ],
+    'react/jsx-indent': ['error', 2],
+    'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-no-useless-fragment': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/no-array-index-key': 'off',

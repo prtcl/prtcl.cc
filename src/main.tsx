@@ -9,5 +9,5 @@ const root = createRoot(container);
 root.render(
   <ThemeUIProvider theme={theme}>
     <App />
-  </ThemeUIProvider>
+  </ThemeUIProvider>,
 );
