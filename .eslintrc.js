@@ -95,6 +95,8 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'lines-between-class-members': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off',
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-restricted-exports': 'off',
     'no-underscore-dangle': 'off',
