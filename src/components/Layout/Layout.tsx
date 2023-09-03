@@ -26,6 +26,7 @@ export const ContentOverlay = (props: BoxProps) => {
       {...boxProps}
       sx={{
         ...boxProps.sx,
+        backdropFilter: 'blur(5px)',
         height: '100%',
         left: 0,
         overflowX: 'hidden',
