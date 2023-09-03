@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { CanvasProps } from '../components/Canvas';
 import CanvasApi from '../lib/CanvasApi';
 
