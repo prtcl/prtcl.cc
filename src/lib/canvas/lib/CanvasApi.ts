@@ -1,5 +1,5 @@
-import type { ColorArgs, PolyCoord } from '../types';
-import { color } from './helpers';
+import type { Color, Polygon, Rect } from '../types';
+import { colorToRGBAString } from './helpers';
 
 export default class CanvasApi {
   ref: HTMLCanvasElement;
@@ -36,23 +36,25 @@ export default class CanvasApi {
     this.context.globalAlpha = alpha;
   };
 
-  fill = (...args: ColorArgs) => {
-    this.context.fillStyle = color(...args);
+  fill = (color: Color) => {
+    this.context.fillStyle = colorToRGBAString(color);
   };
 
-  stroke = (...args: ColorArgs) => {
-    this.context.strokeStyle = color(...args);
+  stroke = (color: Color) => {
+    this.context.strokeStyle = colorToRGBAString(color);
   };
 
   strokeWeight = (width: number) => {
     this.context.lineWidth = Math.max(width, 0.000001);
   };
 
-  rect = (x: number, y: number, width: number, height: number) => {
+  drawRect = (rect: Rect) => {
+    const { x, y, width, height } = rect;
     this.context.fillRect(x, y, width, height);
   };
 
-  drawPolygon = (coords: PolyCoord[], shouldFill?: boolean) => {
+  drawPolygon = (poly: Polygon, opts?: { shouldFill?: boolean }) => {
+    const { coords } = poly;
     this.context.beginPath();
 
     for (let i = 0; i < coords.length; i += 1) {
@@ -65,7 +67,7 @@ export default class CanvasApi {
       }
     }
 
-    if (shouldFill === true) {
+    if (opts?.shouldFill === true) {
       this.context.fill();
     }
 
