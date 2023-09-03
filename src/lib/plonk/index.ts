@@ -6,7 +6,6 @@ export {
   type TimerCallback,
   type TimerState,
 } from './timers/Metro';
-export { default as useMetro } from './hooks/useMetro';
 export {
   default as Rand,
   type RandOptions,
@@ -18,3 +17,14 @@ export {
   type DrunkOptions,
   type DrunkState,
 } from './maths/Drunk';
+export {
+  default as ms,
+  MS_IN_HOUR,
+  MS_IN_MINUTE,
+  MS_IN_SECOND,
+  TimeFormat,
+  type AvailableTimeFormats,
+  type FPS,
+} from './maths/ms';
+export { default as useMetro } from './hooks/useMetro';
+export { default as useFrames } from './hooks/useFrames';

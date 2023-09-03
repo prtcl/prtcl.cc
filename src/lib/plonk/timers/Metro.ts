@@ -37,12 +37,8 @@ export const parseOptions = (opts?: MetroOptions): MetroOptions => {
 
 export default class Metro {
   state: TimerState;
-  private _listeners: TimerCallback[];
-  private _timerId: ReturnType<typeof setTimeout>;
-
-  static asyncHandler = (callback: () => void) => {
-    return setTimeout(callback, SIXTY_FPS);
-  };
+  protected _listeners: TimerCallback[];
+  protected _timerId: ReturnType<typeof setTimeout> | number;
 
   static processTimerState = (
     state: TimerState,
@@ -87,10 +83,18 @@ export default class Metro {
     this._listeners = [callback];
   }
 
+  asyncHandler(callback: () => void) {
+    this._timerId = setTimeout(callback, SIXTY_FPS);
+  }
+
+  clearAsyncHandler() {
+    clearTimeout(this._timerId as ReturnType<typeof setTimeout>);
+  }
+
   stop = () => {
     const { totalElapsed } = this.state;
     this.reset();
-    clearTimeout(this._timerId);
+    this.clearAsyncHandler();
 
     return totalElapsed;
   };
@@ -124,7 +128,7 @@ export default class Metro {
     };
 
     const tick = () => {
-      clearTimeout(this._timerId);
+      this.clearAsyncHandler();
 
       Metro.processTimerState(this.state, (updates) => {
         this.state = updates;
@@ -134,7 +138,7 @@ export default class Metro {
       });
 
       if (this.state.isRunning) {
-        this._timerId = Metro.asyncHandler(tick);
+        this.asyncHandler(tick);
       }
     };
 
