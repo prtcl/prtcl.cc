@@ -16,16 +16,16 @@ const useMetro = (callback: TimerCallback, opts?: MetroOptions) => {
   }, []);
 
   useEffect(() => {
-    metro.run();
-  }, [metro]);
-
-  useEffect(() => {
-    if (opts !== prevOpts) {
+    if (opts && prevOpts && opts?.time !== prevOpts?.time) {
       const { time } = opts;
 
       metro.setTime(time);
     }
   }, [opts, prevOpts, metro]);
+
+  useEffect(() => {
+    metro.run();
+  }, [metro]);
 
   return metro;
 };
