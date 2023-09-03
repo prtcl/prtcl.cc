@@ -17,7 +17,7 @@ export type TimerState = {
 
 export type TimerCallback = (metro: Metro) => void;
 
-const getInitialState = (initialTime: number): TimerState => ({
+export const getInitialState = (initialTime: number): TimerState => ({
   initialTime,
   isRunning: false,
   iterations: -1,
@@ -27,6 +27,13 @@ const getInitialState = (initialTime: number): TimerState => ({
   time: initialTime,
   totalElapsed: 0,
 });
+
+export const parseOptions = (opts?: MetroOptions): MetroOptions => {
+  return {
+    time: SIXTY_FPS,
+    ...opts,
+  };
+};
 
 export default class Metro {
   state: TimerState;
@@ -74,10 +81,7 @@ export default class Metro {
   };
 
   constructor(callback: TimerCallback, opts?: MetroOptions) {
-    const { time }: MetroOptions = {
-      time: SIXTY_FPS,
-      ...opts,
-    };
+    const { time } = parseOptions(opts);
 
     this.state = getInitialState(time);
     this._listeners = [callback];
@@ -120,6 +124,8 @@ export default class Metro {
     };
 
     const tick = () => {
+      clearTimeout(this._timerId);
+
       Metro.processTimerState(this.state, (updates) => {
         this.state = updates;
         this._listeners.forEach((listener) => {
