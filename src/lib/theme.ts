@@ -15,7 +15,8 @@ const breakpoints: Theme['breakpoints'] = [
 const colors: Theme['colors'] = {
   ...system.colors,
   text: '#292929',
-  primary: '#1539f5',
+  primary: '#979797',
+  secondary: '#c7b0bc',
   lighter: '#b1b1b1',
   darker: '#818181',
 };
@@ -30,7 +31,7 @@ const styles: ThemeStyles = {
   ...system.styles,
   root: {
     ...system.styles.root,
-    fontSize: '18px',
+    fontSize: ['18px', '16px'],
     height: '100%',
     lineHeight: '1.42em',
     overflow: 'hidden',
@@ -50,6 +51,12 @@ const styles: ThemeStyles = {
       width: '100%',
       height: '100%',
     },
+  },
+  a: {
+    color: 'primary',
+    transition: 'all linear 250ms',
+    '&:active': { color: 'secondary' },
+    '&:hover': { color: 'secondary' },
   },
 };
 
