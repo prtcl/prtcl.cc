@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Flex } from 'theme-ui';
 import { Canvas, useCanvasApi } from '~/lib/canvas';
-import { Drunk, Rand, useFrames, useMetro } from '~/lib/plonk';
+import { Drunk, Env, Rand, useFrames, useMetro, ms } from '~/lib/plonk';
+import useBreakpoints from '~/hooks/useBreakpoints';
 
-const N_SHAPES = 1;
+const N_SHAPES = 3;
 const N_POINTS = 13;
 
 type Pos = {
@@ -16,65 +17,80 @@ type PolyPoint = {
   y: Drunk;
 };
 
+type ColorRand = {
+  r: Rand;
+  g: Rand;
+  b: Rand;
+};
+
+type Drift = {
+  x: Env;
+  y: Env;
+};
+
 type Shape = {
   pos: Pos;
   points: PolyPoint[];
-  color: {
-    r: Rand;
-    g: Rand;
-    b: Rand;
-  };
+  color: ColorRand;
+  drift: Drift;
 };
 
 type VisualizationState = {
-  shapes: Shape[];
   jump: Rand;
+  shapes: Shape[];
   speed: Drunk;
 };
 
-const Visualization = () => {
-  const containerRef = useRef<HTMLElement>();
-  const { canvas, props: canvasProps, isReady } = useCanvasApi();
-  const [state] = useState<VisualizationState>(() => {
-    const shapes: Shape[] = [];
-    let shapeCount = 0;
+const getInitialState = (): VisualizationState => {
+  const shapes: Shape[] = [];
+  let shapeCount = 0;
 
-    while (shapeCount < N_SHAPES) {
-      const pos: Pos = {
+  while (shapeCount < N_SHAPES) {
+    const pos: Pos = {
+      x: new Drunk({ step: 0.01 }),
+      y: new Drunk({ step: 0.01 }),
+    };
+    const points: PolyPoint[] = [];
+    let pointCount = 0;
+
+    while (pointCount < N_POINTS) {
+      points.push({
         x: new Drunk({ step: 0.01 }),
         y: new Drunk({ step: 0.01 }),
-      };
-      const points: PolyPoint[] = [];
-      let pointCount = 0;
-
-      while (pointCount < N_POINTS) {
-        points.push({
-          x: new Drunk({ step: 0.01 }),
-          y: new Drunk({ step: 0.01 }),
-        });
-
-        pointCount += 1;
-      }
-
-      shapes.push({
-        points,
-        pos,
-        color: {
-          r: new Rand({ max: 33 }),
-          g: new Rand({ max: 33 }),
-          b: new Rand({ max: 33 }),
-        },
       });
 
-      shapeCount += 1;
+      pointCount += 1;
     }
 
-    return {
-      jump: new Rand({ min: 250, max: 5000 }),
-      shapes,
-      speed: new Drunk({ min: 0.0001, max: 0.01 }),
-    };
-  });
+    shapes.push({
+      points,
+      pos,
+      color: {
+        r: new Rand({ max: 33 }),
+        g: new Rand({ max: 33 }),
+        b: new Rand({ max: 33 }),
+      },
+      drift: {
+        x: new Env({ time: ms('5s'), from: -1, to: 1 }),
+        y: new Env({ time: ms('5s'), from: -1, to: 1 }),
+      },
+    });
+
+    shapeCount += 1;
+  }
+
+  return {
+    jump: new Rand({ min: ms('2s'), max: ms('15s') }),
+    shapes,
+    speed: new Drunk({ min: 0.0001, max: 0.01 }),
+  };
+};
+
+const Visualization = () => {
+  const { isMobile } = useBreakpoints();
+  const containerRef = useRef<HTMLElement>();
+  const { canvas, props: canvasProps, isReady } = useCanvasApi();
+  const [state] = useState<VisualizationState>(() => getInitialState());
 
   useEffect(() => {
     const resize = () => {
@@ -92,6 +108,9 @@ const Visualization = () => {
   useMetro(
     ({ setTime }) => {
       state.shapes.forEach((shape) => {
+        const dt = new Rand({ min: ms('12s'), max: ms('25s') });
+        const dx = new Rand();
+
         shape.pos.x.reset({ step: state.speed.next() });
         shape.pos.y.reset({ step: state.speed.next() });
         shape.points.forEach((point) => {
@@ -101,6 +120,31 @@ const Visualization = () => {
         shape.color.r.next();
         shape.color.g.next();
         shape.color.b.next();
+
+        shape.drift.x.reset({
+          time: dt.next(),
+          ...(Math.random() >= 0.5
+            ? {
+                from: dx.next(),
+                to: dx.next() * -1,
+              }
+            : {
+                from: dx.next() * -1,
+                to: dx.next(),
+              }),
+        });
+        shape.drift.y.reset({
+          time: dt.next(),
+          ...(Math.random() >= 0.5
+            ? {
+                from: 1,
+                to: -1,
+              }
+            : {
+                from: -1,
+                to: 1,
+              }),
+        });
       });
 
       setTime(state.jump.next());
@@ -125,8 +169,10 @@ const Visualization = () => {
     });
 
     state.shapes.forEach((shape) => {
-      const posX = shape.pos.x.next() * (width / 2);
-      const posY = shape.pos.y.next() * (height / 2);
+      const driftX = shape.drift.x.next() * (width / (isMobile ? 2 : 4));
+      const driftY = shape.drift.y.next() * (height / 4);
+      const posX = shape.pos.x.next() * (width / 2) + driftX;
+      const posY = shape.pos.y.next() * (height / 2) + driftY;
 
       canvas.alpha(0.01);
       canvas.strokeWeight(0);
