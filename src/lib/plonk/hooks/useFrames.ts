@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { type TimerCallback } from '../timers/Metro';
 import Frames, { type FramesOptions } from '../timers/Frames';
 import usePrevious from './usePrevious';
-import ms, { TimeFormat } from '../maths/ms';
 
 const useFrames = (callback: TimerCallback, opts?: FramesOptions) => {
   const callbackRef = useRef<TimerCallback>(callback);
