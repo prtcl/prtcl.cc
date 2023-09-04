@@ -2,8 +2,9 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const AUTHOR = 'Cory O\'Brien';
-const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who lives in NYC';
+const AUTHOR = "Cory O'Brien";
+const DESCRIPTION =
+  "Cory O'Brien is a software engineer and sound artist who lives in NYC";
 const CANONICAL = 'http://prtcl.cc';
 
 module.exports = {
@@ -34,13 +35,13 @@ module.exports = {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              modules: true
-            }
+              modules: true,
+            },
           },
           'less-loader',
         ],
       },
-    ]
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -52,12 +53,14 @@ module.exports = {
       meta: {
         author: AUTHOR,
         description: DESCRIPTION,
+        themeColor: { name: 'theme-color', content: '#fafafa' },
         viewport: 'width=device-width, initial-scale=1, user-scalable=no',
-        'google-site-verification': 'Ydq_4fjxlJ7tZVQZzS4DXQ1VDqWU7lCIT_fiw_HUJlQ',
-        'og:title': { property: 'og:title', content: AUTHOR, },
+        'google-site-verification':
+          'Ydq_4fjxlJ7tZVQZzS4DXQ1VDqWU7lCIT_fiw_HUJlQ',
+        'og:title': { property: 'og:title', content: AUTHOR },
         'og:url': { property: 'og:url', content: CANONICAL },
         'og:description': { property: 'og:description', content: DESCRIPTION },
-      }
+      },
     }),
   ],
 };
