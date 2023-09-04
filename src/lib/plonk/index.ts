@@ -26,5 +26,11 @@ export {
   type AvailableTimeFormats,
   type FPS,
 } from './maths/ms';
+export {
+  default as Scale,
+  type ScaleOptions,
+  type ScaleState,
+} from './maths/Scale';
+export { default as Env, type EnvOptions, type EnvState } from './maths/Env';
 export { default as useMetro } from './hooks/useMetro';
 export { default as useFrames } from './hooks/useFrames';

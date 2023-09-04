@@ -36,8 +36,8 @@ export const parseOptions = (opts?: DrunkOptions): DrunkOptions => {
 
 export default class Drunk {
   state: DrunkState;
-  private _initialValue: Rand;
-  private _step: Rand;
+  protected _initialValue: Rand;
+  protected _step: Rand;
 
   constructor(opts?: DrunkOptions) {
     const { min, max, step, startsAt } = parseOptions(opts);
