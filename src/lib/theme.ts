@@ -14,9 +14,8 @@ const breakpoints: Theme['breakpoints'] = [
 
 const colors: Theme['colors'] = {
   ...system.colors,
-  text: '#292929',
-  primary: '#979797',
-  secondary: '#c7b0bc',
+  text: '#0022d1',
+  primary: '#0022d1',
   lighter: '#b1b1b1',
   darker: '#818181',
 };
