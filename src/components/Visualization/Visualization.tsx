@@ -1,57 +1,206 @@
-import React, { useCallback } from 'react';
-import { scale } from 'plonk';
-import Canvas, { CanvasAPI, PolygonCoord } from '../Canvas';
-import useVisualizationState, { Polygon } from './hooks/useVisualizationState';
+import { useEffect, useRef, useState } from 'react';
+import { Flex } from 'theme-ui';
+import { Canvas, useCanvasApi } from '~/lib/canvas';
+import { Drunk, Env, Rand, useFrames, useMetro, ms } from '~/lib/plonk';
+import useBreakpoints from '~/hooks/useBreakpoints';
 
-const scalePolygonToCoordinates = (polygon: Polygon, dimensions: DOMRect) => {
-  const { points } = polygon;
-  const coords: PolygonCoord[] = [];
-  const end = points.length;
-  let p = 0;
+const N_SHAPES = 3;
+const N_POINTS = 13;
 
-  while (p < end) {
-    const point = points[p];
+type Pos = {
+  x: Drunk;
+  y: Drunk;
+};
 
-    coords.push([
-      scale(point.x, 0, 1, 0, dimensions.width),
-      scale(point.y, 0, 1, 0, dimensions.height),
-    ]);
+type PolyPoint = {
+  x: Drunk;
+  y: Drunk;
+};
 
-    p++;
+type ColorRand = {
+  r: Rand;
+  g: Rand;
+  b: Rand;
+};
+
+type Drift = {
+  x: Env;
+  y: Env;
+};
+
+type Shape = {
+  pos: Pos;
+  points: PolyPoint[];
+  color: ColorRand;
+  drift: Drift;
+};
+
+type VisualizationState = {
+  jump: Rand;
+  shapes: Shape[];
+  speed: Drunk;
+};
+
+const getInitialState = (): VisualizationState => {
+  const shapes: Shape[] = [];
+  let shapeCount = 0;
+
+  while (shapeCount < N_SHAPES) {
+    const pos: Pos = {
+      x: new Drunk({ step: 0.01 }),
+      y: new Drunk({ step: 0.01 }),
+    };
+    const points: PolyPoint[] = [];
+    let pointCount = 0;
+
+    while (pointCount < N_POINTS) {
+      points.push({
+        x: new Drunk({ step: 0.01 }),
+        y: new Drunk({ step: 0.01 }),
+      });
+
+      pointCount += 1;
+    }
+
+    shapes.push({
+      points,
+      pos,
+      color: {
+        r: new Rand({ max: 33 }),
+        g: new Rand({ max: 33 }),
+        b: new Rand({ max: 33 }),
+      },
+      drift: {
+        x: new Env({ time: ms('5s'), from: -1, to: 1 }),
+        y: new Env({ time: ms('5s'), from: -1, to: 1 }),
+      },
+    });
+
+    shapeCount += 1;
   }
 
-  return coords;
+  return {
+    jump: new Rand({ min: ms('2s'), max: ms('15s') }),
+    shapes,
+    speed: new Drunk({ min: 0.0001, max: 0.01 }),
+  };
 };
 
 const Visualization = () => {
-  const state = useVisualizationState();
+  const { isMobile } = useBreakpoints();
+  const containerRef = useRef<HTMLElement>();
+  const { canvas, props: canvasProps, isReady } = useCanvasApi();
+  const [state] = useState<VisualizationState>(() => getInitialState());
 
-  const handleTick = useCallback((dimensions: DOMRect, helpers: CanvasAPI) => {
-    const { width, height } = dimensions;
-    const { alpha, clear, drawPolygon, stroke, strokeWeight } = helpers;
-    const { polygons, polygonStrength } = state.current;
+  useEffect(() => {
+    const resize = () => {
+      const rect = containerRef.current.getBoundingClientRect();
+      canvas.resize(rect);
+    };
 
-    clear(width, height);
-    stroke(12, 12, 12);
-    strokeWeight(1);
+    window.addEventListener('resize', resize);
 
-    const end = polygons.length;
-    let p = 0;
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, [canvas]);
 
-    while (p < end) {
-      const poly = polygons[p];
-      const strength = polygonStrength[p];
-      const coords = scalePolygonToCoordinates(poly, dimensions);
-      const shouldFill = p === 0;
+  useMetro(
+    ({ setTime }) => {
+      state.shapes.forEach((shape) => {
+        const dt = new Rand({ min: ms('12s'), max: ms('25s') });
+        const dx = new Rand();
 
-      alpha(strength);
-      drawPolygon(coords, shouldFill);
+        shape.pos.x.reset({ step: state.speed.next() });
+        shape.pos.y.reset({ step: state.speed.next() });
+        shape.points.forEach((point) => {
+          point.x.reset({ step: state.speed.next() * 2 });
+          point.y.reset({ step: state.speed.next() * 2 });
+        });
+        shape.color.r.next();
+        shape.color.g.next();
+        shape.color.b.next();
 
-      p++;
+        shape.drift.x.reset({
+          time: dt.next(),
+          ...(Math.random() >= 0.5
+            ? {
+                from: dx.next(),
+                to: dx.next() * -1,
+              }
+            : {
+                from: dx.next() * -1,
+                to: dx.next(),
+              }),
+        });
+        shape.drift.y.reset({
+          time: dt.next(),
+          ...(Math.random() >= 0.5
+            ? {
+                from: 1,
+                to: -1,
+              }
+            : {
+                from: -1,
+                to: 1,
+              }),
+        });
+      });
+
+      setTime(state.jump.next());
+    },
+    { time: 500 },
+  );
+
+  useFrames(() => {
+    if (!isReady) {
+      return;
     }
-  }, [state]);
 
-  return <Canvas draw={handleTick} />;
+    const { width, height } = canvas.size;
+
+    canvas.alpha(0.05);
+    canvas.fill({ r: 255, g: 255, b: 255 });
+    canvas.drawRect({
+      x: 0,
+      y: 0,
+      width,
+      height,
+    });
+
+    state.shapes.forEach((shape) => {
+      const driftX = shape.drift.x.next() * (width / (isMobile ? 2 : 4));
+      const driftY = shape.drift.y.next() * (height / 4);
+      const posX = shape.pos.x.next() * (width / 2) + driftX;
+      const posY = shape.pos.y.next() * (height / 2) + driftY;
+
+      canvas.alpha(0.01);
+      canvas.strokeWeight(0);
+      canvas.fill({
+        r: shape.color.r.value(),
+        g: shape.color.g.value(),
+        b: shape.color.b.value(),
+      });
+
+      canvas.drawPolygon(
+        {
+          coords: shape.points.map((point) => {
+            const x = posX + point.x.next() * (width / 2);
+            const y = posY + point.y.next() * (height / 2);
+
+            return [x, y];
+          }),
+        },
+        { shouldFill: true },
+      );
+    });
+  });
+
+  return (
+    <Flex ref={containerRef} sx={{ width: '100%', height: '100%' }}>
+      <Canvas {...canvasProps} />
+    </Flex>
+  );
 };
 
 export default Visualization;

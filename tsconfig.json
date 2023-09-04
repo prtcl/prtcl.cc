@@ -2,13 +2,28 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "jsx": "react",
-    "module": "es6",
-    "moduleResolution": "node",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "theme-ui",
+    "module": "nodenext",
     "noImplicitAny": true,
-    "outDir": "./dist/",
-    "preserveConstEnums": true,
-    "removeComments": true,
-    "target": "es5",
-  }
+    "target": "es6",
+    "paths": {
+      "~/*": [
+        "./src/*",
+      ],
+    }
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "dist",
+    "node_modules",
+  ],
+  "types": [
+    "react"
+  ]
 }

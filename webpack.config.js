@@ -7,10 +7,13 @@ const DESCRIPTION = 'Cory O\'Brien is a software engineer and sound artist who l
 const CANONICAL = 'http://prtcl.cc';
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: './src/main.tsx',
   devtool: 'inline-source-map',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      '~': path.resolve(__dirname, 'src'),
+    },
   },
   output: {
     path: path.resolve('dist'),
@@ -45,7 +48,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: AUTHOR,
-      template: path.resolve('src', 'html', 'index.html'),
+      template: path.resolve('templates', 'index.html'),
       meta: {
         author: AUTHOR,
         description: DESCRIPTION,

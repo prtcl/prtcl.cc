@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "theme-ui",
+    "noEmit": true,
+  },
+  "extends": "./tsconfig.json",
+  "include": [
+    "tools/**/*.ts",
+    ".eslintrc.js",
+    "webpack*.js",
+    "jest.config.base.js",
+    "jest.config.js",
+    "jest.preset.js"
+  ],
+  "types": [
+    "@types/node",
+    "react"
+  ],
+}
