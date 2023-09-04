@@ -14,10 +14,11 @@ const breakpoints: Theme['breakpoints'] = [
 
 const colors: Theme['colors'] = {
   ...system.colors,
-  text: '#0022d1',
+  text: '#3c3c3c',
   primary: '#0022d1',
   lighter: '#b1b1b1',
   darker: '#818181',
+  highlight: 'rgb(245 245 245 / 15%)',
 };
 
 const radii: Theme['radii'] = {
@@ -50,12 +51,18 @@ const styles: ThemeStyles = {
       width: '100%',
       height: '100%',
     },
+    '*::selection': {
+      backgroundColor: 'rgba(84, 253, 255, 0.5)',
+      color: 'text',
+    },
   },
   a: {
     color: 'primary',
     transition: 'all linear 250ms',
-    '&:active': { color: 'secondary' },
-    '&:hover': { color: 'secondary' },
+    '&:active': { color: 'inherit', backgroundColor: 'highlight' },
+    '&:hover': {
+      backgroundColor: 'highlight',
+    },
   },
 };
 
