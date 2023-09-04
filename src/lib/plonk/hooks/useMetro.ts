@@ -17,8 +17,7 @@ const useMetro = (callback: TimerCallback, opts?: MetroOptions) => {
 
   useEffect(() => {
     if (opts && prevOpts && opts.time !== prevOpts.time) {
-      const { time } = opts;
-      metro.setTime(time);
+      metro.setTime(opts.time);
     }
   }, [opts, prevOpts, metro]);
 

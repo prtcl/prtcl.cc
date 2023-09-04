@@ -18,8 +18,7 @@ const useFrames = (callback: TimerCallback, opts?: FramesOptions) => {
 
   useEffect(() => {
     if (opts && prevOpts && opts.fps !== prevOpts.fps) {
-      const { fps } = opts;
-      frames.setFPS({ fps });
+      frames.setFPS(opts.fps);
     }
   }, [opts, prevOpts, frames]);
 

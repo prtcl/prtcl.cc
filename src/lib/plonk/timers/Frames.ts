@@ -33,8 +33,7 @@ export default class Frames extends Metro {
     cancelAnimationFrame(this._timerId);
   }
 
-  setFPS = (opts: Pick<FramesOptions, 'fps'>) => {
-    const { fps = DEFAULT_FPS } = opts;
+  setFPS = (fps = DEFAULT_FPS) => {
     this.setTime(ms(fps, TimeFormat.FPS));
   };
 }
