@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Flex } from 'theme-ui';
+import { Drunk, Env, Rand, ms } from 'plonk';
+import { useFrames, useMetro } from 'plonk-hooks';
 import { Canvas, useCanvasApi } from '~/lib/canvas';
-import { Drunk, Env, Rand, useFrames, useMetro, ms } from '~/lib/plonk';
 import useBreakpoints from '~/hooks/useBreakpoints';
 
 const N_SHAPES = 3;
@@ -71,8 +72,8 @@ const getInitialState = (): VisualizationState => {
         b: new Rand({ max: 33 }),
       },
       drift: {
-        x: new Env({ time: ms('5s'), from: -1, to: 1 }),
-        y: new Env({ time: ms('5s'), from: -1, to: 1 }),
+        x: new Env({ duration: ms('5s'), from: -1, to: 1 }),
+        y: new Env({ duration: ms('5s'), from: -1, to: 1 }),
       },
     });
 
@@ -122,7 +123,7 @@ const Visualization = () => {
         shape.color.b.next();
 
         shape.drift.x.reset({
-          time: dt.next(),
+          duration: dt.next(),
           ...(Math.random() >= 0.5
             ? {
                 from: dx.next(),
@@ -134,7 +135,7 @@ const Visualization = () => {
               }),
         });
         shape.drift.y.reset({
-          time: dt.next(),
+          duration: dt.next(),
           ...(Math.random() >= 0.5
             ? {
                 from: 1,
