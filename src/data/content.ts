@@ -4,7 +4,7 @@ export const name = "Cory O'Brien";
 
 export const tagline = `${name} is a software engineer and sound artist who lives in NYC`;
 
-const contact: LinkConfig[] = [
+export const contact: LinkConfig[] = [
   {
     title: 'Bandcamp',
     url: 'https://coryobrien.bandcamp.com',
@@ -19,7 +19,7 @@ const contact: LinkConfig[] = [
   },
 ];
 
-const links: LinkConfig[] = [
+export const links: LinkConfig[] = [
   {
     title: "The Sounds and Patterns of Cory O'Brien's Aqueous Explorations",
     url: 'https://foxydigitalis.zone/2023/03/07/the-sounds-and-patterns-of-cory-obriens-aqueous-explorations/',
@@ -41,10 +41,3 @@ const links: LinkConfig[] = [
     url: 'https://coryobrien.bandcamp.com/album/central-park-binaural',
   },
 ];
-
-export default {
-  contact,
-  links,
-  name,
-  tagline,
-};

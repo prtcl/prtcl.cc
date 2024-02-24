@@ -4,26 +4,19 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "esModuleInterop": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
     "jsxImportSource": "theme-ui",
-    "module": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
+    "resolveJsonModule": true,
     "target": "es6",
     "paths": {
-      "~/*": [
-        "./src/*",
-      ],
+      "~/*": ["./src/*"]
     }
   },
-  "include": [
-    "src/**/*",
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "dist",
-    "node_modules",
-  ],
-  "types": [
-    "react"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["**/*.spec.ts", "dist", "node_modules"],
+  "types": ["react"]
 }

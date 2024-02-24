@@ -13,7 +13,7 @@ export const VizContainer = (props: BoxProps) => {
         width: '100%',
       }}
     >
-      {props.children}
+      {children}
     </Box>
   );
 };

@@ -13,9 +13,6 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
-    'airbnb',
-    'airbnb-typescript',
-    'airbnb/hooks',
     'prettier',
   ],
   settings: {
@@ -25,78 +22,34 @@ module.exports = {
     },
     'import/resolver': {
       alias: {
-        map: [
-          ['~', './src'],
-          ['@ichingio/convex', './convex/_generated'],
-          ['@ichingio', './packages'],
-        ],
-        extensions: ['.ts', '.tsx', '.js', '.json'],
+        map: [['~', './src']],
+        extensions: ['.ts', '.d.ts', '.tsx', '.js', '.mjs', '.json'],
       },
     },
   },
-  ignorePatterns: ['dist', 'gen', 'convex'],
+  ignorePatterns: ['node_modules', 'dist', 'gen'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: { jsx: true },
     ecmaVersion: 12,
-    project: './tsconfig.eslint.json',
+    project: './tsconfig.json',
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },
-  overrides: [
-    {
-      files: ['*.ts', '*.tsx'],
-      extends: [
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-      ],
-      parserOptions: {
-        project: './tsconfig.json',
-        sourceType: 'module',
-      },
-      rules: {
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          { varsIgnorePattern: '^_*' },
-        ],
-        '@typescript-eslint/no-var-requires': 'error',
-        '@typescript-eslint/no-floating-promises': 'off',
-        '@typescript-eslint/no-misused-promises': [
-          'error',
-          { checksVoidReturn: false },
-        ],
-        '@typescript-eslint/ban-ts-comment': 'warn',
-        '@typescript-eslint/ban-types': ['error', { types: { '{}': false } }],
-        '@typescript-eslint/consistent-type-imports': [
-          'warn',
-          {
-            prefer: 'type-imports',
-            disallowTypeAnnotations: true,
-            fixStyle: 'separate-type-imports',
-          },
-        ],
-        '@typescript-eslint/naming-convention': 'off',
-        '@typescript-eslint/no-use-before-define': [
-          'error',
-          {
-            functions: false,
-            classes: true,
-            variables: true,
-            allowNamedExports: false,
-          },
-        ],
-      },
-    },
-  ],
   rules: {
     '@typescript-eslint/no-var-requires': 'off',
-    'arrow-body-style': 'off',
+    '@typescript-eslint/indent': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+    'arrow-body-style': ['off', 'as-needed'],
+    'implicit-arrow-linebreak': 'off',
     'consistent-return': 'off',
     curly: ['error', 'all'],
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'lines-between-class-members': 'off',
-    '@typescript-eslint/lines-between-class-members': 'off',
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-restricted-exports': 'off',
     'no-underscore-dangle': 'off',
@@ -113,7 +66,6 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'error',
     'react/destructuring-assignment': 'off',
     'react/function-component-definition': 'off',
-    'react/jsx-indent': ['error', 2],
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
     'react/jsx-no-useless-fragment': 'off',
     'react/jsx-props-no-spreading': 'off',

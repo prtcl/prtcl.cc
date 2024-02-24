@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Flex } from 'theme-ui';
 import { Drunk, Env, Rand, ms } from 'plonk';
 import { useFrames, useMetro } from 'plonk-hooks';
-import { Canvas, useCanvasApi } from '~/lib/canvas';
+import { Flex } from 'theme-ui';
 import useBreakpoints from '~/hooks/useBreakpoints';
+import { Canvas, useCanvasApi } from '~/lib/canvas';
 
 const N_SHAPES = 3;
 const N_POINTS = 13;

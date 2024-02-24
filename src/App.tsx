@@ -1,13 +1,11 @@
-import { ContentOverlay, Layout, VizContainer } from '~/components/Layout';
 import { Box, Text } from 'theme-ui';
-import Visualization from './components/Visualization';
-import Stack from './components/Stack/Stack';
-import content from './data/content';
-import ListItem from './components/ListItem';
+import { ContentOverlay, Layout, VizContainer } from '~/components/Layout';
+import ListItem from '~/components/ListItem';
+import Stack from '~/components/Stack/Stack';
+import Visualization from '~/components/Visualization';
+import { tagline, contact, links } from '~/data/content';
 
 const App = () => {
-  const { tagline, contact, links } = content;
-
   return (
     <Layout>
       <VizContainer>
