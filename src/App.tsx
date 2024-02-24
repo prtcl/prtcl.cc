@@ -1,7 +1,7 @@
 import { Box, Text } from 'theme-ui';
 import { ContentOverlay, Layout, VizContainer } from '~/components/Layout';
 import ListItem from '~/components/ListItem';
-import Stack from '~/components/Stack/Stack';
+import Stack from '~/components/Stack';
 import Visualization from '~/components/Visualization';
 import { tagline, contact, links } from '~/data/content';
 
