@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Drunk, Env, Rand, ms } from 'plonk';
-import { useFrames, useMetro } from 'plonk-hooks';
+import { Drunk, Env, Rand } from 'plonk';
+import { useFrames, useMetro } from 'plonk/hooks';
+import { ms } from 'plonk/utils';
 import { Flex } from 'theme-ui';
 import useBreakpoints from '~/hooks/useBreakpoints';
 import { Canvas, useCanvasApi } from '~/lib/canvas';

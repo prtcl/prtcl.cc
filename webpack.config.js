@@ -52,7 +52,7 @@ module.exports = {
       meta: {
         author: AUTHOR,
         description: DESCRIPTION,
-        themeColor: { name: 'theme-color', content: '#fafafa' },
+        themeColor: { name: 'theme-color', content: '#fff' },
         viewport: 'width=device-width, initial-scale=1, user-scalable=no',
         'google-site-verification':
           'Ydq_4fjxlJ7tZVQZzS4DXQ1VDqWU7lCIT_fiw_HUJlQ',
