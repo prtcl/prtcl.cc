@@ -23,7 +23,7 @@
     "@theme-ui/match-media": "^0.16.1",
     "@theme-ui/presets": "^0.16.1",
     "lodash": "^4.17.21",
-    "plonk": "^2.0.0-alpha.0",
+    "plonk": "^2.0.0-alpha.2",
     "plonk-hooks": "^1.0.0-alpha.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
