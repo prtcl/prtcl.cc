@@ -1,16 +1,17 @@
 import { Box, Stack } from 'styled-system/jsx';
 import Link from '~/components/Link';
 import Text from '~/components/Text';
-import Visualization from '~/components/Visualization';
 import { contact, links } from '~/data/content';
 import { Container, Overlay, Root } from '~/lib/layout';
+import { Visualization } from '~/lib/visualization';
 
 const Bio = () => {
   return (
     <Stack gap={3} px={[3, 4]} maxW={['100%', '18rem']}>
       <Box>
         <Text color="primary">
-          Cory O'Brien is a software engineer and sound artist who lives in NYC
+          Cory O&apos;Brien is a software engineer and sound artist who lives in
+          NYC
         </Text>
       </Box>
       <Stack gap={1}>

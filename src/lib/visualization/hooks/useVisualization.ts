@@ -1,43 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Drunk, Env, Rand } from 'plonk';
-import { useFrames, useMetro } from 'plonk/hooks';
+import { useMetro } from 'plonk/hooks';
 import { ms } from 'plonk/utils';
-import { Flex } from 'styled-system/jsx';
-import useBreakpoints from '~/hooks/useBreakpoints';
-import { Canvas, useCanvas } from '~/lib/canvas';
+import type { PolyPoint, Pos, Shape } from '../types';
 
 const N_SHAPES = 3;
 const N_POINTS = 13;
 
-type Pos = {
-  x: Drunk;
-  y: Drunk;
-};
-
-type PolyPoint = {
-  x: Drunk;
-  y: Drunk;
-};
-
-type ColorRand = {
-  r: Rand;
-  g: Rand;
-  b: Rand;
-};
-
-type Drift = {
-  x: Env;
-  y: Env;
-};
-
-type Shape = {
-  pos: Pos;
-  points: PolyPoint[];
-  color: ColorRand;
-  drift: Drift;
-};
-
-type VisualizationState = {
+export type VisualizationState = {
   jump: Rand;
   shapes: Shape[];
   speed: Drunk;
@@ -88,24 +58,8 @@ const getInitialState = (): VisualizationState => {
   };
 };
 
-const Visualization = () => {
-  const { isMobile } = useBreakpoints();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { canvas, props: canvasProps, isReady } = useCanvas();
+const useVisualization = () => {
   const [state] = useState<VisualizationState>(() => getInitialState());
-
-  useEffect(() => {
-    const resize = () => {
-      const rect = containerRef.current.getBoundingClientRect();
-      canvas.resize(rect);
-    };
-
-    window.addEventListener('resize', resize);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, [canvas]);
 
   useMetro(
     ({ setTime }) => {
@@ -154,55 +108,7 @@ const Visualization = () => {
     { time: 500 },
   );
 
-  useFrames(() => {
-    if (!isReady) {
-      return;
-    }
-
-    const { width, height } = canvas.size;
-
-    canvas.alpha(0.05);
-    canvas.fill({ r: 255, g: 255, b: 255 });
-    canvas.drawRect({
-      x: 0,
-      y: 0,
-      width,
-      height,
-    });
-
-    state.shapes.forEach((shape) => {
-      const driftX = shape.drift.x.next() * (width / (isMobile ? 2 : 4));
-      const driftY = shape.drift.y.next() * (height / 4);
-      const posX = shape.pos.x.next() * (width / 2) + driftX;
-      const posY = shape.pos.y.next() * (height / 2) + driftY;
-
-      canvas.alpha(0.01);
-      canvas.strokeWeight(0);
-      canvas.fill({
-        r: shape.color.r.value(),
-        g: shape.color.g.value(),
-        b: shape.color.b.value(),
-      });
-
-      canvas.drawPolygon(
-        {
-          coords: shape.points.map((point) => {
-            const x = posX + point.x.next() * (width / 2);
-            const y = posY + point.y.next() * (height / 2);
-
-            return [x, y];
-          }),
-        },
-        { shouldFill: true },
-      );
-    });
-  });
-
-  return (
-    <Flex ref={containerRef} width="100%" height="100%">
-      <Canvas {...canvasProps} />
-    </Flex>
-  );
+  return state;
 };
 
-export default Visualization;
+export default useVisualization;
