@@ -29,7 +29,7 @@ module.exports = {
   devtool: 'source-map',
   entry: './src/main.tsx',
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.cjs'],
     alias: {
       '~': path.resolve(__dirname, 'src'),
       'styled-system': path.resolve(__dirname, 'styled-system'),

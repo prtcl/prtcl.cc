@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Drunk, Env, Rand } from 'plonk';
 import { useFrames, useMetro } from 'plonk/hooks';
 import { ms } from 'plonk/utils';
-import { Flex } from 'theme-ui';
-import useBreakpoints from '~/hooks/useBreakpoints';
+import { Flex } from 'styled-system/jsx';
 import { Canvas, useCanvasApi } from '~/lib/canvas';
+import useBreakpoints from '~/lib/useBreakpoints';
 
 const N_SHAPES = 3;
 const N_POINTS = 13;
@@ -90,7 +90,7 @@ const getInitialState = (): VisualizationState => {
 
 const Visualization = () => {
   const { isMobile } = useBreakpoints();
-  const containerRef = useRef<HTMLElement>();
+  const containerRef = useRef<HTMLDivElement>(null);
   const { canvas, props: canvasProps, isReady } = useCanvasApi();
   const [state] = useState<VisualizationState>(() => getInitialState());
 
@@ -199,7 +199,7 @@ const Visualization = () => {
   });
 
   return (
-    <Flex ref={containerRef} sx={{ width: '100%', height: '100%' }}>
+    <Flex ref={containerRef} width="100%" height="100%">
       <Canvas {...canvasProps} />
     </Flex>
   );
