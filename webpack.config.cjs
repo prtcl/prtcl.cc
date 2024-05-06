@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const author = "Cory O'Brien";
 const description = `${author} is a software engineer and sound artist who lives in NYC`;
@@ -53,4 +54,8 @@ module.exports = {
     ],
   },
   plugins: [html, extractCss],
+  optimization: {
+    minimize: true,
+    minimizer: [`...`, new CssMinimizerPlugin()],
+  },
 };
