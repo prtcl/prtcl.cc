@@ -4,7 +4,7 @@ import { useFrames, useMetro } from 'plonk/hooks';
 import { ms } from 'plonk/utils';
 import { Flex } from 'styled-system/jsx';
 import useBreakpoints from '~/hooks/useBreakpoints';
-import { Canvas, useCanvasApi } from '~/lib/canvas';
+import { Canvas, useCanvas } from '~/lib/canvas';
 
 const N_SHAPES = 3;
 const N_POINTS = 13;
@@ -91,7 +91,7 @@ const getInitialState = (): VisualizationState => {
 const Visualization = () => {
   const { isMobile } = useBreakpoints();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { canvas, props: canvasProps, isReady } = useCanvasApi();
+  const { canvas, props: canvasProps, isReady } = useCanvas();
   const [state] = useState<VisualizationState>(() => getInitialState());
 
   useEffect(() => {
