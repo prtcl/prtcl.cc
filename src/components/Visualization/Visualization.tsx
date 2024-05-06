@@ -3,8 +3,8 @@ import { Drunk, Env, Rand } from 'plonk';
 import { useFrames, useMetro } from 'plonk/hooks';
 import { ms } from 'plonk/utils';
 import { Flex } from 'styled-system/jsx';
+import useBreakpoints from '~/hooks/useBreakpoints';
 import { Canvas, useCanvasApi } from '~/lib/canvas';
-import useBreakpoints from '~/lib/useBreakpoints';
 
 const N_SHAPES = 3;
 const N_POINTS = 13;

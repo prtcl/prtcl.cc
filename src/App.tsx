@@ -13,7 +13,7 @@ const Bio = () => {
           Cory O'Brien is a software engineer and sound artist who lives in NYC
         </Text>
       </Box>
-      <Stack gap={[2, 1]}>
+      <Stack gap={1}>
         {contact.map((link) => (
           <Link key={link.url} href={link.url} color="primary">
             {link.title}
