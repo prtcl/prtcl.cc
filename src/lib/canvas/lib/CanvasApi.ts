@@ -1,5 +1,5 @@
 import type { Color, Polygon, Rect } from '../types';
-import { colorToRGBAString } from './helpers';
+import { colorToRgba } from './helpers';
 
 export default class CanvasApi {
   ref: HTMLCanvasElement;
@@ -37,11 +37,11 @@ export default class CanvasApi {
   };
 
   fill = (color: Color) => {
-    this.context.fillStyle = colorToRGBAString(color);
+    this.context.fillStyle = colorToRgba(color);
   };
 
   stroke = (color: Color) => {
-    this.context.strokeStyle = colorToRGBAString(color);
+    this.context.strokeStyle = colorToRgba(color);
   };
 
   strokeWeight = (width: number) => {

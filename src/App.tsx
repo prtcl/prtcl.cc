@@ -1,42 +1,54 @@
-import { Box, Text } from 'theme-ui';
-import { ContentOverlay, Layout, VizContainer } from '~/components/Layout';
-import ListItem from '~/components/ListItem';
-import Stack from '~/components/Stack';
-import Visualization from '~/components/Visualization';
-import { tagline, contact, links } from '~/data/content';
+import { Box, Stack } from 'styled-system/jsx';
+import Link from '~/components/Link';
+import Text from '~/components/Text';
+import { contact, links } from '~/data/content';
+import { Container, Overlay, Root } from '~/lib/layout';
+import { Visualization } from '~/lib/visualization';
 
-const App = () => {
+const Bio = () => {
   return (
-    <Layout>
-      <VizContainer>
-        <Visualization />
-      </VizContainer>
-      <ContentOverlay>
-        <Stack
-          spacing={3}
-          sx={{ maxWidth: ['100%', '18em'], px: 3, pt: 4, pb: 3 }}
-        >
-          <Box>
-            <Text sx={{ color: 'primary' }}>{tagline}</Text>
-          </Box>
-          <Stack spacing={[2, 1]}>
-            {contact.map((link) => (
-              <ListItem key={link.url} link={link} />
-            ))}
-          </Stack>
-        </Stack>
-        <Stack spacing={2} sx={{ px: 3, pt: 1 }}>
-          {links.map((link) => (
-            <ListItem
-              key={link.url}
-              link={link}
-              sx={{ color: 'text', fontWeight: 500 }}
-            />
-          ))}
-        </Stack>
-      </ContentOverlay>
-    </Layout>
+    <Stack gap={3} px={[3, 4]} maxW={['100%', '18rem']}>
+      <Box>
+        <Text color="primary">
+          Cory O&apos;Brien is a software engineer and sound artist who lives in
+          NYC
+        </Text>
+      </Box>
+      <Stack gap={1}>
+        {contact.map((link) => (
+          <Link key={link.url} href={link.url} color="primary">
+            {link.title}
+          </Link>
+        ))}
+      </Stack>
+    </Stack>
   );
 };
+
+const Projects = () => {
+  return (
+    <Stack gap={2} px={[3, 4]}>
+      {links.map((link) => (
+        <Link key={link.url} href={link.url} color="text" fontWeight={500}>
+          {link.title}
+        </Link>
+      ))}
+    </Stack>
+  );
+};
+
+const App = () => (
+  <Root>
+    <Container>
+      <Visualization />
+    </Container>
+    <Overlay>
+      <Stack direction="column" gap={4} py={8}>
+        <Bio />
+        <Projects />
+      </Stack>
+    </Overlay>
+  </Root>
+);
 
 export default App;

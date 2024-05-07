@@ -3,12 +3,43 @@ import {
   type CanvasHTMLAttributes,
   type MutableRefObject,
   useRef,
+  useState,
+  useMemo,
 } from 'react';
+import CanvasApi from './lib/CanvasApi';
+
+export const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [state, setState] = useState<{
+    isReady: boolean;
+    canvas: CanvasApi;
+  }>(() => ({
+    isReady: false,
+    canvas: undefined,
+  }));
+
+  const canvasProps = useMemo<CanvasProps>(
+    () => ({
+      canvasRef,
+      onReady: () => {
+        setState({
+          canvas: new CanvasApi(canvasRef.current),
+          isReady: true,
+        });
+      },
+    }),
+    [],
+  );
+
+  return {
+    ...state,
+    props: canvasProps,
+  };
+};
 
 type CanvasRef = MutableRefObject<HTMLCanvasElement>;
 
-export interface CanvasProps
-  extends Omit<CanvasHTMLAttributes<HTMLCanvasElement>, 'ref'> {
+export interface CanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement> {
   canvasRef: CanvasRef;
   onReady: (ref: CanvasRef) => void;
 }

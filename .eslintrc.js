@@ -22,7 +22,10 @@ module.exports = {
     },
     'import/resolver': {
       alias: {
-        map: [['~', './src']],
+        map: [
+          ['~', './src'],
+          ['styled-system', './styled-system'],
+        ],
         extensions: ['.ts', '.d.ts', '.tsx', '.js', '.mjs', '.json'],
       },
     },

@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "theme-ui",
     "module": "esnext",
     "moduleResolution": "bundler",
     "noImplicitAny": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
     "target": "es6",
+    "verbatimModuleSyntax": true,
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "styled-system/*": ["./styled-system/*"]
     }
   },
   "include": ["src/**/*"],

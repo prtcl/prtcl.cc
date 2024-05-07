@@ -1,8 +1,7 @@
-import type { LinkConfig } from '~/components/ListItem';
-
-export const name = "Cory O'Brien";
-
-export const tagline = `${name} is a software engineer and sound artist who lives in NYC`;
+export type LinkConfig = {
+  title: string;
+  url: string;
+};
 
 export const contact: LinkConfig[] = [
   {
