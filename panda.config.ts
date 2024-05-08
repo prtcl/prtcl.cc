@@ -1,6 +1,7 @@
 import {
   defineConfig,
   defineGlobalStyles,
+  defineKeyframes,
   defineSemanticTokens,
 } from '@pandacss/dev';
 
@@ -43,6 +44,13 @@ const semanticTokens = defineSemanticTokens({
   },
 });
 
+export const keyframes = defineKeyframes({
+  'fade-in': {
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+  },
+});
+
 export default defineConfig({
   globalCss,
   include: ['./src/**/*.{js,jsx,ts,tsx}', './packages/**/*.{js,jsx,ts,tsx}'],
@@ -52,6 +60,7 @@ export default defineConfig({
   preflight: true,
   separator: '-',
   theme: {
+    keyframes,
     semanticTokens,
   },
 });
