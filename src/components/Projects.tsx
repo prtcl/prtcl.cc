@@ -1,22 +1,10 @@
+import { Stack } from 'styled-system/jsx';
+import Link from '~/components/Link';
+
 export type LinkConfig = {
   title: string;
   url: string;
 };
-
-export const contact: LinkConfig[] = [
-  {
-    title: 'Bandcamp',
-    url: 'https://coryobrien.bandcamp.com',
-  },
-  {
-    title: 'Github',
-    url: 'https://github.com/prtcl',
-  },
-  {
-    title: 'cory@prtcl.cc',
-    url: 'mailto:cory@prtcl.cc',
-  },
-];
 
 export const links: LinkConfig[] = [
   {
@@ -40,3 +28,17 @@ export const links: LinkConfig[] = [
     url: 'https://coryobrien.bandcamp.com/album/central-park-binaural',
   },
 ];
+
+const Projects = () => {
+  return (
+    <Stack gap={2} px={[3, 4]}>
+      {links.map((link) => (
+        <Link key={link.url} href={link.url} color="text" fontWeight={500}>
+          {link.title}
+        </Link>
+      ))}
+    </Stack>
+  );
+};
+
+export default Projects;
