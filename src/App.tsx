@@ -1,5 +1,6 @@
 import { useQuery } from 'convex/react';
 import { Box, Stack } from 'styled-system/jsx';
+import Badge from '~/components/Badge';
 import Link from '~/components/Link';
 import Text from '~/components/Text';
 import { api } from '~/convex/api';
@@ -28,7 +29,7 @@ export const contact: LinkConfig[] = [
 
 const Bio = () => {
   return (
-    <Stack gap={3} px={[3, 4]} maxW={['100%', '18rem']}>
+    <Stack gap={3} maxW={['100%', '18rem']}>
       <Box>
         <Text color="primary">
           Cory O&apos;Brien is a software engineer and sound artist who lives in
@@ -46,6 +47,9 @@ const Bio = () => {
   );
 };
 
+export const formatTimestamp = (ts: number) =>
+  new Date(ts).toLocaleDateString('en-US');
+
 const App = () => {
   const projects = useQuery(api.projects.loadProjects);
 
@@ -56,16 +60,24 @@ const App = () => {
       </Container>
       {projects && (
         <Overlay animation="fade-in 340ms linear">
-          <Stack direction="column" gap={4} py={8}>
+          <Stack direction="column" gap={4} px={[3, 4]} py={8}>
             <Bio />
-            <Stack gap={2} px={[3, 4]}>
+            <Stack gap={2}>
               {projects.map((project) => {
-                const { _id, url, label } = project;
+                const { _id, title, url, category, publishedAt } = project;
 
                 return (
-                  <Link key={_id} href={url} color="text" fontWeight={500}>
-                    {label}
-                  </Link>
+                  <Stack key={_id} direction="column" gap={1}>
+                    <Link href={url} color="text" fontWeight={500}>
+                      {title}
+                    </Link>
+                    <Stack direction="row" gap={2}>
+                      <Badge>{category}</Badge>
+                      <Text fontSize="xs" color="zinc.700">
+                        {formatTimestamp(publishedAt)}
+                      </Text>
+                    </Stack>
+                  </Stack>
                 );
               })}
             </Stack>
