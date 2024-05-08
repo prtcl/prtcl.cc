@@ -23,6 +23,7 @@ module.exports = {
     'import/resolver': {
       alias: {
         map: [
+          ['~/convex', './convex/_generated'],
           ['~', './src'],
           ['styled-system', './styled-system'],
         ],

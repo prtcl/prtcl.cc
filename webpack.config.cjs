@@ -1,7 +1,11 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const dotenv = require('dotenv');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
+const webpack = require('webpack');
+
+dotenv.config({ path: '.env.local' });
 
 const author = "Cory O'Brien";
 const description = `${author} is a software engineer and sound artist who lives in NYC`;
@@ -26,12 +30,17 @@ const extractCss = new MiniCssExtractPlugin({
   filename: '[name].[contenthash].css',
 });
 
+const define = new webpack.DefinePlugin({
+  'process.env.CONVEX_URL': JSON.stringify(process.env.CONVEX_URL),
+});
+
 module.exports = {
   devtool: 'source-map',
   entry: './src/main.tsx',
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.cjs'],
+    extensions: ['.tsx', '.ts', '.js', '.mjs', '.cjs'],
     alias: {
+      '~/convex': path.resolve(__dirname, 'convex', '_generated'),
       '~': path.resolve(__dirname, 'src'),
       'styled-system': path.resolve(__dirname, 'styled-system'),
     },
@@ -53,7 +62,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [html, extractCss],
+  plugins: [define, html, extractCss],
   optimization: {
     minimize: true,
     minimizer: [`...`, new CssMinimizerPlugin()],
