@@ -15,7 +15,7 @@ const projects = defineTable({
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
   url: v.string(),
-});
+}).index('deletedByOrder', ['deletedAt', 'order']);
 
 export default defineSchema({
   projects,

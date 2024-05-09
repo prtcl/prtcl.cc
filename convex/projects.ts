@@ -7,10 +7,11 @@ export const loadProjects = query({
   handler: async (ctx) => {
     const projects = await ctx.db
       .query('projects')
-      .filter((q) => q.eq(q.field('deletedAt'), null))
+      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .order('asc')
       .collect();
 
-    return projects.sort((a, b) => a.order - b.order);
+    return projects;
   },
 });
 
