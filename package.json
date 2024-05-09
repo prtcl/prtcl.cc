@@ -13,10 +13,11 @@
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "clean": "rm -r ./node_modules | true ; rm -r ./dist | true",
-    "dev:convex": "convex dev",
+    "convex:deploy": "npx convex deploy --cmd 'npm run build'",
+    "convex:dev": "convex dev",
     "dev:serve": "webpack serve --mode=development --live-reload",
     "dev:watch": "webpack --watch --mode=development --node-env=development",
-    "dev": "concurrently \"npm run dev:watch\" \"npm run dev:serve\" \"npm run dev:convex\"",
+    "dev": "concurrently \"npm run dev:watch\" \"npm run dev:serve\" \"npm run convex:dev\"",
     "lint": "tsc --noEmit --pretty --skipLibCheck && eslint src",
     "panda": "panda codegen --clean",
     "prettier": "prettier src --write",
