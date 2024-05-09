@@ -52,3 +52,35 @@ export const reorderProjects = internalMutation({
     return updates.entries();
   },
 });
+
+export const archiveProject = internalMutation({
+  args: {
+    id: v.id('projects'),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.patch(args.id, {
+      deletedAt: Date.now(),
+      order: Number.MAX_SAFE_INTEGER,
+    });
+  },
+});
+
+export const unarchiveProject = internalMutation({
+  args: {
+    id: v.id('projects'),
+  },
+  handler: async (ctx, args) => {
+    const projects = await ctx.db
+      .query('projects')
+      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .order('desc')
+      .take(1);
+
+    const lastOrder = projects[0].order;
+
+    return await ctx.db.patch(args.id, {
+      deletedAt: null,
+      order: lastOrder + 1,
+    });
+  },
+});
