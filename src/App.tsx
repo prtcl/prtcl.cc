@@ -1,6 +1,8 @@
-import { useQuery } from 'convex/react';
+import { usePaginatedQuery } from 'convex/react';
+import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
 import Badge from '~/components/Badge';
+import Button from '~/components/Button';
 import Link from '~/components/Link';
 import Text from '~/components/Text';
 import { api } from '~/convex/api';
@@ -47,18 +49,44 @@ const Bio = () => {
   );
 };
 
+const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
+  <Button
+    color="zinc.700"
+    my={1}
+    onClick={props.onClick}
+    visual="ghost"
+    width={['100%', 'fit-content']}
+    textAlign="left"
+    justifyContent="flex-start"
+  >
+    {props.children}
+  </Button>
+);
+
 export const formatTimestamp = (ts: number) =>
   new Date(ts).toLocaleDateString('en-US');
 
+const LOAD_ITEMS_COUNT = 7;
+
 const App = () => {
-  const projects = useQuery(api.projects.loadProjects);
+  const {
+    results: projects,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    api.projects.loadProjects,
+    {},
+    { initialNumItems: LOAD_ITEMS_COUNT },
+  );
+  const canLoadMore = status !== 'Exhausted';
+  const isLoading = status === 'LoadingFirstPage';
 
   return (
     <Root>
       <Container>
         <Visualization />
       </Container>
-      {projects && (
+      {projects && !isLoading && (
         <Overlay animation="fade-in 340ms linear">
           <Stack direction="column" gap={4} px={[3, 4]} py={8}>
             <Bio />
@@ -80,6 +108,11 @@ const App = () => {
                   </Stack>
                 );
               })}
+              {canLoadMore && (
+                <LoadMore onClick={() => loadMore(LOAD_ITEMS_COUNT)}>
+                  More...
+                </LoadMore>
+              )}
             </Stack>
           </Stack>
         </Overlay>

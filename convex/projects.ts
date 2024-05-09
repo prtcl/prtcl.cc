@@ -1,17 +1,18 @@
+import { paginationOptsValidator } from 'convex/server';
 import { v } from 'convex/values';
 import { type Id } from './_generated/dataModel';
 import { internalMutation, query } from './_generated/server';
 
 export const loadProjects = query({
-  args: {},
-  handler: async (ctx) => {
-    const projects = await ctx.db
+  args: {
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { paginationOpts }) => {
+    return await ctx.db
       .query('projects')
       .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
       .order('asc')
-      .collect();
-
-    return projects;
+      .paginate(paginationOpts);
   },
 });
 
