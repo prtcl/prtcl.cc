@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
+const __DEV__ = process.env.NODE_ENV !== 'production';
+
 dotenv.config({ path: '.env.local' });
 
 const author = "Cory O'Brien";
@@ -58,13 +60,19 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        use: [
+          __DEV__ ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+        ],
       },
     ],
   },
-  plugins: [define, html, extractCss],
-  optimization: {
-    minimize: true,
-    minimizer: [`...`, new CssMinimizerPlugin()],
-  },
+  plugins: [define, html, ...(__DEV__ ? [] : [extractCss])],
+  optimization: __DEV__
+    ? {}
+    : {
+        minimize: true,
+        minimizer: [`...`, new CssMinimizerPlugin()],
+      },
 };
