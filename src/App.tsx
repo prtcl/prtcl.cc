@@ -9,26 +9,6 @@ import { api } from '~/convex/api';
 import { Container, Overlay, Root } from '~/lib/layout';
 import { Visualization } from '~/lib/visualization';
 
-export type LinkConfig = {
-  title: string;
-  url: string;
-};
-
-export const contact: LinkConfig[] = [
-  {
-    title: 'Bandcamp',
-    url: 'https://coryobrien.bandcamp.com',
-  },
-  {
-    title: 'Github',
-    url: 'https://github.com/prtcl',
-  },
-  {
-    title: 'cory@prtcl.cc',
-    url: 'mailto:cory@prtcl.cc',
-  },
-];
-
 const Bio = () => {
   return (
     <Stack gap={3} maxW={['100%', '18rem']}>
@@ -38,13 +18,9 @@ const Bio = () => {
           NYC
         </Text>
       </Box>
-      <Stack gap={1}>
-        {contact.map((link) => (
-          <Link key={link.url} href={link.url} color="primary">
-            {link.title}
-          </Link>
-        ))}
-      </Stack>
+      <Link href="mailto:cory@prtcl.cc" color="primary">
+        cory@prtcl.cc
+      </Link>
     </Stack>
   );
 };
