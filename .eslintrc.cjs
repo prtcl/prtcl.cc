@@ -21,13 +21,9 @@ module.exports = {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
     'import/resolver': {
-      alias: {
-        map: [
-          ['~/convex', './convex/_generated'],
-          ['~', './src'],
-          ['styled-system', './styled-system'],
-        ],
-        extensions: ['.ts', '.d.ts', '.tsx', '.js', '.mjs', '.json'],
+      typescript: {
+        alwaysTryTypes: true,
+        project: ['./tsconfig.json'],
       },
     },
   },
