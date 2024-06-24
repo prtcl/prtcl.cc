@@ -50,7 +50,7 @@ export const reorderProjects = internalMutation({
       await ctx.db.patch(id, { order });
     }
 
-    return updates.entries();
+    return Array.from(updates.entries());
   },
 });
 
