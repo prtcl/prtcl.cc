@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useFrames } from 'plonk/hooks';
+import { useFrames } from '@prtcl/plonk-hooks';
 import { Flex } from 'styled-system/jsx';
 import useBreakpoints from '~/hooks/useBreakpoints';
 import { Canvas, useCanvas } from '~/lib/canvas';

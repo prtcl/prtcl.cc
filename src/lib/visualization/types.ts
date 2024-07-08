@@ -1,4 +1,4 @@
-import type { Drunk, Env, Rand } from 'plonk';
+import type { Drunk, Env, Rand } from '@prtcl/plonk';
 
 export type Pos = {
   x: Drunk;

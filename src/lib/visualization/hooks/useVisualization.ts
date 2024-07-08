@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Drunk, Env, Rand } from 'plonk';
-import { useMetro } from 'plonk/hooks';
-import { ms } from 'plonk/utils';
+import { Drunk, Env, Rand, ms } from '@prtcl/plonk';
+import { useMetro } from '@prtcl/plonk-hooks';
 import type { PolyPoint, Pos, Shape } from '../types';
 
 const N_SHAPES = 3;
