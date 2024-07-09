@@ -23,9 +23,6 @@ export const reorderProjects = internalMutation({
   },
   handler: async (ctx, { id: targetId, order: targetOrder }) => {
     const projects = await ctx.db.query('projects').collect();
-
-    console.log(projects);
-
     const { updates } = projects
       .sort((a, b) => a.order - b.order)
       .reduce<{ updates: Map<Id<'projects'>, number>; prev: number }>(
