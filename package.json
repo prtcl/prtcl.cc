@@ -15,11 +15,12 @@
     "clean": "rm -rf node_modules | true && rm -r dist | true",
     "deploy": "convex deploy --cmd 'npm run build'",
     "dev": "concurrently  \"convex dev\" \"vite dev --mode=development --host\"",
-    "lint": "tsc --noEmit --pretty --skipLibCheck && eslint src",
+    "lint": "eslint src",
     "panda": "panda codegen --clean",
     "prettier": "prettier src --write",
     "preview": "concurrently  \"convex dev\" \"vite preview\"",
-    "setup": "npm run clean && npm ci && npm run panda"
+    "setup": "npm ci && npm run panda",
+    "typecheck": "tsc --noEmit --pretty --skipLibCheck"
   },
   "dependencies": {
     "@prtcl/plonk": "^1.0.1",

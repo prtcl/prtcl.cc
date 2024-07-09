@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "target": "es6",
+    "types": ["react"],
     "verbatimModuleSyntax": true,
     "paths": {
       "~/*": ["./src/*"],
@@ -20,6 +21,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts", "dist", "node_modules"],
-  "types": ["react"]
+  "exclude": ["**/*.spec.ts", "dist", "node_modules"]
 }
