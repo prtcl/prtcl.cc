@@ -15,7 +15,7 @@
     "clean": "rm -rf node_modules | true && rm -r dist | true",
     "deploy": "convex deploy --cmd 'npm run build'",
     "dev": "concurrently  \"convex dev\" \"vite dev --mode=development --host\"",
-    "lint": "eslint src",
+    "lint": "eslint src convex",
     "panda": "panda codegen --clean",
     "prettier": "prettier src --write",
     "preview": "concurrently  \"convex dev\" \"vite preview\"",
