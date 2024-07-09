@@ -27,7 +27,7 @@ module.exports = {
       },
     },
   },
-  ignorePatterns: ['node_modules', 'dist', 'gen'],
+  ignorePatterns: ['node_modules', 'dist', 'gen', '_generated'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: { jsx: true },
