@@ -27,3 +27,12 @@ jobs:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
         run: npm run deploy
+      - name: Deploy Build
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PRTCL_HOST }}
+          username: ${{ secrets.PRTCL_USERNAME }}
+          key: ${{ secrets.PRTCL_KEY }}
+          port: ${{ secrets.PRTCL_PORT }}
+          source: dist/*
+          target: ${{ secrets.PRTCL_REMOTE_PATH }}
