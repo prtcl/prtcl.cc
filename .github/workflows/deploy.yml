@@ -2,7 +2,7 @@ name: 'Deploy'
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
 
@@ -28,7 +28,7 @@ jobs:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
         run: npm run deploy
-      - name: Deploy Build
+      - name: Deploy
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.PRTCL_HOST }}
