@@ -17,7 +17,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm run setup
+      - name: Install
+        run: npm run setup
       - name: Lint
         run: npm run lint
       - name: Typecheck
