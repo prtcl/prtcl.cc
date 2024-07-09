@@ -32,7 +32,7 @@ jobs:
         with:
           host: ${{ secrets.PRTCL_HOST }}
           username: ${{ secrets.PRTCL_USERNAME }}
-          key: ${{ secrets.PRTCL_KEY }}
+          password: ${{ secrets.PRTCL_PASSWORD }}
           port: ${{ secrets.PRTCL_PORT }}
           source: dist/*
           target: ${{ secrets.PRTCL_REMOTE_PATH }}
