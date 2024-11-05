@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as features from "../features.js";
 import type * as previews from "../previews.js";
 import type * as projects from "../projects.js";
 
@@ -25,6 +26,7 @@ import type * as projects from "../projects.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  features: typeof features;
   previews: typeof previews;
   projects: typeof projects;
 }>;
