@@ -5,6 +5,7 @@ import type { JsxStyleProps } from 'styled-system/types';
 export type ImageTransformOptions = {
   dpr?: number;
   format?: 'jpeg' | 'webp' | 'avif' | 'auto';
+  quality?: number;
   width: number;
 };
 

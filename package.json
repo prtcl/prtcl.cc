@@ -27,12 +27,13 @@
   "dependencies": {
     "@prtcl/plonk": "^1.0.1",
     "@prtcl/plonk-hooks": "^1.0.1",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-hover-card": "^1.1.2",
     "@react-spring/web": "^9.7.5",
     "convex": "^1.17.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.10.1",
+    "react-icons": "^4.12.0",
     "react-use": "^17.5.0"
   },
   "devDependencies": {

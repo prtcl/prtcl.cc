@@ -3,6 +3,7 @@ import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { Preview } from '~/feat/Preview';
+import { useProjectViewer } from '~/feat/ProjectViewer';
 import { Visualization } from '~/feat/Visualization';
 import { Container, Overlay, Root } from '~/lib/layout';
 import Badge from '~/ui/Badge';
@@ -46,6 +47,7 @@ export const formatTimestamp = (ts: number) =>
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
+  const { openProjectViewer } = useProjectViewer();
   const {
     results: projects,
     status,
@@ -74,7 +76,15 @@ const App = () => {
                 return (
                   <Stack key={_id} direction="column" gap={1}>
                     <Preview projectId={_id}>
-                      <Link href={url} color="text" fontWeight={500}>
+                      <Link
+                        href={url}
+                        color="text"
+                        fontWeight={500}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openProjectViewer(_id);
+                        }}
+                      >
                         {title}
                       </Link>
                     </Preview>
