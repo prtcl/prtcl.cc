@@ -5,7 +5,7 @@ import useBreakpoints from '~/hooks/useBreakpoints';
 import { Canvas, useCanvas } from '~/lib/canvas';
 import useVisualization from './hooks/useVisualization';
 
-const Visualization = () => {
+export const Visualization = () => {
   const { isMobile } = useBreakpoints();
   const containerRef = useRef<HTMLDivElement>(null);
   const { canvas, props: canvasProps, isReady } = useCanvas();
@@ -74,5 +74,3 @@ const Visualization = () => {
     </Flex>
   );
 };
-
-export default Visualization;

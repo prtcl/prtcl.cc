@@ -1,13 +1,13 @@
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
-import Badge from '~/components/Badge';
-import Button from '~/components/Button';
-import Link from '~/components/Link';
-import Text from '~/components/Text';
 import { api } from '~/convex/api';
+import { Visualization } from '~/feat/Visualization';
 import { Container, Overlay, Root } from '~/lib/layout';
-import { Visualization } from '~/lib/visualization';
+import Badge from '~/ui/Badge';
+import Button from '~/ui/Button';
+import Link from '~/ui/Link';
+import Text from '~/ui/Text';
 
 const Bio = () => {
   return (
