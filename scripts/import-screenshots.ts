@@ -74,7 +74,6 @@ async function main(deploymentUrl: string, uploadToken: string) {
           `Uploaded ${filename} with storageId: ${payload.storageId}`,
         );
 
-        // Update your project record with the storageId
         await client.mutation(api.previews.createPreview, {
           projectId: projectId as Id<'projects'>,
           storageId: payload.storageId as Id<'_storage'>,
