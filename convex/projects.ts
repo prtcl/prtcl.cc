@@ -17,6 +17,13 @@ export const loadProjects = query({
   },
 });
 
+export const loadAllProjects = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query('projects').order('asc').collect();
+  },
+});
+
 export const reorderProjects = internalMutation({
   args: {
     id: v.id('projects'),
