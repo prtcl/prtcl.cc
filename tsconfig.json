@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "module": "esnext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "noImplicitAny": true,
+    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es6",
+    "target": "ESNext",
     "types": ["react"],
+    "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,
     "paths": {
       "~/*": ["./src/*"],
@@ -20,6 +24,13 @@
       "styled-system/*": ["./styled-system/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/*.spec.ts", "dist", "node_modules"]
+  "include": ["src/**/*", "panda.config.ts", "vite.config.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx",
+    "node_modules",
+    "dist"
+  ]
 }

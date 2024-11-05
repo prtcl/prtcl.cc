@@ -17,6 +17,20 @@ const projects = defineTable({
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
 
+const previews = defineTable({
+  deletedAt: v.union(v.number(), v.null()),
+  projectId: v.id('projects'),
+  storageId: v.id('_storage'),
+}).index('project', ['projectId']);
+
+export const features = defineTable({
+  description: v.optional(v.string()),
+  key: v.string(),
+  value: v.boolean(),
+});
+
 export default defineSchema({
+  features,
+  previews,
   projects,
 });

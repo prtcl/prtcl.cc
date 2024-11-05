@@ -1,13 +1,15 @@
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
-import Badge from '~/components/Badge';
-import Button from '~/components/Button';
-import Link from '~/components/Link';
-import Text from '~/components/Text';
 import { api } from '~/convex/api';
+import { Preview } from '~/feat/Preview';
+import { Visualization } from '~/feat/Visualization';
+import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { Container, Overlay, Root } from '~/lib/layout';
-import { Visualization } from '~/lib/visualization';
+import Badge from '~/ui/Badge';
+import Button from '~/ui/Button';
+import Link from '~/ui/Link';
+import Text from '~/ui/Text';
 
 const Bio = () => {
   return (
@@ -45,6 +47,7 @@ export const formatTimestamp = (ts: number) =>
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
+  const { features } = useFeatureFlags();
   const {
     results: projects,
     status,
@@ -72,9 +75,17 @@ const App = () => {
 
                 return (
                   <Stack key={_id} direction="column" gap={1}>
-                    <Link href={url} color="text" fontWeight={500}>
-                      {title}
-                    </Link>
+                    {features.get(FeatureFlags.PROJECT_PREVIEWS) ? (
+                      <Preview projectId={_id}>
+                        <Link href={url} color="text" fontWeight={500}>
+                          {title}
+                        </Link>
+                      </Preview>
+                    ) : (
+                      <Link href={url} color="text" fontWeight={500}>
+                        {title}
+                      </Link>
+                    )}
                     <Stack direction="row" gap={2}>
                       <Badge>{category}</Badge>
                       <Text fontSize="xs" color="zinc.700">
