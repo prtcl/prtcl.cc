@@ -20,7 +20,7 @@ export const Overlay = styled(Box, {
     position: 'absolute',
     top: 0,
     width: '100%',
-    zIndex: 9999,
+    zIndex: 1,
   },
 });
 

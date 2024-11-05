@@ -2,6 +2,7 @@ import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
+import { Preview } from '~/feat/Preview';
 import { Visualization } from '~/feat/Visualization';
 import { Container, Overlay, Root } from '~/lib/layout';
 import Badge from '~/ui/Badge';
@@ -72,9 +73,11 @@ const App = () => {
 
                 return (
                   <Stack key={_id} direction="column" gap={1}>
-                    <Link href={url} color="text" fontWeight={500}>
-                      {title}
-                    </Link>
+                    <Preview projectId={_id}>
+                      <Link href={url} color="text" fontWeight={500}>
+                        {title}
+                      </Link>
+                    </Preview>
                     <Stack direction="row" gap={2}>
                       <Badge>{category}</Badge>
                       <Text fontSize="xs" color="zinc.700">
