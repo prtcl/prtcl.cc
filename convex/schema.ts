@@ -23,7 +23,14 @@ const previews = defineTable({
   storageId: v.id('_storage'),
 }).index('project', ['projectId']);
 
+export const features = defineTable({
+  description: v.optional(v.string()),
+  key: v.string(),
+  value: v.boolean(),
+});
+
 export default defineSchema({
-  projects,
+  features,
   previews,
+  projects,
 });

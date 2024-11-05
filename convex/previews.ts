@@ -1,4 +1,5 @@
 import { ConvexError, v } from 'convex/values';
+import type { Id } from './_generated/dataModel';
 import { mutation, query } from './_generated/server';
 
 export const loadProjectPreview = query({
@@ -60,7 +61,10 @@ export const createPreview = mutation({
     storageId: v.id('_storage'),
     token: v.string(),
   },
-  handler: async (ctx, { projectId, storageId, token }) => {
+  handler: async (
+    ctx,
+    { projectId, storageId, token },
+  ): Promise<Id<'previews'>> => {
     if (token !== process.env.UPLOAD_TOKEN) {
       throw new Error('Unauthorized');
     }
@@ -72,7 +76,10 @@ export const createPreview = mutation({
       .unique();
 
     if (existingPreview) {
-      return await ctx.db.patch(existingPreview._id, { storageId });
+      await ctx.db.patch(existingPreview._id, { storageId });
+      await ctx.storage.delete(existingPreview.storageId);
+
+      return existingPreview._id;
     }
 
     return await ctx.db.insert('previews', {

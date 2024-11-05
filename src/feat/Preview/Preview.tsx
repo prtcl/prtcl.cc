@@ -3,7 +3,7 @@ import { type PropsWithChildren } from 'react';
 import { Flex } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import type { Id } from '~/convex/dataModel';
-import useBreakpoints from '~/hooks/useBreakpoints';
+import { useInteractions } from '~/lib/viewport';
 import * as HoverCard from '~/ui/HoverCard';
 import Image from '~/ui/Image';
 
@@ -28,9 +28,9 @@ export const Preview = (
   props: PropsWithChildren<{ projectId: Id<'projects'> }>,
 ) => {
   const { children, projectId } = props;
-  const { isMobile } = useBreakpoints();
+  const { hasHover } = useInteractions();
 
-  if (isMobile) {
+  if (!hasHover) {
     return children;
   }
 

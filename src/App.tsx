@@ -5,6 +5,7 @@ import { api } from '~/convex/api';
 import { Preview } from '~/feat/Preview';
 import { useProjectViewer } from '~/feat/ProjectViewer';
 import { Visualization } from '~/feat/Visualization';
+import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { Container, Overlay, Root } from '~/lib/layout';
 import Badge from '~/ui/Badge';
 import Button from '~/ui/Button';
@@ -47,6 +48,7 @@ export const formatTimestamp = (ts: number) =>
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
+  const { features } = useFeatureFlags();
   const { openProjectViewer } = useProjectViewer();
   const {
     results: projects,
@@ -75,19 +77,25 @@ const App = () => {
 
                 return (
                   <Stack key={_id} direction="column" gap={1}>
-                    <Preview projectId={_id}>
-                      <Link
-                        href={url}
-                        color="text"
-                        fontWeight={500}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          openProjectViewer(_id);
-                        }}
-                      >
+                    {features.get(FeatureFlags.PROJECT_PREVIEWS) ? (
+                      <Preview projectId={_id}>
+                        <Link
+                          href={url}
+                          color="text"
+                          fontWeight={500}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openProjectViewer(_id);
+                          }}
+                        >
+                          {title}
+                        </Link>
+                      </Preview>
+                    ) : (
+                      <Link href={url} color="text" fontWeight={500}>
                         {title}
                       </Link>
-                    </Preview>
+                    )}
                     <Stack direction="row" gap={2}>
                       <Badge>{category}</Badge>
                       <Text fontSize="xs" color="zinc.700">
