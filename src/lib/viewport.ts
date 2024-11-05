@@ -1,5 +1,16 @@
 import useMedia from 'react-use/lib/useMedia';
 
+export const useInteractions = () => {
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const hasHover = useMedia('(hover: hover)');
+
+  return {
+    hasTouch,
+    hasHover,
+  };
+};
+
+// From Panda config
 // --breakpoints-sm: 640px;
 // --breakpoints-md: 768px;
 // --breakpoints-lg: 1024px;
