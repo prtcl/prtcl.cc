@@ -3,7 +3,7 @@ import { type PropsWithChildren } from 'react';
 import { Flex } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import type { Id } from '~/convex/dataModel';
-import useBreakpoints from '~/hooks/useBreakpoints';
+import { useBreakpoints } from '~/lib/breakpoints';
 import * as HoverCard from '~/ui/HoverCard';
 import Image from '~/ui/Image';
 

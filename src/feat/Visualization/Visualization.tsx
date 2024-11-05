@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useFrames } from '@prtcl/plonk-hooks';
 import { Flex } from 'styled-system/jsx';
-import useBreakpoints from '~/hooks/useBreakpoints';
+import { useBreakpoints } from '~/lib/breakpoints';
 import { Canvas, useCanvas } from '~/lib/canvas';
 import useVisualization from './hooks/useVisualization';
 
