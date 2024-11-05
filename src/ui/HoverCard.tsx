@@ -104,7 +104,6 @@ export const Root = (props: HoverCardProps) => {
   const { children } = props;
   const [isOpen, toggleOpen] = useState(false);
   const [isHovered, toggleHovered] = useState(false);
-
   const context = useMemo<HoverCardContextValue>(
     () => ({
       isHovered,

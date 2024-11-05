@@ -1,5 +1,16 @@
 import useMedia from 'react-use/lib/useMedia';
 
+export const useInteractions = () => {
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const hasHover = useMedia('(hover: hover)');
+
+  return {
+    hasTouch,
+    hasHover,
+  };
+};
+
+// From Panda config
 // --breakpoints-sm: 640px;
 // --breakpoints-md: 768px;
 // --breakpoints-lg: 1024px;
@@ -8,7 +19,7 @@ import useMedia from 'react-use/lib/useMedia';
 
 export type Breakpoint = 1 | 2 | 3 | 4 | 5 | 6;
 
-const useBreakpoints = () => {
+export const useBreakpoints = () => {
   const isMobile = useMedia('(max-width: 640px)');
   const isMedium = useMedia('(min-width: 641px) and (max-width: 768px)');
   const isLarge = useMedia('(min-width: 769px) and (max-width: 1024px)');
@@ -39,5 +50,3 @@ const useBreakpoints = () => {
     isXl,
   };
 };
-
-export default useBreakpoints;
