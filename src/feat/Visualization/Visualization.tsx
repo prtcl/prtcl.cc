@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useFrames } from '@prtcl/plonk-hooks';
 import { Flex } from 'styled-system/jsx';
 import { Canvas, useCanvas } from '~/lib/canvas';
+import { debounce } from '~/lib/debounce';
 import { useBreakpoints } from '~/lib/viewport';
 import useVisualization from './hooks/useVisualization';
 
@@ -12,15 +13,16 @@ export const Visualization = () => {
   const { shapes } = useVisualization();
 
   useEffect(() => {
-    const resize = () => {
+    const resize = debounce(() => {
       const rect = containerRef.current.getBoundingClientRect();
       canvas.resize(rect);
-    };
+    }, 250);
 
     window.addEventListener('resize', resize);
 
     return () => {
       window.removeEventListener('resize', resize);
+      resize.cancel();
     };
   }, [canvas]);
 
