@@ -6,7 +6,7 @@ import { Preview } from '~/feat/Preview';
 import { useProjectViewer } from '~/feat/ProjectViewer';
 import { Visualization } from '~/feat/Visualization';
 import { FeatureFlags, useFeatureFlags } from '~/lib/features';
-import { Container, Overlay, Root } from '~/lib/layout';
+import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
 import Badge from '~/ui/Badge';
 import Button from '~/ui/Button';
 import Link from '~/ui/Link';
@@ -64,11 +64,11 @@ const App = () => {
 
   return (
     <Root>
-      <Container>
+      <VizContainer>
         <Visualization />
-      </Container>
+      </VizContainer>
       {projects && !isLoading && (
-        <Overlay animation="fade-in 340ms linear">
+        <ContentOverlay animation="fade-in 340ms linear">
           <Stack direction="column" gap={4} px={[3, 4]} py={8}>
             <Bio />
             <Stack gap={2}>
@@ -112,7 +112,7 @@ const App = () => {
               )}
             </Stack>
           </Stack>
-        </Overlay>
+        </ContentOverlay>
       )}
     </Root>
   );
