@@ -2,8 +2,9 @@ import { useQuery } from 'convex/react';
 import { Flex, Stack, VisuallyHidden } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import * as Dialog from '~/ui/Dialog';
-import { PanelContainer } from './components/PanelContainer';
+import { PanelContainer, PanelFooter } from './components/PanelContainer';
 import { PreviewHeader } from './components/PreviewHeader';
+import { ProjectUrl } from './components/ProjectUrl';
 import { useProjectViewer, type ProjectId } from './hooks/useProjectViewer';
 
 const InnerContent = (props: { projectId: ProjectId }) => {
@@ -18,8 +19,12 @@ const InnerContent = (props: { projectId: ProjectId }) => {
         <Dialog.Title>{project?.title}</Dialog.Title>
       </VisuallyHidden>
       <PanelContainer>
-        <Stack direction="column" gap={4}>
+        <Stack direction="column" gap={4} flex={1}>
           <PreviewHeader projectId={projectId} />
+          <Flex flex={1}></Flex>
+          <PanelFooter>
+            {project && <ProjectUrl url={project.url} />}
+          </PanelFooter>
         </Stack>
       </PanelContainer>
     </Flex>

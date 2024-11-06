@@ -1,5 +1,5 @@
 import { type PropsWithChildren } from 'react';
-import { Flex } from 'styled-system/jsx';
+import { Flex, Stack } from 'styled-system/jsx';
 
 export const PanelContainer = (props: PropsWithChildren) => {
   const { children } = props;
@@ -15,5 +15,26 @@ export const PanelContainer = (props: PropsWithChildren) => {
     >
       {children}
     </Flex>
+  );
+};
+
+export const PanelFooter = (props: PropsWithChildren) => {
+  const { children } = props;
+
+  return (
+    <Stack
+      alignItems="center"
+      bg="zinc.100"
+      direction="row"
+      flex={1}
+      gap={2}
+      justifyContent="center"
+      maxHeight={12}
+      shadow="md"
+      overflow="hidden"
+      width="100%"
+    >
+      {children}
+    </Stack>
   );
 };
