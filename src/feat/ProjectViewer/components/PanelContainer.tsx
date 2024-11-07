@@ -9,8 +9,7 @@ export const PanelContainer = (props: PropsWithChildren) => {
       direction="column"
       flex={1}
       height="100%"
-      overflowX="hidden"
-      overflowY="auto"
+      overflow="hidden"
       position="relative"
       width="100%"
       zIndex={0}

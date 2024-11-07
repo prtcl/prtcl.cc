@@ -5,8 +5,9 @@ import {
   type TransitionTo,
 } from '@react-spring/web';
 import { useQuery } from 'convex/react';
-import { Flex } from 'styled-system/jsx';
+import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
+import { useBreakpoints } from '~/lib/viewport';
 import Image from '~/ui/Image';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../hooks/useProjectViewer';
@@ -42,51 +43,98 @@ const toTransition = (direction: Directions): TransitionTo<ProjectId> => {
   };
 };
 
-const InnerDetails = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
-  const details = useQuery(api.details.loadProjectDetails, { projectId });
-  const { embed, coverImage } = details || {};
-
-  console.log(details);
+const ScrollContainer = (props: FlexProps) => {
+  const { children, ...flexProps } = props;
 
   return (
-    <Flex direction="column" flex={1} width="100%" height="100%">
-      {details ? (
-        <>
-          {coverImage && (
-            <Flex
-              alignItems="start"
-              flexShrink={0}
-              justifyContent="start"
-              objectFit="cover"
-              overflow="hidden"
-              position="relative"
+    <Flex
+      direction="column"
+      flex={1}
+      width="100%"
+      height="100%"
+      overflowX="hidden"
+      overflowY="auto"
+      {...flexProps}
+    >
+      {children}
+    </Flex>
+  );
+};
+
+const ImageContainer = (props: FlexProps) => {
+  const { children, ...flexProps } = props;
+
+  return (
+    <Flex
+      alignItems="start"
+      justifyContent="start"
+      flexGrow={1}
+      flexShrink={0}
+      objectFit="cover"
+      overflow="hidden"
+      position="relative"
+      height="fit-content"
+      width="100%"
+      _selection={{ bg: 'transparent' }}
+      {...flexProps}
+    >
+      {children}
+    </Flex>
+  );
+};
+
+const ContentContainer = (props: FlexProps) => {
+  const { children, ...flexProps } = props;
+
+  return (
+    <Flex
+      flexGrow={1}
+      flexShrink={1}
+      minHeight="fit-content"
+      width="100%"
+      {...flexProps}
+    >
+      {children}
+    </Flex>
+  );
+};
+
+const InnerDetails = (props: { projectId: ProjectId }) => {
+  const { projectId } = props;
+  const { isMobile } = useBreakpoints();
+  const details = useQuery(api.details.loadProjectDetails, { projectId });
+  const { embed, coverImage } = details || {};
+  const hasRows = !!embed && !!coverImage && !isMobile;
+
+  return (
+    <ScrollContainer direction={[hasRows ? 'row' : 'column']}>
+      <>
+        {coverImage && (
+          <ImageContainer width={hasRows ? '50%' : '100%'}>
+            <Image
+              alt={coverImage.alt}
+              objectFit="contain"
+              objectPosition="top"
+              options={{ width: 1280, quality: 75, fit: 'cover' }}
+              src={coverImage.url}
+              useAnimation={false}
               width="100%"
+              height="auto"
               _selection={{ bg: 'transparent' }}
-            >
-              <Image
-                alt={coverImage.alt}
-                minHeight="fit-content"
-                objectFit="contain"
-                objectPosition="top"
-                options={{ width: 1280, quality: 75, fit: 'cover' }}
-                src={coverImage.url}
-                useAnimation={false}
-                width="100%"
-                _selection={{ bg: 'transparent' }}
-              />
-            </Flex>
-          )}
-          {embed && (
+            />
+          </ImageContainer>
+        )}
+        {embed && (
+          <ContentContainer width={hasRows ? '50%' : '100%'}>
             <MediaEmbed
               service={embed.service}
               src={embed.src}
               title={embed.title}
             />
-          )}
-        </>
-      ) : null}
-    </Flex>
+          </ContentContainer>
+        )}
+      </>
+    </ScrollContainer>
   );
 };
 

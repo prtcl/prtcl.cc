@@ -19,7 +19,7 @@ const getServiceProps = (service: Services): ServiceProps => {
     case Service.BANDCAMP: {
       return {
         allowtransparency: 'true',
-        minHeight: '435px',
+        style: { minHeight: '435px' },
       };
     }
     case Service.YOUTUBE: {
@@ -28,15 +28,15 @@ const getServiceProps = (service: Services): ServiceProps => {
         allow:
           'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
         referrerPolicy: 'strict-origin-when-cross-origin',
-        minHeight: '315px',
+        style: { minHeight: '315px' },
       };
     }
     case Service.SOUNDCLOUD: {
       return {
         allow: 'autoplay',
         frameBorder: 'no',
-        maxHeight: '300px',
         scrolling: 'no',
+        style: { minHeight: '300px' },
       };
     }
     default: {
@@ -56,13 +56,7 @@ export const MediaEmbed = (props: MediaEmbedProps) => {
   const serviceProps = getServiceProps(service);
 
   return (
-    <Flex
-      fontSize={0}
-      height="100%"
-      lineHeight={0}
-      overflow="hidden"
-      width="100%"
-    >
+    <Flex fontSize={0} height="100%" lineHeight={0} width="100%">
       <styled.iframe
         allowFullScreen
         background="transparent"
