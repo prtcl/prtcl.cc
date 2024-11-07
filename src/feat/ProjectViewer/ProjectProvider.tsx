@@ -1,18 +1,28 @@
-import type { PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 import { ProjectViewer } from './ProjectViewer';
+import { NextPrevContext, useNextPrevApi } from './hooks/useNextPrev';
 import {
   ProjectViewerContext,
   useProjectViewerState,
 } from './hooks/useProjectViewer';
 
-export const ProjectProvider = (props: PropsWithChildren) => {
-  const { children } = props;
-  const context = useProjectViewerState();
+const ProjectViewerProvider = (props: PropsWithChildren) => (
+  <ProjectViewerContext.Provider value={useProjectViewerState()}>
+    {props.children}
+  </ProjectViewerContext.Provider>
+);
 
-  return (
-    <ProjectViewerContext.Provider value={context}>
-      {children}
+const NextPrevProvider = (props: PropsWithChildren) => (
+  <NextPrevContext.Provider value={useNextPrevApi()}>
+    {props.children}
+  </NextPrevContext.Provider>
+);
+
+export const ProjectProvider = (props: PropsWithChildren) => (
+  <ProjectViewerProvider>
+    <NextPrevProvider>
+      {props.children}
       <ProjectViewer />
-    </ProjectViewerContext.Provider>
-  );
-};
+    </NextPrevProvider>
+  </ProjectViewerProvider>
+);

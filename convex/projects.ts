@@ -17,6 +17,20 @@ export const loadProjects = query({
   },
 });
 
+export const loadProjectIds = query({
+  args: {},
+  handler: async (ctx) => {
+    const projects = await ctx.db
+      .query('projects')
+      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .filter((q) => q.neq(q.field('publishedAt'), null))
+      .order('asc')
+      .collect();
+
+    return projects?.map((p) => p._id);
+  },
+});
+
 export const loadAllProjects = query({
   args: {},
   handler: async (ctx) => {

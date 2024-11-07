@@ -1,4 +1,6 @@
 import { useQuery } from 'convex/react';
+import { useState } from 'react';
+import useKey from 'react-use/lib/useKey';
 import { Flex, Spacer, Stack, VisuallyHidden } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { useBreakpoints } from '~/lib/viewport';
@@ -12,6 +14,7 @@ import {
 } from './components/PanelContainer';
 import { PreviewHeader } from './components/PreviewHeader';
 import { ProjectUrl } from './components/ProjectUrl';
+import { useNextPrev } from './hooks/useNextPrev';
 import { useProjectViewer } from './hooks/useProjectViewer';
 
 const Close = () => {
@@ -33,11 +36,30 @@ const Close = () => {
   );
 };
 
-const InnerContent = () => {
-  const { projectId } = useProjectViewer();
-  const project = useQuery(api.projects.loadProject, { projectId });
+type Directions = -1 | 1 | 0;
 
-  console.log({ projectId, project });
+const InnerContent = () => {
+  const { projectId, updateProjectId } = useProjectViewer();
+  const project = useQuery(api.projects.loadProject, { projectId });
+  const { next, prev } = useNextPrev(projectId);
+  const [direction, setDirection] = useState<Directions>(0);
+
+  const handleLeft = () => {
+    if (prev) {
+      updateProjectId(prev);
+      setDirection(-1);
+    }
+  };
+  const handleRight = () => {
+    if (next) {
+      updateProjectId(next);
+      setDirection(1);
+    }
+  };
+  useKey('ArrowLeft', handleLeft, {}, [prev]);
+  useKey('ArrowRight', handleRight, {}, [next]);
+
+  console.log({ projectId, project, next, prev, direction });
 
   return (
     <Flex width="100%" height="100%">
@@ -51,10 +73,10 @@ const InnerContent = () => {
           <PanelFooter>
             {project ? <ProjectUrl url={project.url} /> : <Spacer />}
             <Stack direction="row" gap={[0, 1]}>
-              <IconButton onPress={() => console.log('left')}>
+              <IconButton onPress={handleLeft} isDisabled={prev === null}>
                 <ChevronLeftIcon />
               </IconButton>
-              <IconButton onPress={() => console.log('right')}>
+              <IconButton onPress={handleRight} isDisabled={next === null}>
                 <ChevronLeftIcon transform="rotate(180deg)" />
               </IconButton>
             </Stack>

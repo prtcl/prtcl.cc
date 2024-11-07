@@ -17,6 +17,7 @@ export type ProjectViewerState = {
 export type ProjectViewerContextValue = ProjectViewerState & {
   closeViewer: () => void;
   openProjectViewer: (projectId: ProjectId) => void;
+  updateProjectId: (projectId: ProjectId) => void;
 };
 
 export const ProjectViewerContext = createContext<ProjectViewerContextValue>(
@@ -26,13 +27,18 @@ export const ProjectViewerContext = createContext<ProjectViewerContextValue>(
 export enum Actions {
   SHOW_PROJECT_DETAILS = 'SHOW_PROJECT_DETAILS',
   CLOSE = 'CLOSE',
+  UPDATE_PROJECT_ID = 'UPDATE_PROJECT_ID',
 }
 
 type ProjectViewerActions =
   | { type: Actions.CLOSE }
   | {
       type: Actions.SHOW_PROJECT_DETAILS;
-      payload: { projectId: Id<'projects'> };
+      payload: { projectId: ProjectId };
+    }
+  | {
+      type: Actions.UPDATE_PROJECT_ID;
+      payload: { projectId: ProjectId };
     };
 
 const reducer = (
@@ -44,6 +50,12 @@ const reducer = (
       return {
         ...state,
         isOpen: true,
+        projectId: action.payload.projectId,
+      };
+    }
+    case Actions.UPDATE_PROJECT_ID: {
+      return {
+        ...state,
         projectId: action.payload.projectId,
       };
     }
@@ -75,6 +87,16 @@ export const useProjectViewerState = (): ProjectViewerContextValue => {
     [dispatch],
   );
 
+  const updateProjectId = useCallback(
+    (projectId: ProjectId) => {
+      dispatch({
+        type: Actions.UPDATE_PROJECT_ID,
+        payload: { projectId },
+      });
+    },
+    [dispatch],
+  );
+
   const closeViewer = useCallback(() => {
     dispatch({ type: Actions.CLOSE });
   }, [dispatch]);
@@ -84,8 +106,9 @@ export const useProjectViewerState = (): ProjectViewerContextValue => {
       ...state,
       closeViewer,
       openProjectViewer,
+      updateProjectId,
     }),
-    [state, openProjectViewer, closeViewer],
+    [state, openProjectViewer, updateProjectId, closeViewer],
   );
 };
 

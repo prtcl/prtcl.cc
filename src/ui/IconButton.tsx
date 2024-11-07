@@ -91,9 +91,13 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         {...rest}
         ref={innerRef}
         onClick={(e) => e.preventDefault()}
-        onPointerDown={handleDown}
-        onPointerUp={handleUp}
         style={styles}
+        {...(!isDisabled
+          ? {
+              onPointerDown: handleDown,
+              onPointerUp: handleUp,
+            }
+          : {})}
       >
         {children}
       </InnerIconButton>
