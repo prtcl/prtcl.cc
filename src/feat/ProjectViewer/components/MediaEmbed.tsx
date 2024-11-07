@@ -11,6 +11,7 @@ type Services = `${Service}`;
 export type ServiceProps = HTMLStyledProps<'iframe'> & {
   allowtransparency?: string;
   referrerpolicy?: string;
+  frameborder?: string;
 };
 
 const getServiceProps = (service: Services): ServiceProps => {
@@ -28,6 +29,14 @@ const getServiceProps = (service: Services): ServiceProps => {
           'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
         referrerPolicy: 'strict-origin-when-cross-origin',
         minHeight: '315px',
+      };
+    }
+    case Service.SOUNDCLOUD: {
+      return {
+        allow: 'autoplay',
+        frameBorder: 'no',
+        maxHeight: '300px',
+        scrolling: 'no',
       };
     }
     default: {
@@ -56,7 +65,6 @@ export const MediaEmbed = (props: MediaEmbedProps) => {
     >
       <styled.iframe
         allowFullScreen
-        allowTransparency
         background="transparent"
         border={0}
         borderRadius={0}
