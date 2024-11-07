@@ -1,5 +1,5 @@
 import { paginationOptsValidator } from 'convex/server';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { type Id } from './_generated/dataModel';
 import { internalMutation, query } from './_generated/server';
 
@@ -41,7 +41,16 @@ export const loadAllProjects = query({
 export const loadProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
-    return await ctx.db.get(projectId);
+    const project = await ctx.db.get(projectId);
+
+    if (!project || project.deletedAt !== null) {
+      throw new ConvexError({
+        message: 'Project not found',
+        code: 404,
+      });
+    }
+
+    return project;
   },
 });
 
