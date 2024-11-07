@@ -17,7 +17,7 @@ export const ProjectUrl = (props: { url: string }) => {
   const displayUrl = formatProjectUrl(url);
 
   return (
-    <Flex flex={1} minWidth={0} overflow="hidden" width={0} px={4}>
+    <Flex flex={1} minWidth={0} overflow="hidden" width={0}>
       <Link
         color="zinc.600"
         display="block"
@@ -36,7 +36,7 @@ export const ProjectUrl = (props: { url: string }) => {
           textDecoration: 'none',
         }}
       >
-        {displayUrl}
+        &raquo; {displayUrl}
       </Link>
     </Flex>
   );

@@ -50,7 +50,7 @@ export const PreviewHeader = (props: { projectId: ProjectId }) => {
         maxWidth="100vw"
         options={{ width: 840, quality: 75 }}
         src={preview?.publicUrl}
-        width={['93vw', '95vw', '95vw', '92vw', '68vw']}
+        width="100%"
         _selection={{ bg: 'transparent' }}
       />
       <Overlay />
