@@ -3,9 +3,10 @@ import { useState } from 'react';
 import useKey from 'react-use/lib/useKey';
 import { Flex, Stack, VisuallyHidden } from 'styled-system/jsx';
 import { api } from '~/convex/api';
-import { useBreakpoints } from '~/lib/viewport';
+import { ErrorBoundary } from '~/lib/errors';
 import * as Dialog from '~/ui/Dialog';
 import IconButton from '~/ui/IconButton';
+import Text from '~/ui/Text';
 import { BackIcon, ChevronLeftIcon } from '~/ui/icons';
 import {
   PanelContainer,
@@ -17,26 +18,7 @@ import { ProjectUrl } from './components/ProjectUrl';
 import { useNextPrev, type Directions } from './hooks/useNextPrev';
 import { useProjectViewer } from './hooks/useProjectViewer';
 
-const Close = () => {
-  const { breakpoint } = useBreakpoints();
-  const { closeViewer } = useProjectViewer();
-
-  return (
-    <IconButton
-      ml={[-1, -1.5]}
-      mt={[-0.5, -1]}
-      onPress={closeViewer}
-      size={breakpoint === 1 ? 'sm' : 'md'}
-    >
-      <BackIcon
-        color={['zinc.600', 'zinc.600', 'zinc.600', 'zinc.700']}
-        size={breakpoint === 1 ? 'sm' : 'md'}
-      />
-    </IconButton>
-  );
-};
-
-const InnerContent = () => {
+const DetailsPanel = () => {
   const { projectId, updateProjectId } = useProjectViewer();
   const project = useQuery(api.projects.loadProject, { projectId });
   const { next, prev } = useNextPrev(projectId);
@@ -60,32 +42,36 @@ const InnerContent = () => {
   console.log({ projectId, project, next, prev, direction });
 
   return (
-    <Flex width="100%" height="100%">
-      <PanelContainer>
-        <PanelHeader>
-          <Close />
-        </PanelHeader>
-        <Flex direction="column" flex={1} mt={[-2, -2]}>
-          <ProjectDetails direction={direction} projectId={projectId} />
-          <PanelFooter>
-            <ProjectUrl url={project?.url} direction={direction} />
-            <Stack direction="row" gap={[0, 1]}>
-              <IconButton onPress={handleLeft} isDisabled={prev === null}>
-                <ChevronLeftIcon />
-              </IconButton>
-              <IconButton onPress={handleRight} isDisabled={next === null}>
-                <ChevronLeftIcon transform="rotate(180deg)" />
-              </IconButton>
-            </Stack>
-          </PanelFooter>
-        </Flex>
-      </PanelContainer>
+    <>
+      <Flex direction="column" flex={1}>
+        <ProjectDetails direction={direction} projectId={projectId} />
+        <PanelFooter>
+          <ProjectUrl url={project?.url} direction={direction} />
+          <Stack direction="row" gap={[0, 1]}>
+            <IconButton onPress={() => handleLeft()} isDisabled={prev === null}>
+              <ChevronLeftIcon />
+            </IconButton>
+            <IconButton
+              onPress={() => handleRight()}
+              isDisabled={next === null}
+            >
+              <ChevronLeftIcon transform="rotate(180deg)" />
+            </IconButton>
+          </Stack>
+        </PanelFooter>
+      </Flex>
       <VisuallyHidden>
         <Dialog.Title>{project?.title}</Dialog.Title>
       </VisuallyHidden>
-    </Flex>
+    </>
   );
 };
+
+const NotFound = () => (
+  <Flex alignItems="center" justifyContent="center" flex={1} width="100%">
+    <Text>Not Found</Text>
+  </Flex>
+);
 
 export const ProjectViewer = () => {
   const { isOpen, closeViewer } = useProjectViewer();
@@ -94,16 +80,26 @@ export const ProjectViewer = () => {
     <Dialog.Root isOpen={isOpen} onClose={closeViewer}>
       <Dialog.Overlay />
       <Dialog.Content
-        borderRadius={0}
+        bg="white"
+        borderRadius={12}
         height="100%"
-        maxHeight={['96%', '95vh', '95vh', '92vh', '84vh']}
-        maxWidth={['95%', '95vw', '95vw', '92vw', '68vw']}
+        maxHeight={['97%', '95vh', '95vh', '92vh', '84vh']}
+        maxWidth={['97%', '95vw', '95vw', '92vw', '68vw']}
         onOpenAutoFocus={(e) => e.preventDefault()}
-        overflow="initial"
-        shadow="none"
+        overflow="hidden"
+        shadow="2xl"
         width="100%"
       >
-        <InnerContent />
+        <PanelContainer>
+          <PanelHeader>
+            <IconButton ml={-1} mt={-1} onPress={() => closeViewer()} size="md">
+              <BackIcon color="zinc.500" size="md" />
+            </IconButton>
+          </PanelHeader>
+          <ErrorBoundary fallback={() => <NotFound />}>
+            <DetailsPanel />
+          </ErrorBoundary>
+        </PanelContainer>
       </Dialog.Content>
     </Dialog.Root>
   );

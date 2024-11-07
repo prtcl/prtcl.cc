@@ -6,14 +6,13 @@ export const PanelContainer = (props: PropsWithChildren) => {
 
   return (
     <Flex
-      bg="white"
-      borderRadius={[8, 12]}
       direction="column"
       flex={1}
+      height="100%"
       overflowX="hidden"
       overflowY="auto"
       position="relative"
-      shadow="2xl"
+      width="100%"
       zIndex={0}
     >
       {children}
@@ -26,8 +25,9 @@ export const PanelHeader = (props: PropsWithChildren) => {
 
   return (
     <Flex
-      maxHeight="fit-content"
-      position={['initial', 'initial', 'fixed']}
+      alignItems="center"
+      height={10}
+      bg="zinc.900"
       px={[0, 1]}
       py={[0.25, 0.5]}
       width="100%"

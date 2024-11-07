@@ -40,6 +40,7 @@ const Img = styled('img', {
 });
 
 export interface ImageProps extends JsxStyleProps {
+  alt?: string;
   loading?: 'lazy' | 'eager';
   options?: ImageTransformOptions;
   src?: string;

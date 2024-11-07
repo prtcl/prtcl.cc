@@ -5,62 +5,12 @@ import {
   type TransitionTo,
 } from '@react-spring/web';
 import { useQuery } from 'convex/react';
-import { Flex, Stack } from 'styled-system/jsx';
+import { Flex } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import Image from '~/ui/Image';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../hooks/useProjectViewer';
-
-const Overlay = () => (
-  <Flex
-    bgGradient="to-b"
-    bottom={0}
-    gradientFrom="transparent"
-    gradientTo="white"
-    height="100%"
-    left={0}
-    position="absolute"
-    width="100%"
-    zIndex={1}
-    _selection={{ bg: 'transparent' }}
-  />
-);
-
-const PreviewHeader = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
-  const preview = useQuery(api.previews.loadProjectPreview, { projectId });
-
-  return (
-    <Flex
-      alignItems="start"
-      flexShrink={0}
-      height={['9rem', '12rem']}
-      justifyContent="start"
-      maxHeight={['9rem', '12rem']}
-      objectFit="cover"
-      overflow="hidden"
-      position="relative"
-      width="100%"
-      zIndex={0}
-      _selection={{ bg: 'transparent' }}
-    >
-      <Image
-        height={['9rem', '12rem']}
-        maxHeight={['9rem', '12rem']}
-        minHeight="fit-content"
-        objectFit="contain"
-        objectPosition="top"
-        options={{ width: 1280, quality: 75, fit: 'cover' }}
-        src={preview?.publicUrl}
-        useAnimation={false}
-        width="100%"
-        zIndex={0}
-        _selection={{ bg: 'transparent' }}
-      />
-      <Overlay />
-    </Flex>
-  );
-};
+import { MediaEmbed } from './MediaEmbed';
 
 const fromTransition = (direction: Directions): TransitionFrom<ProjectId> => {
   const distance = 25;
@@ -90,6 +40,54 @@ const toTransition = (direction: Directions): TransitionTo<ProjectId> => {
     transform: 'translate3d(0%, 0, 0)',
     opacity: 0,
   };
+};
+
+const InnerDetails = (props: { projectId: ProjectId }) => {
+  const { projectId } = props;
+  const details = useQuery(api.details.loadProjectDetails, { projectId });
+  const { embed, coverImage } = details || {};
+
+  console.log(details);
+
+  return (
+    <Flex direction="column" flex={1} width="100%" height="100%">
+      {details ? (
+        <>
+          {coverImage && (
+            <Flex
+              alignItems="start"
+              flexShrink={0}
+              justifyContent="start"
+              objectFit="cover"
+              overflow="hidden"
+              position="relative"
+              width="100%"
+              _selection={{ bg: 'transparent' }}
+            >
+              <Image
+                alt={coverImage.alt}
+                minHeight="fit-content"
+                objectFit="contain"
+                objectPosition="top"
+                options={{ width: 1280, quality: 75, fit: 'cover' }}
+                src={coverImage.url}
+                useAnimation={false}
+                width="100%"
+                _selection={{ bg: 'transparent' }}
+              />
+            </Flex>
+          )}
+          {embed && (
+            <MediaEmbed
+              service={embed.service}
+              src={embed.src}
+              title={embed.title}
+            />
+          )}
+        </>
+      ) : null}
+    </Flex>
+  );
 };
 
 export const ProjectDetails = (props: {
@@ -124,10 +122,7 @@ export const ProjectDetails = (props: {
             position: 'absolute',
           }}
         >
-          <Stack direction="column" gap={4} width="100%" height="100%">
-            <PreviewHeader projectId={currentId} />
-            <Flex flex={1}></Flex>
-          </Stack>
+          <InnerDetails projectId={currentId} />
         </animated.div>
       ))}
     </Flex>
