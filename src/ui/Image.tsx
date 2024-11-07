@@ -3,9 +3,15 @@ import { styled } from 'styled-system/jsx';
 import type { JsxStyleProps } from 'styled-system/types';
 
 export type ImageTransformOptions = {
+  blur?: number;
+  brightness?: number;
+  compression?: 'lossless';
   dpr?: number;
+  fit?: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad';
   format?: 'jpeg' | 'webp' | 'avif' | 'auto';
+  height?: number;
   quality?: number;
+  sharpen?: number;
   width: number;
 };
 
@@ -38,14 +44,16 @@ export interface ImageProps extends JsxStyleProps {
   options?: ImageTransformOptions;
   src?: string;
   srcSet?: string;
+  useAnimation?: boolean;
   useHighRes?: boolean;
 }
 
 const Image = (props: ImageProps) => {
   const {
-    src: initialSrc,
-    options,
     loading = 'lazy',
+    options,
+    src: initialSrc,
+    useAnimation = false,
     useHighRes,
     ...imgProps
   } = props;
@@ -74,9 +82,15 @@ const Image = (props: ImageProps) => {
       // NOTE: `src` must come after `srcSet` due to a Safari loading issue:
       //  https://bugs.webkit.org/show_bug.cgi?id=190031
       src={src}
-      opacity={hasLoaded ? 1 : 0}
       onLoad={handleLoad}
       loading={loading}
+      {...(useAnimation
+        ? {
+            opacity: hasLoaded ? 1 : 0,
+          }
+        : {
+            opacity: 1,
+          })}
     />
   );
 };

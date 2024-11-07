@@ -1,7 +1,7 @@
 import { useQuery } from 'convex/react';
 import { useState } from 'react';
 import useKey from 'react-use/lib/useKey';
-import { Flex, Spacer, Stack, VisuallyHidden } from 'styled-system/jsx';
+import { Flex, Stack, VisuallyHidden } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { useBreakpoints } from '~/lib/viewport';
 import * as Dialog from '~/ui/Dialog';
@@ -12,9 +12,9 @@ import {
   PanelFooter,
   PanelHeader,
 } from './components/PanelContainer';
-import { PreviewHeader } from './components/PreviewHeader';
+import { ProjectDetails } from './components/ProjectDetails';
 import { ProjectUrl } from './components/ProjectUrl';
-import { useNextPrev } from './hooks/useNextPrev';
+import { useNextPrev, type Directions } from './hooks/useNextPrev';
 import { useProjectViewer } from './hooks/useProjectViewer';
 
 const Close = () => {
@@ -35,8 +35,6 @@ const Close = () => {
     </IconButton>
   );
 };
-
-type Directions = -1 | 1 | 0;
 
 const InnerContent = () => {
   const { projectId, updateProjectId } = useProjectViewer();
@@ -67,11 +65,10 @@ const InnerContent = () => {
         <PanelHeader>
           <Close />
         </PanelHeader>
-        <Stack direction="column" gap={4} flex={1} mt={[-2, -2]}>
-          <PreviewHeader projectId={projectId} />
-          <Flex flex={1}></Flex>
+        <Flex direction="column" flex={1} mt={[-2, -2]}>
+          <ProjectDetails direction={direction} projectId={projectId} />
           <PanelFooter>
-            {project ? <ProjectUrl url={project.url} /> : <Spacer />}
+            <ProjectUrl url={project?.url} direction={direction} />
             <Stack direction="row" gap={[0, 1]}>
               <IconButton onPress={handleLeft} isDisabled={prev === null}>
                 <ChevronLeftIcon />
@@ -81,7 +78,7 @@ const InnerContent = () => {
               </IconButton>
             </Stack>
           </PanelFooter>
-        </Stack>
+        </Flex>
       </PanelContainer>
       <VisuallyHidden>
         <Dialog.Title>{project?.title}</Dialog.Title>

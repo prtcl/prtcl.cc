@@ -13,6 +13,8 @@ export type NextPrevContextValue = {
   projectIds: ProjectId[];
 };
 
+export type Directions = -1 | 1 | 0;
+
 export const NextPrevContext = createContext<NextPrevContextValue>(
   {} as NextPrevContextValue,
 );
