@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PureComponent, type PropsWithChildren, type ReactNode } from 'react';
 
 export type ErrorState = {
@@ -18,7 +19,7 @@ export class ErrorBoundary extends PureComponent<
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: any) {
     return { hasError: !!error, error };
   }
 
