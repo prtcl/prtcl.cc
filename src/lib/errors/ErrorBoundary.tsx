@@ -7,7 +7,7 @@ export type ErrorState = {
 };
 
 export type ErrorBoundaryProps = PropsWithChildren<{
-  fallback?: (state: ErrorState) => ReactNode;
+  fallback: (state: ErrorState) => ReactNode;
 }>;
 
 export class ErrorBoundary extends PureComponent<
