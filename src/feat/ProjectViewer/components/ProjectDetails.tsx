@@ -8,6 +8,7 @@ import { useQuery } from 'convex/react';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import Image from '~/ui/Image';
+import { Markdown } from '~/ui/Markdown';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../hooks/useProjectViewer';
 import { MediaEmbed } from './MediaEmbed';
@@ -91,28 +92,70 @@ const EmbedContainer = (props: FlexProps) => {
   );
 };
 
+const ContentContainer = (props: FlexProps) => {
+  const { children, ...flexProps } = props;
+
+  return (
+    <Flex
+      alignSelf="center"
+      bg={['initial', 'zinc.100/98']}
+      borderColor={['initial', 'zinc.100']}
+      borderRadius={12}
+      borderWidth={[0, 1]}
+      bottom={['initial', 4]}
+      direction="column"
+      mt={[-2.5, 0]}
+      padding={[0, 3]}
+      pb={[5, 2.5]}
+      position={['initial', 'fixed']}
+      pt={[0, 3]}
+      px={2.5}
+      shadow={['initial', 'lg']}
+      width={['initial', 'calc(100% - 2rem)', 'calc(100% - 2rem)', '84%']}
+      {...flexProps}
+    >
+      {children}
+    </Flex>
+  );
+};
+
 const InnerDetails = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
   const details = useQuery(api.details.loadProjectDetails, { projectId });
-  const { embed, coverImage } = details || {};
+  const { content, embed, coverImage } = details || {};
 
   return (
     <ScrollContainer>
       <>
         {coverImage && (
-          <ImageContainer>
+          <ImageContainer
+            {...(!!content
+              ? {
+                  flexGrow: 1,
+                  flexBasis: 'fit-content',
+                  flexShrink: 0,
+                  py: [4, 0],
+                }
+              : {})}
+          >
             <Image
               alt={coverImage.alt}
               height="100%"
               objectFit="contain"
-              objectPosition={['center', 'center']}
+              objectPosition="center"
               options={{ width: 1280, quality: 75, fit: 'cover' }}
               src={coverImage.url}
               useAnimation={false}
               width="100%"
+              flexShrink={0}
               _selection={{ bg: 'transparent' }}
             />
           </ImageContainer>
+        )}
+        {content && (
+          <ContentContainer>
+            <Markdown color="zinc.900">{content}</Markdown>
+          </ContentContainer>
         )}
         {embed && (
           <EmbedContainer>

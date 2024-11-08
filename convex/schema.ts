@@ -18,6 +18,7 @@ const projects = defineTable({
 }).index('deletedByOrder', ['deletedAt', 'order']);
 
 const details = defineTable({
+  content: v.union(v.string(), v.null()),
   coverImageId: v.union(v.id('_storage'), v.null()),
   deletedAt: v.union(v.number(), v.null()),
   embedId: v.union(v.id('embeds'), v.null()),

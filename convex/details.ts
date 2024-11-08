@@ -72,10 +72,11 @@ const getOrInsertProjectDetails = async (
 
   if (!details) {
     const insertedId = await ctx.db.insert('details', {
-      projectId,
+      content: null,
       coverImageId: null,
       deletedAt: null,
       embedId: null,
+      projectId,
     });
     details = await ctx.db.get(insertedId);
   }

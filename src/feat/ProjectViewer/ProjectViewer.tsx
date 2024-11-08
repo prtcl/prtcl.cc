@@ -39,8 +39,6 @@ const DetailsPanel = () => {
   useKey('ArrowLeft', handleLeft, {}, [prev]);
   useKey('ArrowRight', handleRight, {}, [next]);
 
-  console.log({ projectId, project, next, prev, direction });
-
   return (
     <>
       <Flex direction="column" flex={1}>
@@ -83,8 +81,8 @@ export const ProjectViewer = () => {
         bg="white"
         borderRadius={12}
         height="100%"
-        maxHeight={['97%', '95vh', '95vh', '92vh', '84vh']}
-        maxWidth={['97%', '95vw', '95vw', '92vw', '68vw']}
+        maxHeight={['97svh', '95vh', '95vh', '92vh', '84vh']}
+        maxWidth={['97vw', '95vw', '95vw', '92vw', '72vw']}
         onOpenAutoFocus={(e) => e.preventDefault()}
         overflow="hidden"
         shadow="2xl"
@@ -93,7 +91,7 @@ export const ProjectViewer = () => {
         <PanelContainer>
           <PanelHeader>
             <IconButton ml={-1} mt={-1} onPress={() => closeViewer()} size="md">
-              <BackIcon color="zinc.500" size="md" />
+              <BackIcon color="zinc.200" size="md" />
             </IconButton>
           </PanelHeader>
           <ErrorBoundary fallback={() => <NotFound />}>
