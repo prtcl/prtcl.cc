@@ -64,7 +64,7 @@ export type IconButtonProps = HTMLStyledProps<typeof InnerIconButton> & {
   onPress: () => void;
 };
 
-const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   function IconButton(props, innerRef) {
     const { children, isDisabled = false, onPress, ...rest } = props;
     const [isPressed, setPressed] = useState(false);
@@ -104,5 +104,3 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     );
   },
 );
-
-export default IconButton;

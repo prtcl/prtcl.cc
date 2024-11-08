@@ -1,6 +1,6 @@
 import { styled } from 'styled-system/jsx';
 
-const Text = styled('span', {
+export const Text = styled('span', {
   base: {
     color: 'text',
   },
@@ -23,5 +23,3 @@ const Text = styled('span', {
     visual: 'inline',
   },
 });
-
-export default Text;

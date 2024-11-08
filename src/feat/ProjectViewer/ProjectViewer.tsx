@@ -5,8 +5,8 @@ import { Flex, Stack, VisuallyHidden } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { ErrorBoundary } from '~/lib/errors';
 import * as Dialog from '~/ui/Dialog';
-import IconButton from '~/ui/IconButton';
-import Text from '~/ui/Text';
+import { IconButton } from '~/ui/IconButton';
+import { Text } from '~/ui/Text';
 import { BackIcon, ChevronLeftIcon } from '~/ui/icons';
 import {
   PanelContainer,

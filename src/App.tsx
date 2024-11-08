@@ -7,10 +7,10 @@ import { useProjectViewer } from '~/feat/ProjectViewer';
 import { Visualization } from '~/feat/Visualization';
 import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
-import Badge from '~/ui/Badge';
-import Button from '~/ui/Button';
-import Link from '~/ui/Link';
-import Text from '~/ui/Text';
+import { Badge } from '~/ui/Badge';
+import { Button } from '~/ui/Button';
+import { Link } from '~/ui/Link';
+import { Text } from '~/ui/Text';
 
 const Bio = () => {
   return (

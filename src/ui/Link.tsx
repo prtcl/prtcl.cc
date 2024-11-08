@@ -1,6 +1,6 @@
 import { styled } from 'styled-system/jsx';
 
-const Link = styled('a', {
+export const Link = styled('a', {
   base: {
     color: 'text',
     textDecoration: 'none',
@@ -10,5 +10,3 @@ const Link = styled('a', {
     },
   },
 });
-
-export default Link;

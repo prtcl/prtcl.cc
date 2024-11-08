@@ -5,7 +5,7 @@ import {
   type TransitionTo,
 } from '@react-spring/web';
 import { Flex } from 'styled-system/jsx';
-import Link from '~/ui/Link';
+import { Link } from '~/ui/Link';
 import type { Directions } from '../hooks/useNextPrev';
 
 const formatProjectUrl = (content: string): string => {

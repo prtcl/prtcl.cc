@@ -49,7 +49,7 @@ export interface ImageProps extends JsxStyleProps {
   useHighRes?: boolean;
 }
 
-const Image = (props: ImageProps) => {
+export const Image = (props: ImageProps) => {
   const {
     loading = 'lazy',
     options,
@@ -95,5 +95,3 @@ const Image = (props: ImageProps) => {
     />
   );
 };
-
-export default Image;

@@ -7,7 +7,7 @@ import {
 import { useQuery } from 'convex/react';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
-import Image from '~/ui/Image';
+import { Image } from '~/ui/Image';
 import { Markdown } from '~/ui/Markdown';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../hooks/useProjectViewer';
@@ -129,7 +129,7 @@ const InnerDetails = (props: { projectId: ProjectId }) => {
       <>
         {coverImage && (
           <ImageContainer
-            {...(!!content
+            {...(content
               ? {
                   flexGrow: 1,
                   flexBasis: 'fit-content',

@@ -44,7 +44,7 @@ export interface CanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement> {
   onReady: (ref: CanvasRef) => void;
 }
 
-const Canvas = (props: CanvasProps) => {
+export const Canvas = (props: CanvasProps) => {
   const { canvasRef, onReady, ...canvasProps } = props;
   const hasInitialized = useRef(false);
 
@@ -63,5 +63,3 @@ const Canvas = (props: CanvasProps) => {
     />
   );
 };
-
-export default Canvas;

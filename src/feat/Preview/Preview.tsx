@@ -5,7 +5,7 @@ import { api } from '~/convex/api';
 import type { Id } from '~/convex/dataModel';
 import { useInteractions } from '~/lib/viewport';
 import * as HoverCard from '~/ui/HoverCard';
-import Image from '~/ui/Image';
+import { Image } from '~/ui/Image';
 
 const Content = (props: { projectId: Id<'projects'> }) => {
   const { projectId } = props;
