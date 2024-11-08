@@ -6,6 +6,7 @@ export const PanelContainer = (props: PropsWithChildren) => {
 
   return (
     <Flex
+      bg="zinc.100"
       direction="column"
       flex={1}
       height="100%"
@@ -43,6 +44,7 @@ export const PanelFooter = (props: PropsWithChildren) => {
   return (
     <Stack
       alignItems="center"
+      bg="white"
       direction="row"
       flex={1}
       gap={1.5}
@@ -52,9 +54,10 @@ export const PanelFooter = (props: PropsWithChildren) => {
       pl={4}
       pr={[1, 2]}
       py={[0.5, 1]}
-      shadow="md"
+      shadow="lg"
       userSelect="none"
       width="100%"
+      zIndex={1}
     >
       {children}
     </Stack>

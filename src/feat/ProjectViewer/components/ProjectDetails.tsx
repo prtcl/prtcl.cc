@@ -7,7 +7,6 @@ import {
 import { useQuery } from 'convex/react';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
-import { useBreakpoints } from '~/lib/viewport';
 import Image from '~/ui/Image';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../hooks/useProjectViewer';
@@ -67,13 +66,12 @@ const ImageContainer = (props: FlexProps) => {
   return (
     <Flex
       alignItems="start"
+      flex={1}
+      height="100%"
       justifyContent="start"
-      flexGrow={1}
-      flexShrink={0}
       objectFit="cover"
       overflow="hidden"
       position="relative"
-      height="fit-content"
       width="100%"
       _selection={{ bg: 'transparent' }}
       {...flexProps}
@@ -83,17 +81,11 @@ const ImageContainer = (props: FlexProps) => {
   );
 };
 
-const ContentContainer = (props: FlexProps) => {
+const EmbedContainer = (props: FlexProps) => {
   const { children, ...flexProps } = props;
 
   return (
-    <Flex
-      flexGrow={1}
-      flexShrink={1}
-      minHeight="fit-content"
-      width="100%"
-      {...flexProps}
-    >
+    <Flex flex={1} minHeight="fit-content" width="100%" {...flexProps}>
       {children}
     </Flex>
   );
@@ -101,37 +93,35 @@ const ContentContainer = (props: FlexProps) => {
 
 const InnerDetails = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
-  const { isMobile } = useBreakpoints();
   const details = useQuery(api.details.loadProjectDetails, { projectId });
   const { embed, coverImage } = details || {};
-  const hasRows = !!embed && !!coverImage && !isMobile;
 
   return (
-    <ScrollContainer direction={[hasRows ? 'row' : 'column']}>
+    <ScrollContainer>
       <>
         {coverImage && (
-          <ImageContainer width={hasRows ? '50%' : '100%'}>
+          <ImageContainer>
             <Image
               alt={coverImage.alt}
+              height="100%"
               objectFit="contain"
-              objectPosition="top"
+              objectPosition={['center', 'center']}
               options={{ width: 1280, quality: 75, fit: 'cover' }}
               src={coverImage.url}
               useAnimation={false}
               width="100%"
-              height="auto"
               _selection={{ bg: 'transparent' }}
             />
           </ImageContainer>
         )}
         {embed && (
-          <ContentContainer width={hasRows ? '50%' : '100%'}>
+          <EmbedContainer>
             <MediaEmbed
               service={embed.service}
               src={embed.src}
               title={embed.title}
             />
-          </ContentContainer>
+          </EmbedContainer>
         )}
       </>
     </ScrollContainer>
