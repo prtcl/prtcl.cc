@@ -9,9 +9,9 @@ import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { Image } from '~/ui/Image';
 import { Markdown } from '~/ui/Markdown';
+import { MediaEmbed } from '~/ui/MediaEmbed';
 import type { Directions } from '../hooks/useNextPrev';
 import type { ProjectId } from '../types';
-import { MediaEmbed } from './MediaEmbed';
 
 const fromTransition = (direction: Directions): TransitionFrom<ProjectId> => {
   const distance = 25;
