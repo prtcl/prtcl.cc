@@ -46,7 +46,9 @@ export const PanelFooter = (props: PropsWithChildren) => {
       alignItems="center"
       bg="white"
       direction="row"
-      flex={1}
+      flexBasis="fit-content"
+      flexGrow={0}
+      flexShrink={0}
       gap={1.5}
       justifyContent="center"
       maxHeight="fit-content"
