@@ -10,7 +10,7 @@ import { api } from '~/convex/api';
 import { Image } from '~/ui/Image';
 import { Markdown } from '~/ui/Markdown';
 import type { Directions } from '../hooks/useNextPrev';
-import type { ProjectId } from '../hooks/useProjectViewer';
+import type { ProjectId } from '../types';
 import { MediaEmbed } from './MediaEmbed';
 
 const fromTransition = (direction: Directions): TransitionFrom<ProjectId> => {

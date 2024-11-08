@@ -1,10 +1,50 @@
+import { useQuery } from 'convex/react';
 import { memo } from 'react';
-import { Stack } from 'styled-system/jsx';
-import { Preview } from '~/feat/Preview';
+import { type PropsWithChildren } from 'react';
+import { Flex, Stack } from 'styled-system/jsx';
+import { api } from '~/convex/api';
+import { useInteractions } from '~/lib/viewport';
 import { Badge } from '~/ui/Badge';
+import * as HoverCard from '~/ui/HoverCard';
+import { Image } from '~/ui/Image';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
-import type { ProjectEntity, ProjectId } from '../hooks/useProjectViewer';
+import type { ProjectEntity, ProjectId } from '../types';
+
+const InnerPreview = (props: { projectId: ProjectId }) => {
+  const { projectId } = props;
+  const preview = useQuery(api.previews.loadProjectPreview, { projectId });
+
+  return (
+    <Flex overflow="hidden" width="256px" height="180px">
+      <Image
+        height="180px"
+        options={{ width: 256 }}
+        src={preview?.publicUrl}
+        useHighRes
+        width="256px"
+      />
+    </Flex>
+  );
+};
+
+export const Preview = (props: PropsWithChildren<{ projectId: ProjectId }>) => {
+  const { children, projectId } = props;
+  const { hasHover } = useInteractions();
+
+  if (!hasHover) {
+    return children;
+  }
+
+  return (
+    <HoverCard.Root>
+      <HoverCard.Trigger>{children}</HoverCard.Trigger>
+      <HoverCard.Content>
+        <InnerPreview projectId={projectId} />
+      </HoverCard.Content>
+    </HoverCard.Root>
+  );
+};
 
 export const formatTimestamp = (ts: number) =>
   new Date(ts).toLocaleDateString('en-US');

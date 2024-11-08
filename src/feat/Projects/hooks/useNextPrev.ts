@@ -1,7 +1,7 @@
 import { useQuery } from 'convex/react';
 import { createContext, useContext, useMemo } from 'react';
 import { api } from '~/convex/api';
-import { type ProjectId } from './useProjectViewer';
+import type { ProjectId } from '../types';
 
 export type NextPrev = {
   next: ProjectId | null;
