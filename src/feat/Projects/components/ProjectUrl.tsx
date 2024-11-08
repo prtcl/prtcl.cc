@@ -52,7 +52,6 @@ const toTransition = (direction: Directions): TransitionTo<string> => {
 
 export const ProjectUrl = (props: { url?: string; direction: Directions }) => {
   const { url, direction } = props;
-
   const transitions = useTransition(url, {
     from: fromTransition(direction),
     enter: {

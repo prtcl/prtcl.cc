@@ -38,7 +38,6 @@ export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
   function Overlay(props, ref) {
     const { children, ...overlayProps } = props;
     const { isOpen } = useContext(DialogContext);
-
     const transitions = useTransition(isOpen, {
       from: { opacity: 0 },
       enter: { opacity: 1 },
@@ -158,7 +157,6 @@ export const Content = forwardRef<HTMLDivElement, DialogContentProps>(
   function Content(props, ref) {
     const { children, onOpenAutoFocus, ...contentProps } = props;
     const { isOpen, preset } = useContext(DialogContext);
-
     const transitions = useTransition(isOpen, {
       ...getPresetTransitionConfig(preset),
       expires: true,
@@ -203,7 +201,6 @@ export type DialogRootProps = Pick<
 
 export const Root = (props: DialogRootProps) => {
   const { children, isOpen, onClose, onOpenChange, preset = 'subtle' } = props;
-
   const handleOpenChange = useCallback(
     (changes: boolean) => {
       if (!changes) {
