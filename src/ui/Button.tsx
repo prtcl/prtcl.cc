@@ -1,6 +1,6 @@
 import { styled } from 'styled-system/jsx';
 
-const Button = styled('button', {
+export const Button = styled('button', {
   base: {
     alignItems: 'center',
     borderRadius: 8,
@@ -37,5 +37,3 @@ const Button = styled('button', {
     visual: 'solid',
   },
 });
-
-export default Button;

@@ -1,5 +1,5 @@
 import { paginationOptsValidator } from 'convex/server';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { type Id } from './_generated/dataModel';
 import { internalMutation, query } from './_generated/server';
 
@@ -17,10 +17,40 @@ export const loadProjects = query({
   },
 });
 
+export const loadProjectIds = query({
+  args: {},
+  handler: async (ctx) => {
+    const projects = await ctx.db
+      .query('projects')
+      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .filter((q) => q.neq(q.field('publishedAt'), null))
+      .order('asc')
+      .collect();
+
+    return projects?.map((p) => p._id);
+  },
+});
+
 export const loadAllProjects = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query('projects').order('asc').collect();
+  },
+});
+
+export const loadProject = query({
+  args: { projectId: v.id('projects') },
+  handler: async (ctx, { projectId }) => {
+    const project = await ctx.db.get(projectId);
+
+    if (!project || project.deletedAt !== null) {
+      throw new ConvexError({
+        message: 'Project not found',
+        code: 404,
+      });
+    }
+
+    return project;
   },
 });
 

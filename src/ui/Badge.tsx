@@ -1,6 +1,6 @@
 import { Box, styled } from 'styled-system/jsx';
 
-const Badge = styled(Box, {
+export const Badge = styled(Box, {
   base: {
     px: 1,
     bg: 'zinc.100/50',
@@ -10,5 +10,3 @@ const Badge = styled(Box, {
     width: 'fit-content',
   },
 });
-
-export default Badge;

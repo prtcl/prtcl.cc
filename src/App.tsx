@@ -2,14 +2,13 @@ import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
-import { Preview } from '~/feat/Preview';
+import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
 import { FeatureFlags, useFeatureFlags } from '~/lib/features';
-import { Container, Overlay, Root } from '~/lib/layout';
-import Badge from '~/ui/Badge';
-import Button from '~/ui/Button';
-import Link from '~/ui/Link';
-import Text from '~/ui/Text';
+import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
+import { Button } from '~/ui/Button';
+import { Link } from '~/ui/Link';
+import { Text } from '~/ui/Text';
 
 const Bio = () => {
   return (
@@ -30,24 +29,22 @@ const Bio = () => {
 const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
   <Button
     color="zinc.700"
+    justifyContent="flex-start"
     my={1}
     onClick={props.onClick}
+    textAlign="left"
     visual="ghost"
     width={['100%', 'fit-content']}
-    textAlign="left"
-    justifyContent="flex-start"
   >
     {props.children}
   </Button>
 );
 
-export const formatTimestamp = (ts: number) =>
-  new Date(ts).toLocaleDateString('en-US');
-
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
   const { features } = useFeatureFlags();
+  const { openProjectViewer } = useProjectViewer();
   const {
     results: projects,
     status,
@@ -62,37 +59,25 @@ const App = () => {
 
   return (
     <Root>
-      <Container>
+      <VizContainer>
         <Visualization />
-      </Container>
+      </VizContainer>
       {projects && !isLoading && (
-        <Overlay animation="fade-in 340ms linear">
+        <ContentOverlay animation="fade-in 340ms linear">
           <Stack direction="column" gap={4} px={[3, 4]} py={8}>
             <Bio />
             <Stack gap={2}>
               {projects.map((project) => {
-                const { _id, title, url, category, publishedAt } = project;
-
                 return (
-                  <Stack key={_id} direction="column" gap={1}>
-                    {features.get(FeatureFlags.PROJECT_PREVIEWS) ? (
-                      <Preview projectId={_id}>
-                        <Link href={url} color="text" fontWeight={500}>
-                          {title}
-                        </Link>
-                      </Preview>
-                    ) : (
-                      <Link href={url} color="text" fontWeight={500}>
-                        {title}
-                      </Link>
+                  <ProjectItem
+                    key={project._id}
+                    isPreviewEnabled={features.get(
+                      FeatureFlags.PROJECT_PREVIEWS,
                     )}
-                    <Stack direction="row" gap={2}>
-                      <Badge>{category}</Badge>
-                      <Text fontSize="xs" color="zinc.700">
-                        {formatTimestamp(publishedAt)}
-                      </Text>
-                    </Stack>
-                  </Stack>
+                    isViewerEnabled={features.get(FeatureFlags.PROJECT_VIEWER)}
+                    item={project}
+                    onSelect={(projectId) => openProjectViewer(projectId)}
+                  />
                 );
               })}
               {canLoadMore && (
@@ -102,7 +87,7 @@ const App = () => {
               )}
             </Stack>
           </Stack>
-        </Overlay>
+        </ContentOverlay>
       )}
     </Root>
   );
