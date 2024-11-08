@@ -78,7 +78,6 @@ export const ProjectViewer = () => {
     <Dialog.Root isOpen={isOpen} onClose={closeViewer}>
       <Dialog.Overlay />
       <Dialog.Content
-        bg="white"
         borderRadius={12}
         height="100%"
         maxHeight={['97svh', '95vh', '95vh', '92vh', '84vh']}

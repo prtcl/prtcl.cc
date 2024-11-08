@@ -5,9 +5,10 @@ import {
   useMemo,
   useReducer,
 } from 'react';
-import type { Id } from '~/convex/dataModel';
+import type { Doc, Id } from '~/convex/dataModel';
 
 export type ProjectId = Id<'projects'>;
+export type ProjectEntity = Doc<'projects'>;
 
 export type ProjectViewerState = {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import { ConvexReactClient, ConvexProvider } from 'convex/react';
 import { createRoot } from 'react-dom/client';
-import { ProjectProvider } from '~/feat/ProjectViewer';
+import { ProjectProvider } from '~/feat/Projects';
 import App from './App';
 import './main.css';
 
