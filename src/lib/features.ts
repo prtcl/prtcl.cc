@@ -4,6 +4,7 @@ import { api } from '~/convex/api';
 
 export enum FeatureFlags {
   PROJECT_PREVIEWS = 'isProjectPreviewsEnabled',
+  PROJECT_VIEWER = 'isProjectViewerEnabled',
 }
 
 export type FeaturesMap = Map<`${FeatureFlags}`, boolean>;

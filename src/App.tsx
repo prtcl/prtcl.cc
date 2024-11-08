@@ -31,12 +31,12 @@ const Bio = () => {
 const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
   <Button
     color="zinc.700"
+    justifyContent="flex-start"
     my={1}
     onClick={props.onClick}
+    textAlign="left"
     visual="ghost"
     width={['100%', 'fit-content']}
-    textAlign="left"
-    justifyContent="flex-start"
   >
     {props.children}
   </Button>
@@ -83,10 +83,14 @@ const App = () => {
                           href={url}
                           color="text"
                           fontWeight={500}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            openProjectViewer(_id);
-                          }}
+                          {...(features.get(FeatureFlags.PROJECT_VIEWER)
+                            ? {
+                                onClick: (e) => {
+                                  e.preventDefault();
+                                  openProjectViewer(_id);
+                                },
+                              }
+                            : {})}
                         >
                           {title}
                         </Link>
