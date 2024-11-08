@@ -32,7 +32,7 @@ export const InnerContent = styled(animated(RxHoverCard.Content), {
   base: {
     height: '180px',
     width: '256px',
-    zIndex: 10,
+    zIndex: 3,
     '&::selection': {
       backgroundColor: 'transparent',
     },
