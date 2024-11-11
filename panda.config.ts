@@ -49,6 +49,10 @@ export const keyframes = defineKeyframes({
     from: { opacity: 0 },
     to: { opacity: 1 },
   },
+  rotate: {
+    '0%': { transform: 'rotate(0deg)' },
+    '100%': { transform: 'rotate(360deg)' },
+  },
 });
 
 export default defineConfig({

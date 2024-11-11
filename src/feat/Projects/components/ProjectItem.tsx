@@ -1,30 +1,64 @@
 import { useQuery } from 'convex/react';
-import { memo } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { type PropsWithChildren } from 'react';
-import { Flex, Stack } from 'styled-system/jsx';
+import { Box, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
+import { debounce } from '~/lib/debounce';
 import { useInteractions } from '~/lib/viewport';
 import { Badge } from '~/ui/Badge';
 import * as HoverCard from '~/ui/HoverCard';
 import { Image } from '~/ui/Image';
 import { Link } from '~/ui/Link';
+import { Loader } from '~/ui/Loader';
 import { Text } from '~/ui/Text';
 import type { ProjectEntity, ProjectId } from '../types';
 
 const InnerPreview = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
+  const [isLoading, setLoading] = useState(false);
   const preview = useQuery(api.previews.loadProjectPreview, { projectId });
+  const hasInitialized = useRef(false);
+  const toggleLoader = useMemo(
+    () =>
+      debounce<(loading: boolean) => void>(
+        (loading = false) => setLoading(loading),
+        50,
+      ),
+    [],
+  );
+
+  if (!hasInitialized.current) {
+    hasInitialized.current = true;
+    toggleLoader(true);
+  }
 
   return (
-    <Flex overflow="hidden" width="256px" height="180px">
+    <Box overflow="hidden" width="256px" height="180px" position="relative">
       <Image
         height="180px"
+        onLoad={() => {
+          toggleLoader.cancel();
+          setLoading(false);
+        }}
         options={{ width: 256 }}
         src={preview?.publicUrl}
         useHighRes
+        useAnimation
         width="256px"
       />
-    </Flex>
+      {isLoading && (
+        <Box bg="zinc.100/25" borderRadius={12} inset={0} position="absolute">
+          <Loader
+            color="zinc.300/50"
+            left="50%"
+            position="absolute"
+            size="md"
+            top="50%"
+            transform="translate(-50%, -50%)"
+          />
+        </Box>
+      )}
+    </Box>
   );
 };
 
