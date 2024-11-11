@@ -1,9 +1,8 @@
+import type { IconType } from 'react-icons';
 import { FiChevronsLeft } from 'react-icons/fi';
-import { RxArchive, RxChevronLeft, RxCross2 } from 'react-icons/rx';
-import { cva } from 'styled-system/css';
-import { styled } from 'styled-system/jsx';
-
-export type IconType = typeof RxArchive;
+import { RxChevronLeft, RxCross2 } from 'react-icons/rx';
+import { cva, type RecipeVariantProps } from 'styled-system/css';
+import { styled, type HTMLStyledProps } from 'styled-system/jsx';
 
 export const iconStyles = cva({
   base: {
@@ -44,6 +43,9 @@ export const iconStyles = cva({
 });
 
 export const makeIcon = (icon: IconType) => styled(icon, iconStyles);
+
+export type IconVariantProps = RecipeVariantProps<typeof iconStyles>;
+export type IconProps = HTMLStyledProps<'svg'> & IconVariantProps;
 
 export const BackIcon = makeIcon(FiChevronsLeft);
 export const ChevronLeftIcon = makeIcon(RxChevronLeft);
