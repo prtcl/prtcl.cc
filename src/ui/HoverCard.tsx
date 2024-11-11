@@ -7,13 +7,11 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { styled } from 'styled-system/jsx';
+import { styled, type HTMLStyledProps } from 'styled-system/jsx';
 
 type HoverCardContextValue = {
   isOpen: boolean;
-  isHovered: boolean;
   toggleOpen: (updates: boolean) => void;
-  toggleHovered: (updates: boolean) => void;
 };
 
 const HoverCardContext = createContext<HoverCardContextValue>(
@@ -39,11 +37,12 @@ export const InnerContent = styled(animated(RxHoverCard.Content), {
   },
 });
 
-export interface ContentProps extends RxHoverCard.HoverCardContentProps {}
+export type ContentProps = RxHoverCard.HoverCardContentProps &
+  HTMLStyledProps<'div'>;
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>(
   function Content(props, innerRef) {
-    const { children } = props;
+    const { children, ...contentProps } = props;
     const { isOpen } = useContext(HoverCardContext);
     const transitions = useTransition(isOpen, {
       from: { opacity: 0.84, y: 4 },
@@ -62,7 +61,12 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
       <RxHoverCard.Portal forceMount>
         {transitions((styles, shouldRender) =>
           shouldRender ? (
-            <InnerContent {...contentDefaults} ref={innerRef} style={styles}>
+            <InnerContent
+              {...contentDefaults}
+              {...contentProps}
+              ref={innerRef}
+              style={styles}
+            >
               {children}
             </InnerContent>
           ) : null,
@@ -72,22 +76,13 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
   },
 );
 
-export interface HoverCardTriggerProps
-  extends RxHoverCard.HoverCardTriggerProps {}
+export type HoverCardTriggerProps = RxHoverCard.HoverCardTriggerProps;
 
 export const Trigger = (props: HoverCardTriggerProps) => {
-  const { children } = props;
-  const { toggleHovered } = useContext(HoverCardContext);
-  const { enter, leave } = useMemo(
-    () => ({
-      enter: () => toggleHovered(true),
-      leave: () => toggleHovered(false),
-    }),
-    [toggleHovered],
-  );
+  const { children, asChild = true, ...triggerProps } = props;
 
   return (
-    <RxHoverCard.Trigger asChild onMouseEnter={enter} onMouseLeave={leave}>
+    <RxHoverCard.Trigger {...triggerProps} asChild={asChild}>
       {children}
     </RxHoverCard.Trigger>
   );
@@ -98,28 +93,37 @@ const rootDefaults: RxHoverCard.HoverCardProps = {
   openDelay: 0,
 };
 
-export interface HoverCardProps extends RxHoverCard.HoverCardProps {}
+export type HoverCardProps = Omit<
+  RxHoverCard.HoverCardProps,
+  'open' | 'onOpenChange'
+>;
 
 export const Root = (props: HoverCardProps) => {
-  const { children } = props;
-  const [isOpen, toggleOpen] = useState(false);
-  const [isHovered, toggleHovered] = useState(false);
+  const {
+    children,
+    closeDelay = 0,
+    defaultOpen = false,
+    openDelay = 0,
+    ...rootProps
+  } = props;
+  const [isOpen, toggleOpen] = useState(() => defaultOpen);
   const context = useMemo<HoverCardContextValue>(
     () => ({
-      isHovered,
       isOpen,
-      toggleHovered,
       toggleOpen,
     }),
-    [isHovered, isOpen],
+    [isOpen],
   );
 
   return (
     <HoverCardContext.Provider value={context}>
       <RxHoverCard.Root
         {...rootDefaults}
+        {...rootProps}
+        closeDelay={closeDelay}
         onOpenChange={toggleOpen}
         open={isOpen}
+        openDelay={openDelay}
       >
         {children}
       </RxHoverCard.Root>

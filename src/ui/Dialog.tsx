@@ -150,7 +150,7 @@ export type DialogContentProps = Pick<
   RxDialog.DialogContentProps,
   'children' | 'onOpenAutoFocus'
 > &
-  RecipeVariantProps<typeof contentStyle> &
+  ContentVariantProps &
   HTMLStyledProps<'div'>;
 
 export const Content = forwardRef<HTMLDivElement, DialogContentProps>(
