@@ -64,7 +64,7 @@ const App = () => {
       </VizContainer>
       {projects && !isLoading && (
         <ContentOverlay animation="fade-in 340ms linear">
-          <Stack direction="column" gap={4} px={[3, 4]} py={8}>
+          <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
             <Bio />
             <Stack gap={2}>
               {projects.map((project) => {
