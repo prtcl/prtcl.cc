@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type SyntheticEvent } from 'react';
 import { styled } from 'styled-system/jsx';
-import type { JsxStyleProps } from 'styled-system/types';
+import type { HTMLStyledProps } from 'styled-system/types';
 
 export type ImageTransformOptions = {
   blur?: number;
@@ -39,7 +39,7 @@ const Img = styled('img', {
   },
 });
 
-export interface ImageProps extends JsxStyleProps {
+export type ImageProps = HTMLStyledProps<'img'> & {
   alt?: string;
   loading?: 'lazy' | 'eager';
   options?: ImageTransformOptions;
@@ -47,7 +47,7 @@ export interface ImageProps extends JsxStyleProps {
   srcSet?: string;
   useAnimation?: boolean;
   useHighRes?: boolean;
-}
+};
 
 export const Image = (props: ImageProps) => {
   const {
@@ -56,10 +56,17 @@ export const Image = (props: ImageProps) => {
     src: initialSrc,
     useAnimation = false,
     useHighRes,
+    onLoad,
     ...imgProps
   } = props;
   const [hasLoaded, setHasLoaded] = useState(false);
-  const handleLoad = useCallback(() => setHasLoaded(true), []);
+  const handleLoad = useCallback(
+    (e: SyntheticEvent<HTMLImageElement>) => {
+      setHasLoaded(true);
+      onLoad?.(e);
+    },
+    [onLoad],
+  );
   const { src, srcSet } = useMemo<{
     src: string;
     srcSet: string | undefined;
