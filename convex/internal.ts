@@ -1,6 +1,11 @@
 import { ConvexError, v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
-import { internalMutation, mutation, query } from './_generated/server';
+import {
+  internalMutation,
+  mutation,
+  query,
+  type MutationCtx,
+} from './_generated/server';
 
 export const collectAllProjects = query({
   args: {},
@@ -159,6 +164,77 @@ export const attachImagePreview = mutation({
   },
 });
 
+enum Service {
+  BANDCAMP = 'bandcamp',
+  SOUNDCLOUD = 'soundcloud',
+  YOUTUBE = 'youtube',
+}
+type Services = `${Service}`;
+
+const detectEmbedService = (embedCode: string): Services | void => {
+  if (embedCode.includes('bandcamp.com')) {
+    return Service.BANDCAMP;
+  }
+  if (embedCode.includes('soundcloud.com')) {
+    return Service.SOUNDCLOUD;
+  }
+  if (embedCode.includes('youtube.com')) {
+    return Service.YOUTUBE;
+  }
+};
+
+const getProjectOrNotFound = async (
+  ctx: MutationCtx,
+  projectId: Id<'projects'>,
+) => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
+
+export const attachProjectEmbed = internalMutation({
+  args: {
+    projectId: v.id('projects'),
+    src: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { projectId, src } = args;
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.embedId) {
+      const existingEmbed = await ctx.db.get(project.embedId);
+
+      if (existingEmbed) {
+        await ctx.db.patch(existingEmbed._id, {
+          deletedAt: Date.now(),
+        });
+      }
+    }
+
+    const service = detectEmbedService(src);
+    assertEmbedService(service);
+
+    const embedId = await ctx.db.insert('embeds', {
+      deletedAt: null,
+      service,
+      src,
+      updatedAt: Date.now(),
+    });
+
+    return await ctx.db.patch(project._id, {
+      embedId,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
 function assertUploadToken(token: unknown): asserts token is string {
   if (!process.env.UPLOAD_TOKEN) {
     throw new Error('No upload token set!');
@@ -168,79 +244,13 @@ function assertUploadToken(token: unknown): asserts token is string {
   }
 }
 
-// const services = v.union(
-//   v.literal('bandcamp'),
-//   v.literal('youtube'),
-//   v.literal('soundcloud'),
-// );
+function assertEmbedService(service: unknown): asserts service is Services {
+  const services = new Set<Services>(Object.values(Service));
 
-// const getOrInsertProjectDetails = async (
-//   ctx: MutationCtx,
-//   projectId: Id<'projects'>,
-// ) => {
-//   let details = await ctx.db
-//     .query('details')
-//     .withIndex('project', (q) => q.eq('projectId', projectId))
-//     .filter((q) => q.eq(q.field('deletedAt'), null))
-//     .unique();
-
-//   if (!details) {
-//     const insertedId = await ctx.db.insert('details', {
-//       content: null,
-//       coverImageId: null,
-//       deletedAt: null,
-//       embedId: null,
-//       projectId,
-//     });
-//     details = await ctx.db.get(insertedId);
-//   }
-
-//   if (!details) {
-//     throw new ConvexError({
-//       message: 'Details not found',
-//       code: 500,
-//     });
-//   }
-
-//   return details;
-// };
-
-// export const attachProjectEmbed = internalMutation({
-//   args: {
-//     projectId: v.id('projects'),
-//     service: services,
-//     src: v.string(),
-//   },
-//   handler: async (ctx, { projectId, service, src }) => {
-//     const project = await ctx.db.get(projectId);
-
-//     if (!project) {
-//       throw new ConvexError({
-//         message: 'Project not found',
-//         code: 500,
-//       });
-//     }
-
-//     const existingDetails = await getOrInsertProjectDetails(ctx, projectId);
-//     const existingEmbed = existingDetails?.embedId
-//       ? await ctx.db.get(existingDetails?.embedId)
-//       : null;
-
-//     if (existingEmbed) {
-//       await ctx.db.delete(existingEmbed._id);
-//     }
-
-//     const embedId = await ctx.db.insert('embeds', {
-//       deletedAt: null,
-//       service,
-//       src,
-//     });
-
-//     return await ctx.db.patch(existingDetails._id, {
-//       embedId,
-//     });
-//   },
-// });
+  if (typeof service !== 'string' || !services.has(service as Services)) {
+    throw new Error('Service string is invalid');
+  }
+}
 
 // export const attachProjectCoverImage = internalMutation({
 //   args: {
