@@ -1,3 +1,4 @@
+import { ConvexQueryCacheProvider } from 'convex-helpers/react/cache';
 import { ConvexReactClient, ConvexProvider } from 'convex/react';
 import { createRoot } from 'react-dom/client';
 import { ProjectProvider } from '~/feat/Projects';
@@ -11,9 +12,11 @@ const root = createRoot(document.getElementById('root'));
 root.render(
   <ErrorBoundary fallback={() => <Fallback title="Error" />}>
     <ConvexProvider client={convex}>
-      <ProjectProvider>
-        <App />
-      </ProjectProvider>
+      <ConvexQueryCacheProvider>
+        <ProjectProvider>
+          <App />
+        </ProjectProvider>
+      </ConvexQueryCacheProvider>
     </ConvexProvider>
   </ErrorBoundary>,
 );
