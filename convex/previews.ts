@@ -1,6 +1,5 @@
 import { ConvexError, v } from 'convex/values';
-import type { Id } from './_generated/dataModel';
-import { mutation, query } from './_generated/server';
+import { query } from './_generated/server';
 
 export const loadProjectPreview = query({
   args: {
@@ -39,53 +38,5 @@ export const loadProjectPreview = query({
     }
 
     return null;
-  },
-});
-
-export const generateUploadUrl = mutation({
-  args: { token: v.string() },
-  handler: async (ctx, { token }) => {
-    if (token !== process.env.UPLOAD_TOKEN) {
-      throw new Error('Unauthorized');
-    }
-
-    const uploadUrl = await ctx.storage.generateUploadUrl();
-
-    return { uploadUrl };
-  },
-});
-
-export const createPreview = mutation({
-  args: {
-    projectId: v.id('projects'),
-    storageId: v.id('_storage'),
-    token: v.string(),
-  },
-  handler: async (
-    ctx,
-    { projectId, storageId, token },
-  ): Promise<Id<'previews'>> => {
-    if (token !== process.env.UPLOAD_TOKEN) {
-      throw new Error('Unauthorized');
-    }
-
-    const existingPreview = await ctx.db
-      .query('previews')
-      .withIndex('project', (q) => q.eq('projectId', projectId))
-      .filter((q) => q.eq(q.field('deletedAt'), null))
-      .unique();
-
-    if (existingPreview) {
-      await ctx.db.patch(existingPreview._id, { storageId });
-      await ctx.storage.delete(existingPreview.storageId);
-
-      return existingPreview._id;
-    }
-
-    return await ctx.db.insert('previews', {
-      deletedAt: null,
-      projectId,
-      storageId,
-    });
   },
 });
