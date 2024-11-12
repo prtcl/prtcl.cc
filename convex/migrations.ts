@@ -60,6 +60,36 @@ export const updateProjectImages = internalMutation({
   },
   handler: async (ctx, args) => {
     const { projectId, coverImageId, previewImageId } = args;
+    const project = await ctx.db.get(projectId);
+
+    if (!project) {
+      throw new Error(`Cannot find project: ${projectId}`);
+    }
+
+    const {
+      coverImageId: existingCoverImageId,
+      previewImageId: existingPreviewImageId,
+    } = project;
+
+    if (existingCoverImageId) {
+      const existingCoverImage = await ctx.db.get(existingCoverImageId);
+
+      if (existingCoverImage) {
+        await ctx.db.patch(existingCoverImage._id, {
+          deletedAt: Date.now(),
+        });
+      }
+    }
+
+    if (existingPreviewImageId) {
+      const existingPreviewImage = await ctx.db.get(existingPreviewImageId);
+
+      if (existingPreviewImage) {
+        await ctx.db.patch(existingPreviewImage._id, {
+          deletedAt: Date.now(),
+        });
+      }
+    }
 
     return await ctx.db.patch(projectId, {
       coverImageId,
