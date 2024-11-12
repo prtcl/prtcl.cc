@@ -34,7 +34,7 @@ async function main(deploymentUrl: string, uploadToken: string) {
   const previewsDir = path.join(process.cwd(), 'previews');
 
   try {
-    const projects = await client.query(api.projects.loadAllProjects, {});
+    const projects = await client.query(api.internal.collectAllProjects, {});
     const projectIds = new Set(projects.map((p) => p._id));
     const files = await fs.readdir(previewsDir);
     const imageFiles = files.filter(

@@ -16,6 +16,7 @@ import type {
 import type * as details from "../details.js";
 import type * as features from "../features.js";
 import type * as imageMigration from "../imageMigration.js";
+import type * as internal_ from "../internal.js";
 import type * as migrations from "../migrations.js";
 import type * as previews from "../previews.js";
 import type * as projects from "../projects.js";
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   details: typeof details;
   features: typeof features;
   imageMigration: typeof imageMigration;
+  internal: typeof internal_;
   migrations: typeof migrations;
   previews: typeof previews;
   projects: typeof projects;
