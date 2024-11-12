@@ -18,6 +18,7 @@ export const populateFeatureFlags = internalMutation({
     for (const flag of initialFlags) {
       if (!existingKeys.has(flag)) {
         const insertedId = await ctx.db.insert('features', {
+          description: null,
           key: flag,
           value: false,
         });
