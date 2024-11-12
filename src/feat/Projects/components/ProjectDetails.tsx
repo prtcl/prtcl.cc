@@ -4,7 +4,7 @@ import {
   type TransitionFrom,
   type TransitionTo,
 } from '@react-spring/web';
-import { useQuery } from 'convex-helpers/react/cache';
+import { useQuery } from 'convex/react';
 import { useCallback, useState } from 'react';
 import useMeasure from 'react-use/lib/useMeasure';
 import { Flex, type FlexProps } from 'styled-system/jsx';
