@@ -54,20 +54,6 @@ const images = defineTable({
   updatedAt: v.number(),
 });
 
-const details = defineTable({
-  content: v.union(v.string(), v.null()),
-  coverImageId: v.union(v.id('_storage'), v.null()),
-  deletedAt: v.union(v.number(), v.null()),
-  embedId: v.union(v.id('embeds'), v.null()),
-  projectId: v.id('projects'),
-}).index('project', ['projectId']);
-
-const previews = defineTable({
-  deletedAt: v.union(v.number(), v.null()),
-  projectId: v.id('projects'),
-  storageId: v.id('_storage'),
-}).index('project', ['projectId']);
-
 export const features = defineTable({
   description: v.optional(v.string()),
   key: v.string(),
@@ -76,10 +62,8 @@ export const features = defineTable({
 
 export default defineSchema({
   content,
-  details,
   embeds,
   features,
   images,
-  previews,
   projects,
 });
