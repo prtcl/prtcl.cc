@@ -67,12 +67,15 @@ const ImageContainer = (props: FlexProps) => {
   return (
     <Flex
       alignItems="start"
-      flex={1}
+      flexBasis="fit-content"
+      flexGrow={1}
+      flexShrink={[0, 1]}
       height="100%"
       justifyContent="start"
       objectFit="cover"
       overflow="hidden"
       position="relative"
+      py={[8, 0]}
       width="100%"
       _selection={{ bg: 'transparent' }}
       {...flexProps}
@@ -104,14 +107,17 @@ const ContentContainer = (props: FlexProps) => {
       borderWidth={[0, 1]}
       bottom={['initial', 4]}
       direction="column"
-      mt={[-2.5, 0]}
+      flexGrow={[1, 0]}
+      flexShrink={0}
+      height={['100%', 'fit-content']}
+      maxWidth={['initial', 'calc(100% - 2rem)', 'calc(100% - 2rem)', '84%']}
+      mt={['-0.68rem', 0]}
       padding={[0, 3]}
-      pb={[5, 2.5]}
+      pb={[6, 2.5]}
       position={['initial', 'fixed']}
       pt={[0, 3]}
-      px={2.5}
+      px={['0.68rem', 2.5]}
       shadow={['initial', 'lg']}
-      width={['initial', 'calc(100% - 2rem)', 'calc(100% - 2rem)', '84%']}
       {...flexProps}
     >
       {children}
@@ -128,16 +134,7 @@ const InnerDetails = (props: { projectId: ProjectId }) => {
     <ScrollContainer>
       <>
         {coverImage && (
-          <ImageContainer
-            {...(content
-              ? {
-                  flexGrow: 1,
-                  flexBasis: 'fit-content',
-                  flexShrink: 0,
-                  py: [4, 0],
-                }
-              : {})}
-          >
+          <ImageContainer>
             <Image
               alt={coverImage.alt}
               height="100%"
