@@ -80,8 +80,8 @@ export const ProjectViewer = () => {
       <Dialog.Content
         borderRadius={12}
         height="100%"
-        maxHeight={['97svh', '95vh', '95vh', '92vh', '84vh']}
-        maxWidth={['97vw', '95vw', '95vw', '92vw', '82vw', '74vw', '80rem']}
+        maxHeight={['97%', '95%', '95vh', '92vh', '84vh']}
+        maxWidth={['97%', '95%', '95vw', '92vw', '82vw', '74vw', '80rem']}
         onOpenAutoFocus={(e) => e.preventDefault()}
         overflow="hidden"
         shadow="2xl"
