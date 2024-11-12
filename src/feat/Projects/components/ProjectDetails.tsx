@@ -5,9 +5,12 @@ import {
   type TransitionTo,
 } from '@react-spring/web';
 import { useQuery } from 'convex/react';
+import { useCallback, useState } from 'react';
+import useMeasure from 'react-use/lib/useMeasure';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { Image } from '~/ui/Image';
+import { Loader } from '~/ui/Loader';
 import { Markdown } from '~/ui/Markdown';
 import { MediaEmbed } from '~/ui/MediaEmbed';
 import type { Directions } from '../hooks/useNextPrev';
@@ -61,15 +64,32 @@ const ScrollContainer = (props: FlexProps) => {
   );
 };
 
-const CoverImage = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
+const CoverImage = (props: {
+  hasSeenImages: Set<ProjectId>;
+  projectId: ProjectId;
+}) => {
+  const { projectId, hasSeenImages } = props;
+  const [containerRef, containerRect] = useMeasure();
+  const [isLoading, setLoading] = useState(true);
   const coverImage = useQuery(api.projects.loadProjectCoverImage, {
     projectId,
   });
+  const handleLoad = useCallback(() => {
+    hasSeenImages.add(projectId);
+    setLoading(false);
+  }, [hasSeenImages, projectId]);
 
   if (!coverImage) {
     return null;
   }
+
+  const { aspectRatio } = coverImage;
+  const calculatedHeight = containerRect.width
+    ? Math.min(
+        Math.round(containerRect.width * aspectRatio),
+        containerRect.height,
+      )
+    : 0;
 
   return (
     <Flex
@@ -83,21 +103,34 @@ const CoverImage = (props: { projectId: ProjectId }) => {
       overflow="hidden"
       position="relative"
       py={[8, 0]}
+      ref={containerRef}
       width="100%"
       _selection={{ bg: 'transparent' }}
     >
       <Image
         alt={coverImage.alt}
+        flexShrink={0}
         height="100%"
         objectFit="contain"
         objectPosition="center"
+        onLoad={() => handleLoad()}
         options={{ width: 1280, quality: 75, fit: 'cover' }}
         src={coverImage.publicUrl}
-        useAnimation={false}
+        style={{ minHeight: `${calculatedHeight}px` }}
+        useAnimation={!hasSeenImages.has(projectId)}
         width="100%"
-        flexShrink={0}
         _selection={{ bg: 'transparent' }}
       />
+      {isLoading && (
+        <Loader
+          color="zinc.300/50"
+          left="50%"
+          position="absolute"
+          size="md"
+          top="50%"
+          transform="translate(-50%, -50%)"
+        />
+      )}
     </Flex>
   );
 };
@@ -160,6 +193,7 @@ export const ProjectDetails = (props: {
   projectId: ProjectId;
 }) => {
   const { direction, projectId } = props;
+  const [hasSeenImages] = useState<Set<ProjectId>>(() => new Set());
   const transitions = useTransition(projectId, {
     from: fromTransition(direction),
     enter: {
@@ -188,7 +222,7 @@ export const ProjectDetails = (props: {
           }}
         >
           <ScrollContainer>
-            <CoverImage projectId={currentId} />
+            <CoverImage projectId={currentId} hasSeenImages={hasSeenImages} />
             <Content projectId={currentId} />
             <EmbedCode projectId={currentId} />
           </ScrollContainer>
