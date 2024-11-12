@@ -144,3 +144,27 @@ export const loadProjectEmbed = query({
     return null;
   },
 });
+
+export const loadProjectContent = query({
+  args: {
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.contentId) {
+      const content = await ctx.db.get(project.contentId);
+
+      if (!content || content.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Content not found',
+          code: 404,
+        });
+      }
+
+      return content;
+    }
+
+    return null;
+  },
+});

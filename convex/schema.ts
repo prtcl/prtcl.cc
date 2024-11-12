@@ -16,6 +16,7 @@ const services = v.union(
 
 const projects = defineTable({
   category: categories,
+  contentId: v.optional(v.union(v.id('content'), v.null())),
   coverImageId: v.optional(v.union(v.id('images'), v.null())),
   deletedAt: v.union(v.number(), v.null()),
   embedId: v.optional(v.union(v.id('embeds'), v.null())),
@@ -32,6 +33,12 @@ const embeds = defineTable({
   service: services,
   src: v.string(),
   updatedAt: v.optional(v.union(v.number(), v.null())),
+});
+
+const content = defineTable({
+  content: v.union(v.string(), v.null()),
+  deletedAt: v.union(v.number(), v.null()),
+  updatedAt: v.union(v.number(), v.null()),
 });
 
 const images = defineTable({
@@ -68,6 +75,7 @@ export const features = defineTable({
 });
 
 export default defineSchema({
+  content,
   details,
   embeds,
   features,

@@ -121,12 +121,18 @@ const EmbedCode = (props: { projectId: ProjectId }) => {
   );
 };
 
-const ContentContainer = (props: FlexProps) => {
-  const { children, ...flexProps } = props;
+const Content = (props: { projectId: ProjectId }) => {
+  const { projectId } = props;
+  const content = useQuery(api.projects.loadProjectContent, { projectId });
+
+  if (!content) {
+    return null;
+  }
 
   return (
     <Flex
       alignSelf="center"
+      bg={['initial', 'zinc.100/98']}
       borderColor={['initial', 'zinc.100']}
       borderRadius={12}
       borderWidth={[0, 1]}
@@ -143,28 +149,9 @@ const ContentContainer = (props: FlexProps) => {
       pt={[0, 4]}
       px={['0.68rem', 4]}
       shadow={['initial', 'lg']}
-      {...flexProps}
     >
-      {children}
+      <Markdown color="zinc.900">{content.content}</Markdown>
     </Flex>
-  );
-};
-
-const InnerDetails = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
-  const details = useQuery(api.details.loadProjectDetails, { projectId });
-  const { content } = details || {};
-
-  return (
-    <ScrollContainer>
-      <CoverImage projectId={projectId} />
-      {content && (
-        <ContentContainer bg={['initial', 'zinc.100/98']}>
-          <Markdown color="zinc.900">{content}</Markdown>
-        </ContentContainer>
-      )}
-      <EmbedCode projectId={projectId} />
-    </ScrollContainer>
   );
 };
 
@@ -200,7 +187,11 @@ export const ProjectDetails = (props: {
             position: 'absolute',
           }}
         >
-          <InnerDetails projectId={currentId} />
+          <ScrollContainer>
+            <CoverImage projectId={currentId} />
+            <Content projectId={currentId} />
+            <EmbedCode projectId={currentId} />
+          </ScrollContainer>
         </animated.div>
       ))}
     </Flex>

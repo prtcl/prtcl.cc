@@ -132,3 +132,39 @@ export const migrateProjectEmbeds = internalMutation({
     return res;
   },
 });
+
+export const migrateProjectContent = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const projects = await ctx.db.query('projects').collect();
+    const details = await ctx.db.query('details').collect();
+    const projectToContent = new Map(
+      details
+        .filter((d) => d.content !== null)
+        .map((d) => [d.projectId, d.content]),
+    );
+    const res: Id<'projects'>[] = [];
+
+    for (const project of projects) {
+      const content = projectToContent.get(project._id);
+
+      if (!content) {
+        continue;
+      }
+
+      const contentId = await ctx.db.insert('content', {
+        content,
+        deletedAt: null,
+        updatedAt: Date.now(),
+      });
+      await ctx.db.patch(project._id, {
+        contentId,
+        updatedAt: Date.now(),
+      });
+
+      res.push(project._id);
+    }
+
+    return res;
+  },
+});
