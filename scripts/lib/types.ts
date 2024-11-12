@@ -12,35 +12,33 @@ export type UploadResponse = { storageId: Id<'_storage'> };
 
 export type ImageDimensions = { width: number; height: number };
 
-export function isImageDimensions(
-  payload: unknown,
-): payload is ImageDimensions {
+export function isImageDimensions(value: unknown): value is ImageDimensions {
   return (
-    typeof payload === 'object' &&
-    payload !== null &&
-    'width' in payload &&
-    'height' in payload &&
-    typeof payload.width === 'number' &&
-    typeof payload.height === 'number'
+    typeof value === 'object' &&
+    value !== null &&
+    'width' in value &&
+    'height' in value &&
+    typeof value.width === 'number' &&
+    typeof value.height === 'number'
   );
 }
 
 export function invariantImageDimensions(
-  payload: unknown,
-): asserts payload is ImageDimensions {
-  if (!isImageDimensions(payload)) {
+  value: unknown,
+): asserts value is ImageDimensions {
+  if (!isImageDimensions(value)) {
     throw new Error('Payload is not an image dimensions object');
   }
 }
 
-export function isUploadResponse(res: unknown): res is UploadResponse {
-  return typeof res === 'object' && res !== null && 'storageId' in res;
+export function isUploadResponse(value: unknown): value is UploadResponse {
+  return typeof value === 'object' && value !== null && 'storageId' in value;
 }
 
 export function invariantUploadResponse(
-  res: unknown,
-): asserts res is UploadResponse {
-  if (!isUploadResponse(res)) {
+  value: unknown,
+): asserts value is UploadResponse {
+  if (!isUploadResponse(value)) {
     throw new Error('Response is not an upload response');
   }
 }
