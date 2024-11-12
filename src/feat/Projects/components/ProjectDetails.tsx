@@ -101,11 +101,10 @@ const ContentContainer = (props: FlexProps) => {
   return (
     <Flex
       alignSelf="center"
-      bg={['initial', 'zinc.100/98']}
       borderColor={['initial', 'zinc.100']}
       borderRadius={12}
       borderWidth={[0, 1]}
-      bottom={['initial', 4]}
+      bottom={['initial', 6]}
       direction="column"
       flexGrow={[1, 0]}
       flexShrink={0}
@@ -113,10 +112,10 @@ const ContentContainer = (props: FlexProps) => {
       maxWidth={['initial', 'calc(100% - 2rem)', 'calc(100% - 2rem)', '84%']}
       mt={['-0.68rem', 0]}
       padding={[0, 3]}
-      pb={[6, 2.5]}
+      pb={[6, 4]}
       position={['initial', 'fixed']}
-      pt={[0, 3]}
-      px={['0.68rem', 2.5]}
+      pt={[0, 4]}
+      px={['0.68rem', 4]}
       shadow={['initial', 'lg']}
       {...flexProps}
     >
@@ -150,7 +149,7 @@ const InnerDetails = (props: { projectId: ProjectId }) => {
           </ImageContainer>
         )}
         {content && (
-          <ContentContainer>
+          <ContentContainer bg={['initial', 'zinc.100/98']}>
             <Markdown color="zinc.900">{content}</Markdown>
           </ContentContainer>
         )}
