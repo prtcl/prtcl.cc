@@ -1,6 +1,7 @@
 import { paginationOptsValidator } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
-import { query } from './_generated/server';
+import type { Doc, Id } from './_generated/dataModel';
+import { query, QueryCtx } from './_generated/server';
 
 export const loadProjects = query({
   args: {
@@ -30,19 +31,26 @@ export const loadProjectIds = query({
   },
 });
 
+const getProjectOrNotFound = async (
+  ctx: QueryCtx,
+  projectId: Id<'projects'>,
+): Promise<Doc<'projects'>> => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project || project.deletedAt !== null) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
+
 export const loadProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-
-    if (!project || project.deletedAt !== null) {
-      throw new ConvexError({
-        message: 'Project not found',
-        code: 404,
-      });
-    }
-
-    return project;
+    return await getProjectOrNotFound(ctx, projectId);
   },
 });
 
@@ -51,14 +59,7 @@ export const loadProjectPreview = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-
-    if (!project || project.deletedAt !== null) {
-      throw new ConvexError({
-        message: 'Project not found',
-        code: 404,
-      });
-    }
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.previewImageId) {
       const previewImage = await ctx.db.get(project.previewImageId);
@@ -90,14 +91,7 @@ export const loadProjectCoverImage = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-
-    if (!project || project.deletedAt !== null) {
-      throw new ConvexError({
-        message: 'Project not found',
-        code: 404,
-      });
-    }
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.coverImageId) {
       const coverImage = await ctx.db.get(project.coverImageId);
@@ -118,6 +112,33 @@ export const loadProjectCoverImage = query({
           publicUrl,
         };
       }
+    }
+
+    return null;
+  },
+});
+
+export const loadProjectEmbed = query({
+  args: {
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.embedId) {
+      const embed = await ctx.db.get(project.embedId);
+
+      if (!embed || embed.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Embed not found',
+          code: 404,
+        });
+      }
+
+      return {
+        ...embed,
+        title: project.title,
+      };
     }
 
     return null;
