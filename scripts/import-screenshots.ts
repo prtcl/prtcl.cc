@@ -5,7 +5,19 @@ import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { api } from '../convex/_generated/api';
-import { Id } from '../convex/_generated/dataModel';
+import {
+  getImageDimensions,
+  loadImageFile,
+  uploadImageFile,
+} from './lib/helpers';
+import {
+  type ImagePayload,
+  type ProjectId,
+  invariantImageDimensions,
+  invariantProjectEntity,
+  invariantProjectId,
+  invariantUploadResponse,
+} from './lib/types';
 
 dotenv.config({ path: '.env.local' });
 
@@ -35,7 +47,7 @@ async function main(deploymentUrl: string, uploadToken: string) {
 
   try {
     const projects = await client.query(api.internal.collectAllProjects, {});
-    const projectIds = new Set(projects.map((p) => p._id));
+    const fromProjectId = new Map(projects.map((p) => [p._id, p]));
     const files = await fs.readdir(previewsDir);
     const imageFiles = files.filter(
       (f) => f.endsWith('.webp') || f.endsWith('.jpg'),
@@ -48,62 +60,52 @@ async function main(deploymentUrl: string, uploadToken: string) {
     }
 
     for (const filename of imageFiles) {
-      const projectId = path.parse(filename).name as Id<'projects'>;
+      const projectId = path.parse(filename).name as ProjectId;
+      const project = fromProjectId.get(projectId);
+      invariantProjectId(projectId);
+      invariantProjectEntity(project);
 
-      if (!projectId || !projectIds.has(projectId)) {
-        console.error(`No valid projectId for ${filename}`);
-        continue;
-      }
+      console.log(`Uploading ${filename}`);
 
-      const filepath = path.join(previewsDir, filename);
-      const fileContent = await fs.readFile(filepath);
-
-      const file = new File([fileContent], filename, {
-        type: filename.endsWith('.webp') ? 'image/webp' : 'image/jpeg',
-      });
-
+      const file = await loadImageFile(previewsDir, filename);
       const { uploadUrl } = await client.mutation(
         api.internal.generateUploadUrl,
         { token: uploadToken },
       );
 
-      const payload = await uploadFile(uploadUrl, file);
+      const uploadResponse = await uploadImageFile(uploadUrl, file);
+      invariantUploadResponse(uploadResponse);
 
-      if (payload) {
-        console.log(
-          `Uploaded ${filename} with storageId: ${payload.storageId}`,
-        );
+      const { storageId } = uploadResponse;
+      const dimensions = await getImageDimensions(file);
+      invariantImageDimensions(dimensions);
 
-        await client.mutation(api.internal.createPreview, {
-          projectId: projectId as Id<'projects'>,
-          storageId: payload.storageId as Id<'_storage'>,
-          token: uploadToken,
-        });
-      }
+      const imagePayload: ImagePayload = {
+        alt: project.title,
+        description: null,
+        mimeType: file.type,
+        naturalHeight: dimensions.width,
+        naturalWidth: dimensions.height,
+        size: file.size,
+        storageId,
+      };
+      const previewImageId = await client.mutation(api.internal.createImage, {
+        token: uploadToken,
+        payload: imagePayload,
+      });
+
+      console.log(`Uploaded with previewImageId: ${previewImageId}`);
+
+      await client.mutation(api.internal.attachImagePreview, {
+        previewImageId,
+        projectId,
+        token: uploadToken,
+      });
     }
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
   } finally {
     await client.close();
-  }
-}
-
-type UploadPayload = { storageId: string };
-
-async function uploadFile(
-  uploadUrl: string,
-  file: File | Blob,
-): Promise<UploadPayload | void> {
-  try {
-    const res = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': file!.type },
-      body: file,
-    });
-    const payload = await res.json();
-
-    if (payload && 'storageId' in payload) {
-      return payload as UploadPayload;
-    }
-  } catch {
-    throw new Error('Could not upload');
   }
 }
