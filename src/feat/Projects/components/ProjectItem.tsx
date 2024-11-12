@@ -1,4 +1,4 @@
-import { useQuery } from 'convex/react';
+import { useQuery } from 'convex-helpers/react/cache';
 import { memo, useMemo, useRef, useState } from 'react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
