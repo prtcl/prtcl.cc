@@ -1,31 +1,39 @@
-import type { Color, Polygon, Rect } from '../types';
+import {
+  type Color,
+  type Polygon,
+  type Rect,
+  type Size,
+  invariantRenderingContext,
+} from '../types';
 import { colorToRgba } from './helpers';
 
-export default class CanvasApi {
+export class CanvasApi {
   ref: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  size: { width: number; height: number };
+  size: Size;
 
   constructor(ref: HTMLCanvasElement) {
+    const initialRect = ref.getBoundingClientRect();
+    const context = ref.getContext('2d');
+    invariantRenderingContext(context);
     this.ref = ref;
-    this.context = ref.getContext('2d');
-    const rect = ref.getBoundingClientRect();
-
-    this.resize(rect);
+    this.context = context;
+    this.resize(initialRect);
   }
 
   resize = (updatedBounds: DOMRect) => {
     const { width, height } = updatedBounds;
-
+    const dpr = window.devicePixelRatio || 1;
+    this.size = { width, height };
     this.ref.style.width = `${width}px`;
     this.ref.style.height = `${height}px`;
-    this.ref.width = width;
-    this.ref.height = height;
+    this.ref.width = width * dpr;
+    this.ref.height = height * dpr;
+    this.scale(dpr, dpr);
+  };
 
-    this.size = {
-      width,
-      height,
-    };
+  scale = (x: number, y: number) => {
+    this.context.scale(x, y);
   };
 
   clear = (width = this.size.width, height = this.size.height) => {
@@ -56,22 +64,21 @@ export default class CanvasApi {
   drawPolygon = (poly: Polygon, opts?: { shouldFill?: boolean }) => {
     const { coords } = poly;
     this.context.beginPath();
-
-    for (let i = 0; i < coords.length; i += 1) {
-      const coord = coords[i];
-
-      if (i === 0) {
+    for (const [index, coord] of coords.entries()) {
+      if (index === 0) {
         this.context.moveTo(...coord);
       } else {
         this.context.lineTo(...coord);
       }
     }
-
-    if (opts?.shouldFill === true) {
+    if (opts?.shouldFill) {
       this.context.fill();
     }
-
     this.context.closePath();
     this.context.stroke();
+  };
+
+  toDataURL = (type?: string, quality?: number) => {
+    return this.ref.toDataURL(type, quality);
   };
 }
