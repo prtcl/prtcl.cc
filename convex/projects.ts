@@ -84,3 +84,42 @@ export const loadProjectPreview = query({
     return null;
   },
 });
+
+export const loadProjectCoverImage = query({
+  args: {
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, { projectId }) => {
+    const project = await ctx.db.get(projectId);
+
+    if (!project || project.deletedAt !== null) {
+      throw new ConvexError({
+        message: 'Project not found',
+        code: 404,
+      });
+    }
+
+    if (project.coverImageId) {
+      const coverImage = await ctx.db.get(project.coverImageId);
+
+      if (!coverImage || coverImage.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Cover image not found',
+          code: 404,
+        });
+      }
+
+      const publicUrl = await ctx.storage.getUrl(coverImage.storageId);
+
+      if (publicUrl) {
+        return {
+          ...coverImage,
+          alt: coverImage.alt || project.title,
+          publicUrl,
+        };
+      }
+    }
+
+    return null;
+  },
+});

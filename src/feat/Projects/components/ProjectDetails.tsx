@@ -61,8 +61,15 @@ const ScrollContainer = (props: FlexProps) => {
   );
 };
 
-const ImageContainer = (props: FlexProps) => {
-  const { children, ...flexProps } = props;
+const CoverImage = (props: { projectId: ProjectId }) => {
+  const { projectId } = props;
+  const coverImage = useQuery(api.projects.loadProjectCoverImage, {
+    projectId,
+  });
+
+  if (!coverImage) {
+    return null;
+  }
 
   return (
     <Flex
@@ -78,9 +85,19 @@ const ImageContainer = (props: FlexProps) => {
       py={[8, 0]}
       width="100%"
       _selection={{ bg: 'transparent' }}
-      {...flexProps}
     >
-      {children}
+      <Image
+        alt={coverImage.alt}
+        height="100%"
+        objectFit="contain"
+        objectPosition="center"
+        options={{ width: 1280, quality: 75, fit: 'cover' }}
+        src={coverImage.publicUrl}
+        useAnimation={false}
+        width="100%"
+        flexShrink={0}
+        _selection={{ bg: 'transparent' }}
+      />
     </Flex>
   );
 };
@@ -127,42 +144,25 @@ const ContentContainer = (props: FlexProps) => {
 const InnerDetails = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
   const details = useQuery(api.details.loadProjectDetails, { projectId });
-  const { content, embed, coverImage } = details || {};
+  const { content, embed } = details || {};
 
   return (
     <ScrollContainer>
-      <>
-        {coverImage && (
-          <ImageContainer>
-            <Image
-              alt={coverImage.alt}
-              height="100%"
-              objectFit="contain"
-              objectPosition="center"
-              options={{ width: 1280, quality: 75, fit: 'cover' }}
-              src={coverImage.url}
-              useAnimation={false}
-              width="100%"
-              flexShrink={0}
-              _selection={{ bg: 'transparent' }}
-            />
-          </ImageContainer>
-        )}
-        {content && (
-          <ContentContainer bg={['initial', 'zinc.100/98']}>
-            <Markdown color="zinc.900">{content}</Markdown>
-          </ContentContainer>
-        )}
-        {embed && (
-          <EmbedContainer>
-            <MediaEmbed
-              service={embed.service}
-              src={embed.src}
-              title={embed.title}
-            />
-          </EmbedContainer>
-        )}
-      </>
+      <CoverImage projectId={projectId} />
+      {content && (
+        <ContentContainer bg={['initial', 'zinc.100/98']}>
+          <Markdown color="zinc.900">{content}</Markdown>
+        </ContentContainer>
+      )}
+      {embed && (
+        <EmbedContainer>
+          <MediaEmbed
+            service={embed.service}
+            src={embed.src}
+            title={embed.title}
+          />
+        </EmbedContainer>
+      )}
     </ScrollContainer>
   );
 };
