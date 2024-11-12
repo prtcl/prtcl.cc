@@ -16,7 +16,7 @@ export const Visualization = () => {
     const resize = debounce(() => {
       const rect = containerRef.current.getBoundingClientRect();
       canvas.resize(rect);
-    }, 250);
+    }, 500);
 
     window.addEventListener('resize', resize);
 

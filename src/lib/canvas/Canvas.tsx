@@ -1,12 +1,13 @@
 import {
-  useEffect,
+  forwardRef,
   type CanvasHTMLAttributes,
-  type MutableRefObject,
+  useEffect,
+  useMemo,
   useRef,
   useState,
-  useMemo,
 } from 'react';
-import CanvasApi from './lib/CanvasApi';
+import { CanvasApi } from './lib/CanvasApi';
+import { isCanvasMutableRef, type CanvasRef } from './types';
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,7 +21,7 @@ export const useCanvas = () => {
 
   const canvasProps = useMemo<CanvasProps>(
     () => ({
-      canvasRef,
+      ref: canvasRef,
       onReady: () => {
         setState({
           canvas: new CanvasApi(canvasRef.current),
@@ -37,29 +38,29 @@ export const useCanvas = () => {
   };
 };
 
-type CanvasRef = MutableRefObject<HTMLCanvasElement>;
-
 export interface CanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement> {
-  canvasRef: CanvasRef;
+  ref: CanvasRef;
   onReady: (ref: CanvasRef) => void;
 }
 
-export const Canvas = (props: CanvasProps) => {
-  const { canvasRef, onReady, ...canvasProps } = props;
-  const hasInitialized = useRef(false);
+export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
+  function Canvas(props, innerRef) {
+    const { onReady, ...canvasProps } = props;
+    const hasInitialized = useRef(false);
 
-  useEffect(() => {
-    if (canvasRef.current && !hasInitialized.current) {
-      onReady(canvasRef);
-      hasInitialized.current = true;
-    }
-  }, [canvasRef, onReady]);
+    useEffect(() => {
+      if (isCanvasMutableRef(innerRef)) {
+        hasInitialized.current = true;
+        onReady(innerRef);
+      }
+    }, [innerRef, onReady]);
 
-  return (
-    <canvas
-      {...canvasProps}
-      ref={canvasRef}
-      style={{ width: '100%', height: '100%' }}
-    />
-  );
-};
+    return (
+      <canvas
+        {...canvasProps}
+        ref={innerRef}
+        style={{ width: '100%', height: '100%' }}
+      />
+    );
+  },
+);
