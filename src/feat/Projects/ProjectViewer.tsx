@@ -81,7 +81,7 @@ export const ProjectViewer = () => {
         borderRadius={12}
         height="100%"
         maxHeight={['97svh', '95vh', '95vh', '92vh', '84vh']}
-        maxWidth={['97vw', '95vw', '95vw', '92vw', '72vw']}
+        maxWidth={['97vw', '95vw', '95vw', '92vw', '76vw', '76vw', '1280px']}
         onOpenAutoFocus={(e) => e.preventDefault()}
         overflow="hidden"
         shadow="2xl"
