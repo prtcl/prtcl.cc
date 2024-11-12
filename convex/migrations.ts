@@ -59,7 +59,7 @@ export const updateProjectImages = internalMutation({
     previewImageId: v.union(v.id('images'), v.null()),
   },
   handler: async (ctx, args) => {
-    const { projectId, coverImageId, previewImageId } = args;
+    const { projectId, coverImageId = null, previewImageId = null } = args;
     const project = await ctx.db.get(projectId);
 
     if (!project) {
@@ -110,21 +110,20 @@ export const migrateProjectEmbeds = internalMutation({
     const res: Id<'projects'>[] = [];
 
     for (const project of projects) {
-      if (!projectToEmbed.has(project._id)) {
-        continue;
-      }
-
       const embedId = projectToEmbed.get(project._id);
 
-      if (!embedId) {
-        throw new Error(`Cannot find embed: ${project.embedId}`);
+      if (embedId) {
+        await ctx.db.patch(embedId, { updatedAt: Date.now() });
+        await ctx.db.patch(project._id, {
+          embedId,
+          updatedAt: Date.now(),
+        });
+      } else {
+        await ctx.db.patch(project._id, {
+          embedId: null,
+          updatedAt: Date.now(),
+        });
       }
-
-      await ctx.db.patch(embedId, { updatedAt: Date.now() });
-      await ctx.db.patch(project._id, {
-        embedId,
-        updatedAt: Date.now(),
-      });
 
       res.push(project._id);
     }
@@ -148,19 +147,22 @@ export const migrateProjectContent = internalMutation({
     for (const project of projects) {
       const content = projectToContent.get(project._id);
 
-      if (!content) {
-        continue;
+      if (content) {
+        const contentId = await ctx.db.insert('content', {
+          content,
+          deletedAt: null,
+          updatedAt: Date.now(),
+        });
+        await ctx.db.patch(project._id, {
+          contentId,
+          updatedAt: Date.now(),
+        });
+      } else {
+        await ctx.db.patch(project._id, {
+          contentId: null,
+          updatedAt: Date.now(),
+        });
       }
-
-      const contentId = await ctx.db.insert('content', {
-        content,
-        deletedAt: null,
-        updatedAt: Date.now(),
-      });
-      await ctx.db.patch(project._id, {
-        contentId,
-        updatedAt: Date.now(),
-      });
 
       res.push(project._id);
     }
