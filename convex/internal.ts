@@ -128,6 +128,22 @@ export const createImage = mutation({
   },
 });
 
+const getProjectOrNotFound = async (
+  ctx: MutationCtx,
+  projectId: Id<'projects'>,
+) => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
+
 export const attachImagePreview = mutation({
   args: {
     previewImageId: v.id('images'),
@@ -138,14 +154,7 @@ export const attachImagePreview = mutation({
     const { previewImageId, projectId, token } = args;
     invariantUploadToken(token);
 
-    const project = await ctx.db.get(projectId);
-
-    if (!project) {
-      throw new ConvexError({
-        message: 'Project not found',
-        code: 404,
-      });
-    }
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.previewImageId) {
       const existingPreviewImage = await ctx.db.get(project.previewImageId);
@@ -184,22 +193,6 @@ const detectEmbedService = (embedCode: string): Services | void => {
   if (embedCode.includes('youtube.com')) {
     return Service.YOUTUBE;
   }
-};
-
-const getProjectOrNotFound = async (
-  ctx: MutationCtx,
-  projectId: Id<'projects'>,
-) => {
-  const project = await ctx.db.get(projectId);
-
-  if (!project) {
-    throw new ConvexError({
-      message: 'Project not found',
-      code: 404,
-    });
-  }
-
-  return project;
 };
 
 export const attachProjectEmbed = internalMutation({
