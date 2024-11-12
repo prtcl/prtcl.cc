@@ -10,8 +10,8 @@ import {
 } from './lib/helpers';
 import {
   type ImagePayload,
-  assertImageDimensions,
-  assertUploadResponse,
+  invariantImageDimensions,
+  invariantUploadResponse,
 } from './lib/types';
 
 dotenv.config({ path: '.env.local' });
@@ -57,11 +57,11 @@ async function main(
     );
 
     const uploadResponse = await uploadImageFile(uploadUrl, file);
-    assertUploadResponse(uploadResponse);
+    invariantUploadResponse(uploadResponse);
 
     const { storageId } = uploadResponse;
     const dimensions = await getImageDimensions(file);
-    assertImageDimensions(dimensions);
+    invariantImageDimensions(dimensions);
 
     const imagePayload: ImagePayload = {
       alt: null,

@@ -87,7 +87,7 @@ export const unarchiveProject = internalMutation({
 export const generateUploadUrl = mutation({
   args: { token: v.string() },
   handler: async (ctx, args) => {
-    assertUploadToken(args.token);
+    invariantUploadToken(args.token);
 
     return {
       uploadUrl: await ctx.storage.generateUploadUrl(),
@@ -115,7 +115,7 @@ export const createImage = mutation({
       payload: { naturalHeight, naturalWidth, ...restPayload },
       token,
     } = args;
-    assertUploadToken(token);
+    invariantUploadToken(token);
 
     return await ctx.db.insert('images', {
       ...restPayload,
@@ -136,7 +136,7 @@ export const attachImagePreview = mutation({
   },
   handler: async (ctx, args) => {
     const { previewImageId, projectId, token } = args;
-    assertUploadToken(token);
+    invariantUploadToken(token);
 
     const project = await ctx.db.get(projectId);
 
@@ -158,7 +158,7 @@ export const attachImagePreview = mutation({
     }
 
     const targetPreviewImage = await ctx.db.get(previewImageId);
-    assertImageEntity(targetPreviewImage);
+    invariantImageEntity(targetPreviewImage);
 
     return await ctx.db.patch(project._id, {
       previewImageId,
@@ -222,7 +222,7 @@ export const attachProjectEmbed = internalMutation({
     }
 
     const service = detectEmbedService(src);
-    assertEmbedService(service);
+    invariantEmbedService(service);
 
     const embedId = await ctx.db.insert('embeds', {
       deletedAt: null,
@@ -257,7 +257,7 @@ export const attachProjectCoverImage = internalMutation({
     }
 
     const targetCoverImage = await ctx.db.get(coverImageId);
-    assertImageEntity(targetCoverImage);
+    invariantImageEntity(targetCoverImage);
 
     return await ctx.db.patch(projectId, {
       coverImageId: targetCoverImage._id,
@@ -266,7 +266,7 @@ export const attachProjectCoverImage = internalMutation({
   },
 });
 
-function assertUploadToken(token: unknown): asserts token is string {
+function invariantUploadToken(token: unknown): asserts token is string {
   if (!process.env.UPLOAD_TOKEN) {
     throw new Error('No upload token set!');
   }
@@ -280,7 +280,7 @@ function isEmbedService(value: unknown): value is Services {
   return typeof value === 'string' && services.has(value as Services);
 }
 
-function assertEmbedService(value: unknown): asserts value is Services {
+function invariantEmbedService(value: unknown): asserts value is Services {
   if (!isEmbedService(value)) {
     throw new Error('Service string is invalid');
   }
@@ -290,7 +290,7 @@ function isImageEntity(value: unknown): value is Doc<'images'> {
   return typeof value === 'object' && value !== null && 'storageId' in value;
 }
 
-function assertImageEntity(value: unknown): asserts value is Doc<'images'> {
+function invariantImageEntity(value: unknown): asserts value is Doc<'images'> {
   if (!isImageEntity(value)) {
     throw new Error('Image entity is invalid or not found');
   }

@@ -13,10 +13,10 @@ import {
 import {
   type ImagePayload,
   type ProjectId,
-  assertImageDimensions,
-  assertProjectEntity,
-  assertProjectId,
-  assertUploadResponse,
+  invariantImageDimensions,
+  invariantProjectEntity,
+  invariantProjectId,
+  invariantUploadResponse,
 } from './lib/types';
 
 dotenv.config({ path: '.env.local' });
@@ -62,8 +62,8 @@ async function main(deploymentUrl: string, uploadToken: string) {
     for (const filename of imageFiles) {
       const projectId = path.parse(filename).name as ProjectId;
       const project = fromProjectId.get(projectId);
-      assertProjectId(projectId);
-      assertProjectEntity(project);
+      invariantProjectId(projectId);
+      invariantProjectEntity(project);
 
       console.log(`Uploading ${filename}`);
 
@@ -74,11 +74,11 @@ async function main(deploymentUrl: string, uploadToken: string) {
       );
 
       const uploadResponse = await uploadImageFile(uploadUrl, file);
-      assertUploadResponse(uploadResponse);
+      invariantUploadResponse(uploadResponse);
 
       const { storageId } = uploadResponse;
       const dimensions = await getImageDimensions(file);
-      assertImageDimensions(dimensions);
+      invariantImageDimensions(dimensions);
 
       const imagePayload: ImagePayload = {
         alt: project.title,

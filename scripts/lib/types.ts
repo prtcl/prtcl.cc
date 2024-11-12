@@ -25,7 +25,7 @@ export function isImageDimensions(
   );
 }
 
-export function assertImageDimensions(
+export function invariantImageDimensions(
   payload: unknown,
 ): asserts payload is ImageDimensions {
   if (!isImageDimensions(payload)) {
@@ -37,7 +37,7 @@ export function isUploadResponse(res: unknown): res is UploadResponse {
   return typeof res === 'object' && res !== null && 'storageId' in res;
 }
 
-export function assertUploadResponse(
+export function invariantUploadResponse(
   res: unknown,
 ): asserts res is UploadResponse {
   if (!isUploadResponse(res)) {
@@ -45,13 +45,13 @@ export function assertUploadResponse(
   }
 }
 
-export function assertProjectId(value: unknown): asserts value is ProjectId {
+export function invariantProjectId(value: unknown): asserts value is ProjectId {
   if (typeof value !== 'string') {
     throw new Error('Value is not a product ID');
   }
 }
 
-export function assertProjectEntity(
+export function invariantProjectEntity(
   value: unknown,
 ): asserts value is ProjectEntity {
   if (
