@@ -1,4 +1,5 @@
 import { v } from 'convex/values';
+import type { Doc } from './_generated/dataModel';
 import { internalMutation } from './_generated/server';
 
 export const updateProjectImages = internalMutation({
@@ -48,74 +49,50 @@ export const updateProjectImages = internalMutation({
   },
 });
 
-// export const migrateProjectEmbeds = internalMutation({
-//   args: {},
-//   handler: async (ctx) => {
-//     const projects = await ctx.db.query('projects').collect();
-//     const details = await ctx.db.query('details').collect();
-//     const projectToEmbed = new Map(
-//       details.filter((d) => !!d.embedId).map((d) => [d.projectId, d.embedId]),
-//     );
-//     const res: Id<'projects'>[] = [];
+type OptionalProjectFields = Pick<
+  Doc<'projects'>,
+  'contentId' | 'coverImageId' | 'embedId' | 'previewImageId' | 'updatedAt'
+>;
 
-//     for (const project of projects) {
-//       const embedId = projectToEmbed.get(project._id);
+type OptionalEmbedFields = Pick<Doc<'embeds'>, 'updatedAt'>;
 
-//       if (embedId) {
-//         await ctx.db.patch(embedId, { updatedAt: Date.now() });
-//         await ctx.db.patch(project._id, {
-//           embedId,
-//           updatedAt: Date.now(),
-//         });
-//       } else {
-//         await ctx.db.patch(project._id, {
-//           embedId: null,
-//           updatedAt: Date.now(),
-//         });
-//       }
+type OptionalFeatureFields = Pick<Doc<'features'>, 'description'>;
 
-//       res.push(project._id);
-//     }
+export const populateOptionalFields = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const projects = await ctx.db.query('projects').collect();
+    const embeds = await ctx.db.query('embeds').collect();
+    const features = await ctx.db.query('features').collect();
 
-//     return res;
-//   },
-// });
+    for (const project of projects) {
+      const payload: OptionalProjectFields = {
+        contentId: project.contentId || null,
+        coverImageId: project.coverImageId || null,
+        embedId: project.embedId || null,
+        previewImageId: project.previewImageId || null,
+        updatedAt: project.updatedAt
+          ? project.updatedAt
+          : project._creationTime,
+      };
 
-// export const migrateProjectContent = internalMutation({
-//   args: {},
-//   handler: async (ctx) => {
-//     const projects = await ctx.db.query('projects').collect();
-//     const details = await ctx.db.query('details').collect();
-//     const projectToContent = new Map(
-//       details
-//         .filter((d) => d.content !== null)
-//         .map((d) => [d.projectId, d.content]),
-//     );
-//     const res: Id<'projects'>[] = [];
+      await ctx.db.patch(project._id, payload);
+    }
 
-//     for (const project of projects) {
-//       const content = projectToContent.get(project._id);
+    for (const embed of embeds) {
+      const payload: OptionalEmbedFields = {
+        updatedAt: embed.updatedAt ? embed.updatedAt : embed._creationTime,
+      };
 
-//       if (content) {
-//         const contentId = await ctx.db.insert('content', {
-//           content,
-//           deletedAt: null,
-//           updatedAt: Date.now(),
-//         });
-//         await ctx.db.patch(project._id, {
-//           contentId,
-//           updatedAt: Date.now(),
-//         });
-//       } else {
-//         await ctx.db.patch(project._id, {
-//           contentId: null,
-//           updatedAt: Date.now(),
-//         });
-//       }
+      await ctx.db.patch(embed._id, payload);
+    }
 
-//       res.push(project._id);
-//     }
+    for (const feature of features) {
+      const payload: OptionalFeatureFields = {
+        description: feature.description || null,
+      };
 
-//     return res;
-//   },
-// });
+      await ctx.db.patch(feature._id, payload);
+    }
+  },
+});

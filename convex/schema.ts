@@ -55,7 +55,7 @@ const images = defineTable({
 });
 
 export const features = defineTable({
-  description: v.optional(v.string()),
+  description: v.optional(v.union(v.string(), v.null())),
   key: v.string(),
   value: v.boolean(),
 });
