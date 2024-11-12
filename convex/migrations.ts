@@ -1,4 +1,5 @@
 import { v } from 'convex/values';
+import type { Id } from './_generated/dataModel';
 import { internalMutation, internalQuery } from './_generated/server';
 
 export const collectAllDetails = internalQuery({
@@ -65,5 +66,39 @@ export const updateProjectImages = internalMutation({
       previewImageId,
       updatedAt: Date.now(),
     });
+  },
+});
+
+export const migrateProjectEmbeds = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const projects = await ctx.db.query('projects').collect();
+    const details = await ctx.db.query('details').collect();
+    const projectToEmbed = new Map(
+      details.filter((d) => !!d.embedId).map((d) => [d.projectId, d.embedId]),
+    );
+    const res: Id<'projects'>[] = [];
+
+    for (const project of projects) {
+      if (!projectToEmbed.has(project._id)) {
+        continue;
+      }
+
+      const embedId = projectToEmbed.get(project._id);
+
+      if (!embedId) {
+        throw new Error(`Cannot find embed: ${project.embedId}`);
+      }
+
+      await ctx.db.patch(embedId, { updatedAt: Date.now() });
+      await ctx.db.patch(project._id, {
+        embedId,
+        updatedAt: Date.now(),
+      });
+
+      res.push(project._id);
+    }
+
+    return res;
   },
 });

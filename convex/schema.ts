@@ -8,6 +8,12 @@ const categories = v.union(
   v.literal('video'),
 );
 
+const services = v.union(
+  v.literal('bandcamp'),
+  v.literal('youtube'),
+  v.literal('soundcloud'),
+);
+
 const projects = defineTable({
   category: categories,
   coverImageId: v.optional(v.union(v.id('images'), v.null())),
@@ -20,6 +26,13 @@ const projects = defineTable({
   updatedAt: v.optional(v.union(v.number(), v.null())),
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
+
+const embeds = defineTable({
+  deletedAt: v.union(v.number(), v.null()),
+  service: services,
+  src: v.string(),
+  updatedAt: v.optional(v.union(v.number(), v.null())),
+});
 
 const images = defineTable({
   alt: v.union(v.string(), v.null()),
@@ -41,19 +54,6 @@ const details = defineTable({
   embedId: v.union(v.id('embeds'), v.null()),
   projectId: v.id('projects'),
 }).index('project', ['projectId']);
-
-const services = v.union(
-  v.literal('bandcamp'),
-  v.literal('youtube'),
-  v.literal('soundcloud'),
-);
-
-const embeds = defineTable({
-  deletedAt: v.union(v.number(), v.null()),
-  service: services,
-  src: v.string(),
-  updatedAt: v.optional(v.union(v.number(), v.null())),
-});
 
 const previews = defineTable({
   deletedAt: v.union(v.number(), v.null()),
