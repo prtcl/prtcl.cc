@@ -10,12 +10,29 @@ const categories = v.union(
 
 const projects = defineTable({
   category: categories,
+  coverImageId: v.optional(v.union(v.id('images'), v.null())),
   deletedAt: v.union(v.number(), v.null()),
+  embedId: v.optional(v.union(v.id('embeds'), v.null())),
   order: v.number(),
+  previewImageId: v.optional(v.union(v.id('images'), v.null())),
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
+  updatedAt: v.optional(v.union(v.number(), v.null())),
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
+
+const images = defineTable({
+  alt: v.union(v.string(), v.null()),
+  aspectRatio: v.number(),
+  deletedAt: v.union(v.number(), v.null()),
+  description: v.union(v.string(), v.null()),
+  mimeType: v.string(),
+  naturalHeight: v.number(),
+  naturalWidth: v.number(),
+  size: v.number(),
+  storageId: v.id('_storage'),
+  updatedAt: v.number(),
+});
 
 const details = defineTable({
   content: v.union(v.string(), v.null()),
@@ -35,6 +52,7 @@ const embeds = defineTable({
   deletedAt: v.union(v.number(), v.null()),
   service: services,
   src: v.string(),
+  updatedAt: v.optional(v.union(v.number(), v.null())),
 });
 
 const previews = defineTable({
@@ -53,6 +71,7 @@ export default defineSchema({
   details,
   embeds,
   features,
+  images,
   previews,
   projects,
 });
