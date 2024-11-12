@@ -16,15 +16,15 @@ const services = v.union(
 
 const projects = defineTable({
   category: categories,
-  contentId: v.optional(v.union(v.id('content'), v.null())),
-  coverImageId: v.optional(v.union(v.id('images'), v.null())),
+  contentId: v.union(v.id('content'), v.null()),
+  coverImageId: v.union(v.id('images'), v.null()),
   deletedAt: v.union(v.number(), v.null()),
-  embedId: v.optional(v.union(v.id('embeds'), v.null())),
+  embedId: v.union(v.id('embeds'), v.null()),
   order: v.number(),
-  previewImageId: v.optional(v.union(v.id('images'), v.null())),
+  previewImageId: v.union(v.id('images'), v.null()),
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
-  updatedAt: v.optional(v.union(v.number(), v.null())),
+  updatedAt: v.union(v.number(), v.null()),
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
 
@@ -32,7 +32,7 @@ const embeds = defineTable({
   deletedAt: v.union(v.number(), v.null()),
   service: services,
   src: v.string(),
-  updatedAt: v.optional(v.union(v.number(), v.null())),
+  updatedAt: v.union(v.number(), v.null()),
 });
 
 const content = defineTable({
@@ -55,7 +55,7 @@ const images = defineTable({
 });
 
 export const features = defineTable({
-  description: v.optional(v.union(v.string(), v.null())),
+  description: v.union(v.string(), v.null()),
   key: v.string(),
   value: v.boolean(),
 });
