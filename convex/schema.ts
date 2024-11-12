@@ -8,14 +8,51 @@ const categories = v.union(
   v.literal('video'),
 );
 
+const services = v.union(
+  v.literal('bandcamp'),
+  v.literal('youtube'),
+  v.literal('soundcloud'),
+);
+
 const projects = defineTable({
   category: categories,
+  contentId: v.optional(v.union(v.id('content'), v.null())),
+  coverImageId: v.optional(v.union(v.id('images'), v.null())),
   deletedAt: v.union(v.number(), v.null()),
+  embedId: v.optional(v.union(v.id('embeds'), v.null())),
   order: v.number(),
+  previewImageId: v.optional(v.union(v.id('images'), v.null())),
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
+  updatedAt: v.optional(v.union(v.number(), v.null())),
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
+
+const embeds = defineTable({
+  deletedAt: v.union(v.number(), v.null()),
+  service: services,
+  src: v.string(),
+  updatedAt: v.optional(v.union(v.number(), v.null())),
+});
+
+const content = defineTable({
+  content: v.union(v.string(), v.null()),
+  deletedAt: v.union(v.number(), v.null()),
+  updatedAt: v.union(v.number(), v.null()),
+});
+
+const images = defineTable({
+  alt: v.union(v.string(), v.null()),
+  aspectRatio: v.number(),
+  deletedAt: v.union(v.number(), v.null()),
+  description: v.union(v.string(), v.null()),
+  mimeType: v.string(),
+  naturalHeight: v.number(),
+  naturalWidth: v.number(),
+  size: v.number(),
+  storageId: v.id('_storage'),
+  updatedAt: v.number(),
+});
 
 const details = defineTable({
   content: v.union(v.string(), v.null()),
@@ -24,18 +61,6 @@ const details = defineTable({
   embedId: v.union(v.id('embeds'), v.null()),
   projectId: v.id('projects'),
 }).index('project', ['projectId']);
-
-const services = v.union(
-  v.literal('bandcamp'),
-  v.literal('youtube'),
-  v.literal('soundcloud'),
-);
-
-const embeds = defineTable({
-  deletedAt: v.union(v.number(), v.null()),
-  service: services,
-  src: v.string(),
-});
 
 const previews = defineTable({
   deletedAt: v.union(v.number(), v.null()),
@@ -50,9 +75,11 @@ export const features = defineTable({
 });
 
 export default defineSchema({
+  content,
   details,
   embeds,
   features,
+  images,
   previews,
   projects,
 });

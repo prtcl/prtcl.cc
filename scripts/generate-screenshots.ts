@@ -34,7 +34,7 @@ async function main(deploymentUrl: string) {
   const client = new ConvexClient(deploymentUrl);
 
   try {
-    const projects = await client.query(api.projects.loadAllProjects, {});
+    const projects = await client.query(api.internal.collectAllProjects, {});
     const previewsDir = path.join(process.cwd(), 'previews');
 
     await fs.mkdir(previewsDir, { recursive: true });

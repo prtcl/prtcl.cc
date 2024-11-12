@@ -34,7 +34,7 @@ async function main(deploymentUrl: string, uploadToken: string) {
   const previewsDir = path.join(process.cwd(), 'previews');
 
   try {
-    const projects = await client.query(api.projects.loadAllProjects, {});
+    const projects = await client.query(api.internal.collectAllProjects, {});
     const projectIds = new Set(projects.map((p) => p._id));
     const files = await fs.readdir(previewsDir);
     const imageFiles = files.filter(
@@ -63,7 +63,7 @@ async function main(deploymentUrl: string, uploadToken: string) {
       });
 
       const { uploadUrl } = await client.mutation(
-        api.previews.generateUploadUrl,
+        api.internal.generateUploadUrl,
         { token: uploadToken },
       );
 
@@ -74,7 +74,7 @@ async function main(deploymentUrl: string, uploadToken: string) {
           `Uploaded ${filename} with storageId: ${payload.storageId}`,
         );
 
-        await client.mutation(api.previews.createPreview, {
+        await client.mutation(api.internal.createPreview, {
           projectId: projectId as Id<'projects'>,
           storageId: payload.storageId as Id<'_storage'>,
           token: uploadToken,

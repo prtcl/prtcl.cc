@@ -16,7 +16,11 @@ import type { ProjectEntity, ProjectId } from '../types';
 const InnerPreview = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
   const [isLoading, setLoading] = useState(false);
-  const preview = useQuery(api.previews.loadProjectPreview, { projectId });
+  const previewImage = useQuery(api.projects.loadProjectPreview, { projectId });
+  const calculatedHeight = Math.max(
+    180,
+    Math.round(256 * previewImage?.aspectRatio || 0),
+  );
   const hasInitialized = useRef(false);
   const toggleLoader = useMemo(
     () =>
@@ -33,15 +37,21 @@ const InnerPreview = (props: { projectId: ProjectId }) => {
   }
 
   return (
-    <Box overflow="hidden" width="256px" height="180px" position="relative">
+    <Box
+      height={`${calculatedHeight}px`}
+      overflow="hidden"
+      position="relative"
+      width="256px"
+    >
       <Image
-        height="180px"
+        alt={previewImage?.alt}
+        height={`${calculatedHeight}px`}
         onLoad={() => {
           toggleLoader.cancel();
           setLoading(false);
         }}
         options={{ width: 256 }}
-        src={preview?.publicUrl}
+        src={previewImage?.publicUrl}
         useHighRes
         useAnimation
         width="256px"

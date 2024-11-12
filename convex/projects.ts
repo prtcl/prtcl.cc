@@ -1,7 +1,7 @@
 import { paginationOptsValidator } from 'convex/server';
 import { ConvexError, v } from 'convex/values';
-import { type Id } from './_generated/dataModel';
-import { internalMutation, query } from './_generated/server';
+import type { Doc, Id } from './_generated/dataModel';
+import { query, type QueryCtx } from './_generated/server';
 
 export const loadProjects = query({
   args: {
@@ -31,95 +31,140 @@ export const loadProjectIds = query({
   },
 });
 
-export const loadAllProjects = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query('projects').order('asc').collect();
-  },
-});
+const getProjectOrNotFound = async (
+  ctx: QueryCtx,
+  projectId: Id<'projects'>,
+): Promise<Doc<'projects'>> => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project || project.deletedAt !== null) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
 
 export const loadProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
+    return await getProjectOrNotFound(ctx, projectId);
+  },
+});
 
-    if (!project || project.deletedAt !== null) {
-      throw new ConvexError({
-        message: 'Project not found',
-        code: 404,
-      });
+export const loadProjectPreview = query({
+  args: {
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.previewImageId) {
+      const previewImage = await ctx.db.get(project.previewImageId);
+
+      if (!previewImage || previewImage.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Preview not found',
+          code: 404,
+        });
+      }
+
+      const publicUrl = await ctx.storage.getUrl(previewImage.storageId);
+
+      if (publicUrl) {
+        return {
+          ...previewImage,
+          alt: previewImage.alt || project.title,
+          publicUrl,
+        };
+      }
     }
 
-    return project;
+    return null;
   },
 });
 
-export const reorderProjects = internalMutation({
+export const loadProjectCoverImage = query({
   args: {
-    id: v.id('projects'),
-    order: v.number(),
+    projectId: v.id('projects'),
   },
-  handler: async (ctx, { id: targetId, order: targetOrder }) => {
-    const projects = await ctx.db.query('projects').collect();
-    const { updates } = projects
-      .sort((a, b) => a.order - b.order)
-      .reduce<{ updates: Map<Id<'projects'>, number>; prev: number }>(
-        (res, project) => {
-          let updatedOrder;
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
 
-          if (project._id === targetId) {
-            updatedOrder = targetOrder;
-          } else if (project.deletedAt) {
-            updatedOrder = Number.MAX_SAFE_INTEGER;
-          } else {
-            const next = res.prev + 1;
-            updatedOrder = next === targetOrder ? next + 1 : next;
-            res.prev = updatedOrder;
-          }
+    if (project.coverImageId) {
+      const coverImage = await ctx.db.get(project.coverImageId);
 
-          res.updates.set(project._id, updatedOrder);
+      if (!coverImage || coverImage.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Cover image not found',
+          code: 404,
+        });
+      }
 
-          return res;
-        },
-        { updates: new Map(), prev: -1 },
-      );
+      const publicUrl = await ctx.storage.getUrl(coverImage.storageId);
 
-    for (const [id, order] of updates.entries()) {
-      await ctx.db.patch(id, { order });
+      if (publicUrl) {
+        return {
+          ...coverImage,
+          alt: coverImage.alt || project.title,
+          publicUrl,
+        };
+      }
     }
 
-    return Array.from(updates.entries());
+    return null;
   },
 });
 
-export const archiveProject = internalMutation({
+export const loadProjectEmbed = query({
   args: {
-    id: v.id('projects'),
+    projectId: v.id('projects'),
   },
-  handler: async (ctx, args) => {
-    return await ctx.db.patch(args.id, {
-      deletedAt: Date.now(),
-      order: Number.MAX_SAFE_INTEGER,
-    });
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.embedId) {
+      const embed = await ctx.db.get(project.embedId);
+
+      if (!embed || embed.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Embed not found',
+          code: 404,
+        });
+      }
+
+      return {
+        ...embed,
+        title: project.title,
+      };
+    }
+
+    return null;
   },
 });
 
-export const unarchiveProject = internalMutation({
+export const loadProjectContent = query({
   args: {
-    id: v.id('projects'),
+    projectId: v.id('projects'),
   },
-  handler: async (ctx, args) => {
-    const projects = await ctx.db
-      .query('projects')
-      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
-      .order('desc')
-      .take(1);
+  handler: async (ctx, { projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
 
-    const lastOrder = projects[0].order;
+    if (project.contentId) {
+      const content = await ctx.db.get(project.contentId);
 
-    return await ctx.db.patch(args.id, {
-      deletedAt: null,
-      order: lastOrder + 1,
-    });
+      if (!content || content.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Content not found',
+          code: 404,
+        });
+      }
+
+      return content;
+    }
+
+    return null;
   },
 });
