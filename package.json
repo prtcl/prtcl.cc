@@ -22,7 +22,8 @@
     "prettier": "prettier src --write",
     "preview": "npm run build && concurrently  \"convex dev\" \"vite preview\"",
     "setup": "npm ci && npm run panda",
-    "typecheck": "tsc --noEmit --pretty --skipLibCheck"
+    "typecheck": "tsc --noEmit --pretty --skipLibCheck",
+    "upload-image": "npx tsx scripts/upload-image.ts"
   },
   "dependencies": {
     "@prtcl/plonk": "^1.0.1",

@@ -1,12 +1,23 @@
 import { ConvexClient } from 'convex/browser';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
-import sizeOf from 'image-size';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { api } from '../convex/_generated/api';
-import type { Doc, Id } from '../convex/_generated/dataModel';
+import {
+  getImageDimensions,
+  loadImageFile,
+  uploadImageFile,
+} from './lib/helpers';
+import {
+  type ImagePayload,
+  type ProjectId,
+  assertImageDimensions,
+  assertProjectEntity,
+  assertProjectId,
+  assertUploadResponse,
+} from './lib/types';
 
 dotenv.config({ path: '.env.local' });
 
@@ -30,58 +41,6 @@ if (UPLOAD_TOKEN && (CONVEX_URL || argv.target)) {
   process.exit(0);
 }
 
-type ImagePayload = Omit<
-  Doc<'images'>,
-  '_id' | '_creationTime' | 'deletedAt' | 'updatedAt' | 'aspectRatio'
->;
-
-type UploadResponse = { storageId: Id<'_storage'> };
-
-type ImageDimensions = { width: number; height: number };
-
-const uploadImageFile = async (
-  uploadUrl: string,
-  file: File | Blob,
-): Promise<UploadResponse | void> => {
-  const res = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': file!.type },
-    body: file,
-  });
-  const payload = await res.json();
-
-  if (isUploadResponse(payload)) {
-    return payload;
-  }
-};
-
-const getImageDimensions = async (
-  file: File,
-): Promise<ImageDimensions | void> => {
-  const buffer = await file.arrayBuffer();
-  const dimensions = sizeOf(Buffer.from(buffer));
-
-  if (isImageDimensions(dimensions)) {
-    return dimensions;
-  } else {
-    throw new Error(`Could not calculate dimensions for ${file.name}`);
-  }
-};
-
-const prepareImageFile = async (basePath: string, filename: string) => {
-  const filepath = path.join(basePath, filename);
-  const fileContent = await fs.readFile(filepath);
-  let type = 'image/png';
-
-  if (filename.endsWith('.webp')) {
-    type = 'image/webp';
-  } else if (filename.endsWith('.jpg') || filename.endsWith('.jpeg')) {
-    type = 'image/jpeg';
-  }
-
-  return new File([fileContent], filename, { type });
-};
-
 async function main(deploymentUrl: string, uploadToken: string) {
   const client = new ConvexClient(deploymentUrl);
   const previewsDir = path.join(process.cwd(), 'previews');
@@ -101,14 +60,14 @@ async function main(deploymentUrl: string, uploadToken: string) {
     }
 
     for (const filename of imageFiles) {
-      const projectId = path.parse(filename).name as Id<'projects'>;
+      const projectId = path.parse(filename).name as ProjectId;
       const project = fromProjectId.get(projectId);
       assertProjectId(projectId);
       assertProjectEntity(project);
 
       console.log(`Uploading ${filename}`);
 
-      const file = await prepareImageFile(previewsDir, filename);
+      const file = await loadImageFile(previewsDir, filename);
       const { uploadUrl } = await client.mutation(
         api.internal.generateUploadUrl,
         { token: uploadToken },
@@ -148,51 +107,5 @@ async function main(deploymentUrl: string, uploadToken: string) {
     process.exit(1);
   } finally {
     await client.close();
-  }
-}
-
-function isImageDimensions(payload: unknown): payload is ImageDimensions {
-  return (
-    typeof payload === 'object' &&
-    payload !== null &&
-    'width' in payload &&
-    'height' in payload &&
-    typeof payload.width === 'number' &&
-    typeof payload.height === 'number'
-  );
-}
-
-function assertImageDimensions(
-  payload: unknown,
-): asserts payload is ImageDimensions {
-  if (!isImageDimensions(payload)) {
-    throw new Error('Payload is not an image dimensions object');
-  }
-}
-
-function isUploadResponse(res: unknown): res is UploadResponse {
-  return typeof res === 'object' && res !== null && 'storageId' in res;
-}
-
-function assertUploadResponse(res: unknown): asserts res is UploadResponse {
-  if (!isUploadResponse(res)) {
-    throw new Error('Response is not an upload response');
-  }
-}
-
-function assertProjectId(value: unknown): asserts value is Id<'projects'> {
-  if (typeof value !== 'string') {
-    throw new Error('Value is not a product ID');
-  }
-}
-
-function assertProjectEntity(value: unknown): asserts value is Doc<'projects'> {
-  if (
-    typeof value !== 'object' ||
-    value === null ||
-    !('url' in value) ||
-    !('title' in value)
-  ) {
-    throw new Error('Value is not a project');
   }
 }

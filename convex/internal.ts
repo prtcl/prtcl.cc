@@ -1,5 +1,5 @@
 import { ConvexError, v } from 'convex/values';
-import type { Id } from './_generated/dataModel';
+import type { Doc, Id } from './_generated/dataModel';
 import {
   internalMutation,
   mutation,
@@ -157,6 +157,9 @@ export const attachImagePreview = mutation({
       }
     }
 
+    const targetPreviewImage = await ctx.db.get(previewImageId);
+    assertImageEntity(targetPreviewImage);
+
     return await ctx.db.patch(project._id, {
       previewImageId,
       updatedAt: Date.now(),
@@ -235,6 +238,34 @@ export const attachProjectEmbed = internalMutation({
   },
 });
 
+export const attachProjectCoverImage = internalMutation({
+  args: {
+    coverImageId: v.id('images'),
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, { coverImageId, projectId }) => {
+    const project = await getProjectOrNotFound(ctx, projectId);
+
+    if (project.coverImageId) {
+      const existingCoverImage = await ctx.db.get(project.coverImageId);
+
+      if (existingCoverImage) {
+        await ctx.db.patch(existingCoverImage._id, {
+          deletedAt: Date.now(),
+        });
+      }
+    }
+
+    const targetCoverImage = await ctx.db.get(coverImageId);
+    assertImageEntity(targetCoverImage);
+
+    return await ctx.db.patch(projectId, {
+      coverImageId: targetCoverImage._id,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
 function assertUploadToken(token: unknown): asserts token is string {
   if (!process.env.UPLOAD_TOKEN) {
     throw new Error('No upload token set!');
@@ -244,42 +275,23 @@ function assertUploadToken(token: unknown): asserts token is string {
   }
 }
 
-function assertEmbedService(service: unknown): asserts service is Services {
+function isEmbedService(value: unknown): value is Services {
   const services = new Set<Services>(Object.values(Service));
+  return typeof value === 'string' && services.has(value as Services);
+}
 
-  if (typeof service !== 'string' || !services.has(service as Services)) {
+function assertEmbedService(value: unknown): asserts value is Services {
+  if (!isEmbedService(value)) {
     throw new Error('Service string is invalid');
   }
 }
 
-// export const attachProjectCoverImage = internalMutation({
-//   args: {
-//     coverImageId: v.id('_storage'),
-//     projectId: v.id('projects'),
-//   },
-//   handler: async (ctx, { coverImageId, projectId }) => {
-//     const project = await ctx.db.get(projectId);
+function isImageEntity(value: unknown): value is Doc<'images'> {
+  return typeof value === 'object' && value !== null && 'storageId' in value;
+}
 
-//     if (!project) {
-//       throw new ConvexError({
-//         message: 'Project not found',
-//         code: 500,
-//       });
-//     }
-
-//     const existingCoverImage = await ctx.storage.getUrl(coverImageId);
-
-//     if (!existingCoverImage) {
-//       throw new ConvexError({
-//         message: 'Cover image does not exist',
-//         code: 500,
-//       });
-//     }
-
-//     const existingDetails = await getOrInsertProjectDetails(ctx, projectId);
-
-//     return await ctx.db.patch(existingDetails._id, {
-//       coverImageId,
-//     });
-//   },
-// });
+function assertImageEntity(value: unknown): asserts value is Doc<'images'> {
+  if (!isImageEntity(value)) {
+    throw new Error('Image entity is invalid or not found');
+  }
+}
