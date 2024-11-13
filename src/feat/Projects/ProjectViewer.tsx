@@ -81,8 +81,8 @@ export const ProjectViewer = () => {
         borderRadius={12}
         height="100%"
         maxHeight={[
-          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 90vh)',
-          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 90vh)',
+          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 91vh)',
+          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 92vh)',
           '95vh',
           '92vh',
           '84vh',
