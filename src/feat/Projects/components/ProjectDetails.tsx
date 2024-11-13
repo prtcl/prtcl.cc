@@ -102,7 +102,7 @@ const CoverImage = (props: {
       objectFit="cover"
       overflow="hidden"
       position="relative"
-      py={[8, 0]}
+      py={[4, 0]}
       ref={containerRef}
       width="100%"
       _selection={{ bg: 'transparent' }}
@@ -175,7 +175,7 @@ const Content = (props: { projectId: ProjectId }) => {
       flexShrink={0}
       height={['100%', 'fit-content']}
       maxWidth={['initial', 'calc(100% - 2rem)', 'calc(100% - 2rem)', '84%']}
-      mt={['-0.68rem', 0]}
+      mt={[-1.5, 0]}
       padding={[0, 3]}
       pb={[6, 4]}
       position={['initial', 'fixed']}
