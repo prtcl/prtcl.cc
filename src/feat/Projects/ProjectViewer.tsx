@@ -78,12 +78,13 @@ export const ProjectViewer = () => {
     <Dialog.Root isOpen={isOpen} onClose={closeViewer}>
       <Dialog.Overlay />
       <Dialog.Content
-        borderRadius={12}
+        borderRadius={[16, 16, 16, 12]}
         height="100%"
+        mt="calc(env(safe-area-inset-bottom, 0px) / 2 * -1)"
         maxHeight={[
-          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 91vh)',
-          'min(calc(97% - env(safe-area-inset-bottom, 0px)), 92vh)',
-          '95vh',
+          'calc(97% - (env(safe-area-inset-bottom, 0px) * 2))',
+          'calc(97% - (env(safe-area-inset-bottom, 0px) * 2))',
+          'calc(96% - (env(safe-area-inset-bottom, 0px) * 2))',
           '92vh',
           '84vh',
         ]}
@@ -96,7 +97,10 @@ export const ProjectViewer = () => {
         <PanelContainer>
           <PanelHeader>
             <IconButton ml={-1} mt={-1} onPress={() => closeViewer()} size="md">
-              <BackIcon color="zinc.200" size="md" />
+              <BackIcon
+                color={['zinc.500', 'zinc.500', 'zinc.400', 'zinc.300']}
+                size="md"
+              />
             </IconButton>
           </PanelHeader>
           <ErrorBoundary fallback={() => <NotFound />}>
