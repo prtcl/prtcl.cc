@@ -5,7 +5,7 @@ import {
   type TransitionTo,
 } from '@react-spring/web';
 import { useQuery } from 'convex/react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import useMeasure from 'react-use/lib/useMeasure';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
@@ -14,7 +14,12 @@ import { Loader } from '~/ui/Loader';
 import { Markdown } from '~/ui/Markdown';
 import { MediaEmbed } from '~/ui/MediaEmbed';
 import type { Directions } from '../hooks/useNextPrev';
-import type { ProjectId } from '../types';
+import type {
+  ProjectId,
+  ContentEntity,
+  CoverImageEntity,
+  EmbedCodeEntity,
+} from '../types';
 
 const fromTransition = (direction: Directions): TransitionFrom<ProjectId> => {
   const distance = 25;
@@ -56,7 +61,9 @@ const ScrollContainer = (props: FlexProps) => {
       width="100%"
       height="100%"
       overflowX="hidden"
+      transition="opacity 168ms cubic-bezier(.79,.31,.59,.83)"
       overflowY="auto"
+      opacity={0}
       {...flexProps}
     >
       {children}
@@ -65,24 +72,13 @@ const ScrollContainer = (props: FlexProps) => {
 };
 
 const CoverImage = (props: {
-  hasSeenImages: Set<ProjectId>;
-  projectId: ProjectId;
+  coverImage: CoverImageEntity;
+  useAnimation: boolean;
+  onLoad: () => void;
 }) => {
-  const { projectId, hasSeenImages } = props;
+  const { coverImage, onLoad, useAnimation = false } = props;
   const [containerRef, containerRect] = useMeasure();
   const [isLoading, setLoading] = useState(true);
-  const coverImage = useQuery(api.projects.loadProjectCoverImage, {
-    projectId,
-  });
-  const handleLoad = useCallback(() => {
-    hasSeenImages.add(projectId);
-    setLoading(false);
-  }, [hasSeenImages, projectId]);
-
-  if (!coverImage) {
-    return null;
-  }
-
   const { aspectRatio } = coverImage;
   const calculatedHeight = containerRect.width
     ? Math.min(
@@ -113,11 +109,14 @@ const CoverImage = (props: {
         height="100%"
         objectFit="contain"
         objectPosition="center"
-        onLoad={() => handleLoad()}
+        onLoad={() => {
+          setLoading(false);
+          onLoad();
+        }}
         options={{ width: 1280, quality: 75, fit: 'cover' }}
         src={coverImage.publicUrl}
         style={{ minHeight: `${calculatedHeight}px` }}
-        useAnimation={!hasSeenImages.has(projectId)}
+        useAnimation={useAnimation}
         width="100%"
         _selection={{ bg: 'transparent' }}
       />
@@ -135,13 +134,8 @@ const CoverImage = (props: {
   );
 };
 
-const EmbedCode = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
-  const embedCode = useQuery(api.projects.loadProjectEmbed, { projectId });
-
-  if (!embedCode) {
-    return null;
-  }
+const EmbedCode = (props: { embedCode: EmbedCodeEntity }) => {
+  const { embedCode } = props;
 
   return (
     <Flex flex={1} minHeight="fit-content" width="100%">
@@ -154,13 +148,8 @@ const EmbedCode = (props: { projectId: ProjectId }) => {
   );
 };
 
-const Content = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
-  const content = useQuery(api.projects.loadProjectContent, { projectId });
-
-  if (!content) {
-    return null;
-  }
+const Content = (props: { content: ContentEntity }) => {
+  const { content } = props;
 
   return (
     <Flex
@@ -185,6 +174,36 @@ const Content = (props: { projectId: ProjectId }) => {
     >
       <Markdown color="zinc.900">{content.content}</Markdown>
     </Flex>
+  );
+};
+
+const checkLoading = (...items: unknown[]) =>
+  items.some((item) => typeof item === 'undefined');
+
+const InnerDetails = (props: {
+  projectId: ProjectId;
+  hasSeenImages: Set<ProjectId>;
+}) => {
+  const { projectId, hasSeenImages } = props;
+  const coverImage = useQuery(api.projects.loadProjectCoverImage, {
+    projectId,
+  });
+  const content = useQuery(api.projects.loadProjectContent, { projectId });
+  const embedCode = useQuery(api.projects.loadProjectEmbed, { projectId });
+  const isLoading = checkLoading(coverImage, content, embedCode);
+
+  return (
+    <ScrollContainer opacity={isLoading ? 0 : 1}>
+      {coverImage && (
+        <CoverImage
+          coverImage={coverImage}
+          onLoad={() => hasSeenImages.add(projectId)}
+          useAnimation={!hasSeenImages.has(projectId)}
+        />
+      )}
+      {content && <Content content={content} />}
+      {embedCode && <EmbedCode embedCode={embedCode} />}
+    </ScrollContainer>
   );
 };
 
@@ -221,11 +240,7 @@ export const ProjectDetails = (props: {
             position: 'absolute',
           }}
         >
-          <ScrollContainer>
-            <CoverImage projectId={currentId} hasSeenImages={hasSeenImages} />
-            <Content projectId={currentId} />
-            <EmbedCode projectId={currentId} />
-          </ScrollContainer>
+          <InnerDetails projectId={currentId} hasSeenImages={hasSeenImages} />
         </animated.div>
       ))}
     </Flex>
