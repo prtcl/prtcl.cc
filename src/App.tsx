@@ -5,8 +5,8 @@ import { Box, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
-import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
+import { useBreakpoints, useInteractions } from '~/lib/viewport';
 import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
@@ -62,7 +62,8 @@ const ContentContainer = (
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
-  const { features } = useFeatureFlags();
+  const { isMobile } = useBreakpoints();
+  const { hasHover, hasTouch } = useInteractions();
   const { isOpen, openProjectViewer, projectId } = useProjectViewer();
   const {
     results: projects,
@@ -91,13 +92,9 @@ const App = () => {
                   return (
                     <ProjectItem
                       key={project._id}
+                      isPreviewEnabled={hasHover}
                       isSelected={isOpen && projectId === project._id}
-                      isPreviewEnabled={features.get(
-                        FeatureFlags.PROJECT_PREVIEWS,
-                      )}
-                      isViewerEnabled={features.get(
-                        FeatureFlags.PROJECT_VIEWER,
-                      )}
+                      isViewerEnabled={isMobile || hasTouch}
                       item={project}
                       onSelect={(projectId) => openProjectViewer(projectId)}
                     />

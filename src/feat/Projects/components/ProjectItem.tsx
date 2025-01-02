@@ -112,32 +112,32 @@ export const ProjectItem = memo<ProjectItemProps>(
         ? { opacity: 0, marginBlock: '0.68rem' }
         : { opacity: 1, marginBlock: '0rem' },
     });
+    const innerContent = (
+      <Link
+        color="text"
+        fontWeight={500}
+        href={url}
+        target="_blank"
+        {...(isViewerEnabled
+          ? {
+              onClick: (e) => {
+                e.preventDefault();
+                onSelect(_id);
+              },
+            }
+          : {})}
+      >
+        {title}
+      </Link>
+    );
 
     return (
       <animated.div style={styles}>
         <Stack direction="column" gap={1}>
           {isPreviewEnabled ? (
-            <Preview projectId={_id}>
-              <Link
-                href={url}
-                color="text"
-                fontWeight={500}
-                {...(isViewerEnabled
-                  ? {
-                      onClick: (e) => {
-                        e.preventDefault();
-                        onSelect(_id);
-                      },
-                    }
-                  : {})}
-              >
-                {title}
-              </Link>
-            </Preview>
+            <Preview projectId={_id}>{innerContent}</Preview>
           ) : (
-            <Link href={url} color="text" fontWeight={500}>
-              {title}
-            </Link>
+            innerContent
           )}
           <Stack direction="row" gap={2}>
             <Badge>{category}</Badge>
