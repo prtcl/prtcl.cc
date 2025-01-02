@@ -1,3 +1,4 @@
+import { animated, useSpring } from '@react-spring/web';
 import { useQuery } from 'convex/react';
 import { memo, useMemo, useRef, useState } from 'react';
 import { type PropsWithChildren } from 'react';
@@ -75,7 +76,6 @@ const InnerPreview = (props: { projectId: ProjectId }) => {
 export const Preview = (props: PropsWithChildren<{ projectId: ProjectId }>) => {
   const { children, projectId } = props;
   const { hasHover } = useInteractions();
-
   if (!hasHover) {
     return children;
   }
@@ -95,6 +95,7 @@ export const formatTimestamp = (ts: number) =>
 
 export interface ProjectItemProps {
   isPreviewEnabled: boolean;
+  isSelected: boolean;
   isViewerEnabled: boolean;
   item: ProjectEntity;
   onSelect: (projectId: ProjectId) => void;
@@ -102,42 +103,52 @@ export interface ProjectItemProps {
 
 export const ProjectItem = memo<ProjectItemProps>(
   function ProjectItem(props) {
-    const { item, isPreviewEnabled, isViewerEnabled, onSelect } = props;
+    const { isPreviewEnabled, isSelected, isViewerEnabled, item, onSelect } =
+      props;
     const { _id, title, url, category, publishedAt } = item;
+    const styles = useSpring({
+      from: { opacity: 1, marginBlock: '0rem' },
+      to: isSelected
+        ? { opacity: 0, marginBlock: '0.68rem' }
+        : { opacity: 1, marginBlock: '0rem' },
+    });
 
     return (
-      <Stack key={_id} direction="column" gap={1}>
-        {isPreviewEnabled ? (
-          <Preview projectId={_id}>
-            <Link
-              href={url}
-              color="text"
-              fontWeight={500}
-              {...(isViewerEnabled
-                ? {
-                    onClick: (e) => {
-                      e.preventDefault();
-                      onSelect(_id);
-                    },
-                  }
-                : {})}
-            >
+      <animated.div style={styles}>
+        <Stack direction="column" gap={1}>
+          {isPreviewEnabled ? (
+            <Preview projectId={_id}>
+              <Link
+                href={url}
+                color="text"
+                fontWeight={500}
+                {...(isViewerEnabled
+                  ? {
+                      onClick: (e) => {
+                        e.preventDefault();
+                        onSelect(_id);
+                      },
+                    }
+                  : {})}
+              >
+                {title}
+              </Link>
+            </Preview>
+          ) : (
+            <Link href={url} color="text" fontWeight={500}>
               {title}
             </Link>
-          </Preview>
-        ) : (
-          <Link href={url} color="text" fontWeight={500}>
-            {title}
-          </Link>
-        )}
-        <Stack direction="row" gap={2}>
-          <Badge>{category}</Badge>
-          <Text fontSize="xs" color="zinc.700">
-            {formatTimestamp(publishedAt)}
-          </Text>
+          )}
+          <Stack direction="row" gap={2}>
+            <Badge>{category}</Badge>
+            <Text fontSize="xs" color="zinc.700">
+              {formatTimestamp(publishedAt)}
+            </Text>
+          </Stack>
         </Stack>
-      </Stack>
+      </animated.div>
     );
   },
-  (prev, next) => prev.item._id === next.item._id,
+  (prev, next) =>
+    prev.item._id === next.item._id && prev.isSelected === next.isSelected,
 );

@@ -1,3 +1,4 @@
+import { animated, useSpring } from '@react-spring/web';
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
@@ -40,11 +41,29 @@ const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
   </Button>
 );
 
+const ContentContainer = (
+  props: PropsWithChildren & { state: 'foreground' | 'background' },
+) => {
+  const { children, state } = props;
+  const styles = useSpring({
+    from: { opacity: 1, scale: 1 },
+    to:
+      state === 'background'
+        ? { opacity: 0.5, scale: 0.99 }
+        : { opacity: 1, scale: 1 },
+  });
+  return (
+    <animated.div style={{ ...styles, width: '100%', height: '100%' }}>
+      {children}
+    </animated.div>
+  );
+};
+
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
   const { features } = useFeatureFlags();
-  const { openProjectViewer } = useProjectViewer();
+  const { isOpen, openProjectViewer, projectId } = useProjectViewer();
   const {
     results: projects,
     status,
@@ -64,29 +83,34 @@ const App = () => {
       </VizContainer>
       {projects && !isLoading && (
         <ContentOverlay animation="fade-in 340ms linear">
-          <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
-            <Bio />
-            <Stack gap={2}>
-              {projects.map((project) => {
-                return (
-                  <ProjectItem
-                    key={project._id}
-                    isPreviewEnabled={features.get(
-                      FeatureFlags.PROJECT_PREVIEWS,
-                    )}
-                    isViewerEnabled={features.get(FeatureFlags.PROJECT_VIEWER)}
-                    item={project}
-                    onSelect={(projectId) => openProjectViewer(projectId)}
-                  />
-                );
-              })}
-              {canLoadMore && (
-                <LoadMore onClick={() => loadMore(LOAD_ITEMS_COUNT)}>
-                  More...
-                </LoadMore>
-              )}
+          <ContentContainer state={isOpen ? 'background' : 'foreground'}>
+            <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
+              <Bio />
+              <Stack gap={2}>
+                {projects.map((project) => {
+                  return (
+                    <ProjectItem
+                      key={project._id}
+                      isSelected={isOpen && projectId === project._id}
+                      isPreviewEnabled={features.get(
+                        FeatureFlags.PROJECT_PREVIEWS,
+                      )}
+                      isViewerEnabled={features.get(
+                        FeatureFlags.PROJECT_VIEWER,
+                      )}
+                      item={project}
+                      onSelect={(projectId) => openProjectViewer(projectId)}
+                    />
+                  );
+                })}
+                {canLoadMore && (
+                  <LoadMore onClick={() => loadMore(LOAD_ITEMS_COUNT)}>
+                    More...
+                  </LoadMore>
+                )}
+              </Stack>
             </Stack>
-          </Stack>
+          </ContentContainer>
         </ContentOverlay>
       )}
     </Root>
