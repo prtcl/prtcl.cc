@@ -1,9 +1,10 @@
 import { animated, useSpring } from '@react-spring/web';
 import { memo } from 'react';
-import { Stack } from 'styled-system/jsx';
+import { Flex, Stack } from 'styled-system/jsx';
 import { Badge } from '~/ui/Badge';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
+import { LinkIcon, WaveIcon } from '~/ui/icons';
 import type { ProjectEntity, ProjectId } from '../types';
 import { Preview } from './Preview';
 
@@ -49,6 +50,13 @@ export const ProjectItem = memo<ProjectItemProps>(
             <Text fontSize="xs" color="zinc.700">
               {formatTimestamp(publishedAt)}
             </Text>
+            <Flex alignItems="center" justifyContent="center">
+              {['sound', 'video'].includes(item.category) && item.embedId ? (
+                <WaveIcon color="primary" size="sm" mt="-1px" />
+              ) : (
+                <LinkIcon color="primary" size="sm" />
+              )}
+            </Flex>
           </Stack>
         </Stack>
       </animated.div>
