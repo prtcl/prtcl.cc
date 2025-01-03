@@ -9,7 +9,7 @@ import type { EmbedCodeEntity, ProjectId } from '../types';
 const Container = (props: FlexProps) => {
   const { children, ...flexProps } = props;
   return (
-    <Flex px={1}>
+    <Flex px={1.5}>
       <Flex
         borderRadius={12}
         flex={1}
