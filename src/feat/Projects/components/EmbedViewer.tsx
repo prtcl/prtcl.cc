@@ -8,10 +8,13 @@ const Container = (props: FlexProps) => {
   const { children, ...flexProps } = props;
   return (
     <Flex
+      borderRadius={12}
       flex={1}
+      height="fit-content"
       minHeight="fit-content"
       opacity={0}
       overflow="hidden"
+      shadow="2xl"
       transition="opacity 168ms cubic-bezier(.79,.31,.59,.83)"
       width="100%"
       {...flexProps}
@@ -21,13 +24,16 @@ const Container = (props: FlexProps) => {
   );
 };
 
-export const EmbedViewer = (props: { projectId: ProjectId }) => {
-  const { projectId } = props;
+export const EmbedViewer = (props: {
+  projectId: ProjectId;
+  isOpen: boolean;
+}) => {
+  const { projectId, isOpen } = props;
   const embedCode = useQuery(api.projects.loadProjectEmbed, { projectId });
 
   return (
     <Container opacity={embedCode === undefined ? 0 : 1}>
-      {embedCode && (
+      {embedCode && isOpen && (
         <MediaEmbed
           service={embedCode.service}
           src={embedCode.src}
