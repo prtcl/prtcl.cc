@@ -13,13 +13,14 @@ export const formatTimestamp = (ts: number) =>
 
 export interface ProjectItemProps {
   isSelected: boolean;
+  isViewerEnabled: boolean;
   item: ProjectEntity;
   onSelect: (projectId: ProjectId, container: HTMLDivElement) => void;
 }
 
 export const ProjectItem = memo<ProjectItemProps>(
   function ProjectItem(props) {
-    const { isSelected, item, onSelect } = props;
+    const { isSelected, item, onSelect, isViewerEnabled } = props;
     const { _id, title, url, category, publishedAt } = item;
     const containerRef = useRef<HTMLDivElement>(null);
     const styles = useSpring({
@@ -38,10 +39,14 @@ export const ProjectItem = memo<ProjectItemProps>(
               fontWeight={500}
               href={url}
               target="_blank"
-              onClick={(e) => {
-                e.preventDefault();
-                onSelect(_id, containerRef.current);
-              }}
+              {...(isViewerEnabled
+                ? {
+                    onClick: (e) => {
+                      e.preventDefault();
+                      onSelect(_id, containerRef.current);
+                    },
+                  }
+                : {})}
             >
               {title}
             </Link>
@@ -51,13 +56,15 @@ export const ProjectItem = memo<ProjectItemProps>(
             <Text fontSize="xs" color="zinc.700">
               {formatTimestamp(publishedAt)}
             </Text>
-            <Flex alignItems="center" justifyContent="center">
-              {['sound', 'video'].includes(item.category) && item.embedId ? (
-                <WaveIcon color="primary" size="sm" mt="-1px" />
-              ) : (
-                <LinkIcon color="primary" size="sm" />
-              )}
-            </Flex>
+            {isViewerEnabled && (
+              <Flex alignItems="center" justifyContent="center">
+                {['sound', 'video'].includes(item.category) && item.embedId ? (
+                  <WaveIcon color="primary" size="sm" mt="-1px" />
+                ) : (
+                  <LinkIcon color="primary" size="sm" />
+                )}
+              </Flex>
+            )}
           </Stack>
         </Stack>
       </animated.div>

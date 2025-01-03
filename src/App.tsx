@@ -9,6 +9,7 @@ import { useBreakpoints, useInteractions } from '~/lib/viewport';
 import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
+import { FeatureFlags, useFeatureFlags } from './lib/features';
 
 const Bio = () => {
   return (
@@ -64,6 +65,7 @@ const ContentContainer = (
 const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
+  const { features } = useFeatureFlags();
   const { isMobile } = useBreakpoints();
   const { hasTouch } = useInteractions();
   const { isOpen, openProjectViewer, projectId } = useProjectViewer();
@@ -95,6 +97,9 @@ const App = () => {
                     <ProjectItem
                       key={project._id}
                       isSelected={isOpen && projectId === project._id}
+                      isViewerEnabled={features.get(
+                        FeatureFlags.PROJECT_VIEWER,
+                      )}
                       item={project}
                       onSelect={(_, target) => {
                         if ((isMobile || hasTouch) && !!project.embedId) {
