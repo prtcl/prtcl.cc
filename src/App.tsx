@@ -1,6 +1,6 @@
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
-import { Box, Stack } from 'styled-system/jsx';
+import { Box, Stack, type BoxProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
@@ -46,9 +46,9 @@ const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
 );
 
 const ContentContainer = (
-  props: PropsWithChildren & { state: 'foreground' | 'background' },
+  props: BoxProps & { state: 'foreground' | 'background' },
 ) => {
-  const { children, state } = props;
+  const { children, state, ...boxProps } = props;
   return (
     <Box
       transition={`
@@ -57,6 +57,7 @@ const ContentContainer = (
       `}
       width="100%"
       height="100%"
+      {...boxProps}
       {...(state === 'background'
         ? { opacity: 0.5, scale: 0.99 }
         : { opacity: 1, scale: 1 })}
@@ -97,7 +98,10 @@ const App = () => {
       </VizContainer>
       {projects && !isLoading && (
         <ContentOverlay animation="fade-in 340ms linear">
-          <ContentContainer state={isOpen ? 'background' : 'foreground'}>
+          <ContentContainer
+            state={isOpen ? 'background' : 'foreground'}
+            px={isMobile && isLandscape ? 12 : 0}
+          >
             <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
               <Bio />
               <Stack gap={2}>
