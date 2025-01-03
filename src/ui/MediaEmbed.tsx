@@ -90,15 +90,18 @@ export const Iframe = styled('iframe', {
 });
 
 // Because iframe's and CORS and inner content loading flicker
-const useFakeLoader = () => {
+const useFauxLoader = () => {
   const [isLoading, toggleLoading] = useState(true);
   const [delay] = useState(() => new Rand({ min: 300, max: 500 }));
-  useMetro((timer) => {
-    if (timer.state.totalElapsed >= delay.value()) {
-      timer.stop();
-      toggleLoading(false);
-    }
-  });
+  useMetro(
+    (timer) => {
+      if (timer.state.totalElapsed >= delay.value()) {
+        timer.stop();
+        toggleLoading(false);
+      }
+    },
+    { time: 50 },
+  );
 
   return { isLoading };
 };
@@ -111,7 +114,7 @@ export interface MediaEmbedProps {
 
 export const MediaEmbed = (props: MediaEmbedProps) => {
   const { src, service, title = 'Video' } = props;
-  const { isLoading } = useFakeLoader();
+  const { isLoading } = useFauxLoader();
   const serviceProps = getServiceProps(service, src);
 
   return (
