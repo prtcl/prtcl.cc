@@ -87,9 +87,7 @@ const App = () => {
   const canLoadMore = status !== 'Exhausted';
   const isLoading = status === 'LoadingFirstPage';
   const isViewerEnabled =
-    (isMobile || hasTouch) &&
-    !isLandscape &&
-    features.get(FeatureFlags.PROJECT_VIEWER);
+    hasTouch && !isLandscape && features.get(FeatureFlags.PROJECT_VIEWER);
 
   return (
     <Root>

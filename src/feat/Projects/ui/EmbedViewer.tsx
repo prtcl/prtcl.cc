@@ -14,6 +14,7 @@ const Container = (props: FlexProps) => {
         borderRadius={12}
         flex={1}
         height="fit-content"
+        maxWidth="33rem"
         minHeight="fit-content"
         overflow="hidden"
         shadow="2xl"
