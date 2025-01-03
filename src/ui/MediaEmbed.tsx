@@ -1,7 +1,13 @@
-import { useState, type PropsWithChildren } from 'react';
+import { useState } from 'react';
 import { Rand } from '@prtcl/plonk';
 import { useMetro } from '@prtcl/plonk-hooks';
-import { Box, Flex, styled, type HTMLStyledProps } from 'styled-system/jsx';
+import {
+  Box,
+  Flex,
+  styled,
+  type FlexProps,
+  type HTMLStyledProps,
+} from 'styled-system/jsx';
 import { Loader } from './Loader';
 
 export enum Service {
@@ -51,19 +57,23 @@ const getServiceProps = (service: Services, embedUrl: string): ServiceProps => {
   }
 };
 
-const Container = (props: PropsWithChildren) => (
-  <Flex
-    bg="#0c0c0c"
-    fontSize={0}
-    height="100%"
-    lineHeight={0}
-    overflow="hidden"
-    position="relative"
-    width="100%"
-  >
-    {props.children}
-  </Flex>
-);
+const Container = (props: FlexProps) => {
+  const { children, ...flexProps } = props;
+  return (
+    <Flex
+      bg="#0c0c0c"
+      fontSize={0}
+      height="100%"
+      lineHeight={0}
+      overflow="hidden"
+      position="relative"
+      width="100%"
+      {...flexProps}
+    >
+      {children}
+    </Flex>
+  );
+};
 
 export const Iframe = styled('iframe', {
   base: {
