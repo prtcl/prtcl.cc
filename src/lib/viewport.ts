@@ -55,7 +55,7 @@ export type Orientation = 'landscape' | 'portrait';
 export const useOrientation = () => {
   const isLandscape = useMedia('(orientation: landscape)');
   const isPortrait = useMedia('(orientation: portrait)');
-  let orientation: Orientation = isPortrait ? 'portrait' : 'landscape';
+  const orientation: Orientation = isPortrait ? 'portrait' : 'landscape';
 
   return {
     isLandscape,
