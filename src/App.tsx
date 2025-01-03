@@ -5,7 +5,11 @@ import { api } from '~/convex/api';
 import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
-import { useBreakpoints, useInteractions } from '~/lib/viewport';
+import {
+  useBreakpoints,
+  useInteractions,
+  useOrientation,
+} from '~/lib/viewport';
 import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
@@ -68,6 +72,7 @@ const App = () => {
   const { features } = useFeatureFlags();
   const { isMobile } = useBreakpoints();
   const { hasTouch } = useInteractions();
+  const { isLandscape } = useOrientation();
   const { isOpen, openProjectViewer, projectId } = useProjectViewer();
   const {
     results: projects,
@@ -80,6 +85,10 @@ const App = () => {
   );
   const canLoadMore = status !== 'Exhausted';
   const isLoading = status === 'LoadingFirstPage';
+  const isViewerEnabled =
+    (isMobile || hasTouch) &&
+    !isLandscape &&
+    features.get(FeatureFlags.PROJECT_VIEWER);
 
   return (
     <Root>
@@ -97,12 +106,10 @@ const App = () => {
                     <ProjectItem
                       key={project._id}
                       isSelected={isOpen && projectId === project._id}
-                      isViewerEnabled={features.get(
-                        FeatureFlags.PROJECT_VIEWER,
-                      )}
+                      isViewerEnabled={isViewerEnabled}
                       item={project}
                       onSelect={(_, target) => {
-                        if ((isMobile || hasTouch) && !!project.embedId) {
+                        if (project.embedId) {
                           openProjectViewer(
                             project,
                             target.getBoundingClientRect(),
