@@ -5,17 +5,23 @@ import {
   useMemo,
   useReducer,
 } from 'react';
-import type { ProjectId } from '../types';
+import type { ProjectEntity, ProjectId } from '../types';
+
+export enum ViewerType {
+  SOUND = 'sound',
+  VIDEO = 'video',
+  TEXT = 'text',
+}
 
 export type ProjectViewerState = {
   isOpen: boolean;
-  projectId: ProjectId;
+  projectId: ProjectId | null;
+  viewerType: ViewerType | null;
 };
 
 export type ProjectViewerContextValue = ProjectViewerState & {
+  openProjectViewer: (project: ProjectEntity) => void;
   closeViewer: () => void;
-  openProjectViewer: (projectId: ProjectId) => void;
-  updateProjectId: (projectId: ProjectId) => void;
 };
 
 export const ProjectViewerContext = createContext<ProjectViewerContextValue>(
@@ -23,45 +29,28 @@ export const ProjectViewerContext = createContext<ProjectViewerContextValue>(
 );
 
 export enum Actions {
-  SHOW_PROJECT_DETAILS = 'SHOW_PROJECT_DETAILS',
-  CLOSE = 'CLOSE',
-  UPDATE_PROJECT_ID = 'UPDATE_PROJECT_ID',
+  OPEN_PROJECT_VIEWER = 'OPEN_PROJECT_VIEWER',
+  CLOSE_VIEWER = 'CLOSE_VIEWER',
 }
 
 type ProjectViewerActions =
-  | { type: Actions.CLOSE }
   | {
-      type: Actions.SHOW_PROJECT_DETAILS;
-      payload: { projectId: ProjectId };
+      type: Actions.OPEN_PROJECT_VIEWER;
+      payload: { projectId: ProjectId; viewerType: ViewerType };
     }
-  | {
-      type: Actions.UPDATE_PROJECT_ID;
-      payload: { projectId: ProjectId };
-    };
+  | { type: Actions.CLOSE_VIEWER };
 
 const reducer = (
   state: ProjectViewerState,
   action: ProjectViewerActions,
 ): ProjectViewerState => {
   switch (action.type) {
-    case Actions.SHOW_PROJECT_DETAILS: {
-      return {
-        ...state,
-        isOpen: true,
-        projectId: action.payload.projectId,
-      };
+    case Actions.OPEN_PROJECT_VIEWER: {
+      const { projectId, viewerType } = action.payload;
+      return { ...state, isOpen: true, projectId, viewerType };
     }
-    case Actions.UPDATE_PROJECT_ID: {
-      return {
-        ...state,
-        projectId: action.payload.projectId,
-      };
-    }
-    case Actions.CLOSE: {
-      return {
-        ...state,
-        isOpen: false,
-      };
+    case Actions.CLOSE_VIEWER: {
+      return { ...state, isOpen: false };
     }
     default: {
       return state;
@@ -69,34 +58,38 @@ const reducer = (
   }
 };
 
+const getViewerType = (project: ProjectEntity): ViewerType => {
+  if (project.embedId) {
+    if (project.category === 'sound') {
+      return ViewerType.SOUND;
+    }
+    if (project.category === 'video') {
+      return ViewerType.VIDEO;
+    }
+  }
+  return ViewerType.TEXT;
+};
+
 export const useProjectViewerState = (): ProjectViewerContextValue => {
   const [state, dispatch] = useReducer(reducer, {}, () => ({
     isOpen: false,
     projectId: null,
+    viewerType: null,
   }));
-
   const openProjectViewer = useCallback(
-    (projectId: ProjectId) => {
+    (projectId: ProjectEntity) => {
       dispatch({
-        type: Actions.SHOW_PROJECT_DETAILS,
-        payload: { projectId },
+        type: Actions.OPEN_PROJECT_VIEWER,
+        payload: {
+          projectId: projectId._id,
+          viewerType: getViewerType(projectId),
+        },
       });
     },
     [dispatch],
   );
-
-  const updateProjectId = useCallback(
-    (projectId: ProjectId) => {
-      dispatch({
-        type: Actions.UPDATE_PROJECT_ID,
-        payload: { projectId },
-      });
-    },
-    [dispatch],
-  );
-
   const closeViewer = useCallback(() => {
-    dispatch({ type: Actions.CLOSE });
+    dispatch({ type: Actions.CLOSE_VIEWER });
   }, [dispatch]);
 
   return useMemo(
@@ -104,9 +97,8 @@ export const useProjectViewerState = (): ProjectViewerContextValue => {
       ...state,
       closeViewer,
       openProjectViewer,
-      updateProjectId,
     }),
-    [state, openProjectViewer, updateProjectId, closeViewer],
+    [state, openProjectViewer, closeViewer],
   );
 };
 

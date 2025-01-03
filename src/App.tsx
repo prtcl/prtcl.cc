@@ -63,7 +63,7 @@ const LOAD_ITEMS_COUNT = 7;
 
 const App = () => {
   const { isMobile } = useBreakpoints();
-  const { hasHover, hasTouch } = useInteractions();
+  const { hasTouch } = useInteractions();
   const { isOpen, openProjectViewer, projectId } = useProjectViewer();
   const {
     results: projects,
@@ -92,11 +92,15 @@ const App = () => {
                   return (
                     <ProjectItem
                       key={project._id}
-                      isPreviewEnabled={hasHover}
                       isSelected={isOpen && projectId === project._id}
-                      isViewerEnabled={isMobile || hasTouch}
                       item={project}
-                      onSelect={(projectId) => openProjectViewer(projectId)}
+                      onSelect={() => {
+                        if ((isMobile || hasTouch) && !!project.embedId) {
+                          openProjectViewer(project);
+                        } else {
+                          window.open(project.url, '_blank');
+                        }
+                      }}
                     />
                   );
                 })}
