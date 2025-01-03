@@ -1,4 +1,8 @@
-import { Flex, styled, type HTMLStyledProps } from 'styled-system/jsx';
+import { useState, type PropsWithChildren } from 'react';
+import { Rand } from '@prtcl/plonk';
+import { useMetro } from '@prtcl/plonk-hooks';
+import { Box, Flex, styled, type HTMLStyledProps } from 'styled-system/jsx';
+import { Loader } from './Loader';
 
 export enum Service {
   YOUTUBE = 'youtube',
@@ -14,12 +18,14 @@ export type ServiceProps = HTMLStyledProps<'iframe'> & {
   frameborder?: string;
 };
 
-const getServiceProps = (service: Services): ServiceProps => {
+const getServiceProps = (service: Services, embedUrl: string): ServiceProps => {
   switch (service) {
     case Service.BANDCAMP: {
       return {
         allowtransparency: 'true',
-        style: { minHeight: '435px' },
+        style: {
+          minHeight: embedUrl.includes('VideoEmbed') ? '380px' : '120px',
+        },
       };
     }
     case Service.YOUTUBE: {
@@ -28,7 +34,7 @@ const getServiceProps = (service: Services): ServiceProps => {
         allow:
           'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
         referrerPolicy: 'strict-origin-when-cross-origin',
-        style: { minHeight: '315px' },
+        style: { minHeight: '300px' },
       };
     }
     case Service.SOUNDCLOUD: {
@@ -45,6 +51,48 @@ const getServiceProps = (service: Services): ServiceProps => {
   }
 };
 
+const Container = (props: PropsWithChildren) => (
+  <Flex
+    bg="#0c0c0c"
+    fontSize={0}
+    height="100%"
+    lineHeight={0}
+    overflow="hidden"
+    position="relative"
+    width="100%"
+  >
+    {props.children}
+  </Flex>
+);
+
+export const Iframe = styled('iframe', {
+  base: {
+    background: 'black',
+    border: 0,
+    borderRadius: 0,
+    borderStyle: 'none',
+    display: 'block',
+    margin: 0,
+    outline: 'none',
+    padding: 0,
+    width: '100%',
+  },
+});
+
+// Because iframe's and CORS and inner content loading flicker
+const useFakeLoader = () => {
+  const [isLoading, toggleLoading] = useState(true);
+  const [delay] = useState(() => new Rand({ min: 300, max: 500 }));
+  useMetro((timer) => {
+    if (timer.state.totalElapsed >= delay.value()) {
+      timer.stop();
+      toggleLoading(false);
+    }
+  });
+
+  return { isLoading };
+};
+
 export interface MediaEmbedProps {
   src: string;
   service: Services;
@@ -53,27 +101,32 @@ export interface MediaEmbedProps {
 
 export const MediaEmbed = (props: MediaEmbedProps) => {
   const { src, service, title = 'Video' } = props;
-  const serviceProps = getServiceProps(service);
+  const { isLoading } = useFakeLoader();
+  const serviceProps = getServiceProps(service, src);
 
   return (
-    <Flex fontSize={0} height="100%" lineHeight={0} width="100%">
-      <styled.iframe
+    <Container>
+      <Iframe
         allowFullScreen
-        background="transparent"
-        border={0}
-        borderRadius={0}
-        borderStyle="none"
-        display="block"
-        frameBorder={0}
-        margin={0}
-        outline="none"
-        padding={0}
         seamless={true}
         src={src}
         title={title}
-        width="100%"
+        transition="opacity 168ms cubic-bezier(.79,.31,.59,.83)"
+        opacity={isLoading ? 0 : 1}
         {...serviceProps}
       />
-    </Flex>
+      {isLoading && (
+        <Box position="absolute" inset={0}>
+          <Loader
+            color="zinc.300/50"
+            left="50%"
+            position="absolute"
+            size="md"
+            top="50%"
+            transform="translate(-50%, -50%)"
+          />
+        </Box>
+      )}
+    </Container>
   );
 };
