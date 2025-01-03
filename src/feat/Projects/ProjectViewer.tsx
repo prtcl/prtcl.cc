@@ -3,8 +3,8 @@ import { createPortal } from 'react-dom';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { ErrorBoundary } from '~/lib/errors';
 import { Text } from '~/ui/Text';
-import { EmbedViewer } from './components/EmbedViewer';
 import { useProjectViewer, ViewerType } from './hooks/useProjectViewer';
+import { EmbedViewer } from './ui/EmbedViewer';
 
 const Overlay = forwardRef<HTMLDivElement, FlexProps>(
   function Overlay(props, ref) {
