@@ -1,4 +1,3 @@
-import { animated, useSpring } from '@react-spring/web';
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
 import { Box, Stack } from 'styled-system/jsx';
@@ -45,17 +44,20 @@ const ContentContainer = (
   props: PropsWithChildren & { state: 'foreground' | 'background' },
 ) => {
   const { children, state } = props;
-  const styles = useSpring({
-    from: { opacity: 1, scale: 1 },
-    to:
-      state === 'background'
-        ? { opacity: 0.5, scale: 0.99 }
-        : { opacity: 1, scale: 1 },
-  });
   return (
-    <animated.div style={{ ...styles, width: '100%', height: '100%' }}>
+    <Box
+      transition={`
+        opacity 168ms cubic-bezier(.79,.31,.59,.83),
+        scale 336ms cubic-bezier(.79,.31,.59,.83)
+      `}
+      width="100%"
+      height="100%"
+      {...(state === 'background'
+        ? { opacity: 0.5, scale: 0.99 }
+        : { opacity: 1, scale: 1 })}
+    >
       {children}
-    </animated.div>
+    </Box>
   );
 };
 
