@@ -20,13 +20,12 @@ export const useInteractions = () => {
 export type Breakpoint = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const useBreakpoints = () => {
-  const isMobile = useMedia('(max-width: 640px)');
+  const isMobile = useMedia('(max-width: 640px) or (max-height: 600px)');
   const isMedium = useMedia('(min-width: 641px) and (max-width: 768px)');
   const isLarge = useMedia('(min-width: 769px) and (max-width: 1024px)');
   const isXl = useMedia('(min-width: 1025px) and (max-width: 1280px)');
   const is2Xl = useMedia('(min-width: 1281px) and (max-width: 1536px)');
   const isFull = useMedia('(min-width: 1537px) ');
-
   let breakpoint: Breakpoint = 1;
 
   if (isMedium) {
@@ -48,5 +47,19 @@ export const useBreakpoints = () => {
     isMedium,
     isMobile,
     isXl,
+  };
+};
+
+export type Orientation = 'landscape' | 'portrait';
+
+export const useOrientation = () => {
+  const isLandscape = useMedia('(orientation: landscape)');
+  const isPortrait = useMedia('(orientation: portrait)');
+  const orientation: Orientation = isPortrait ? 'portrait' : 'landscape';
+
+  return {
+    isLandscape,
+    isPortrait,
+    orientation,
   };
 };

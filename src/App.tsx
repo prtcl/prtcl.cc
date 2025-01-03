@@ -1,15 +1,19 @@
 import { usePaginatedQuery } from 'convex/react';
 import { type PropsWithChildren } from 'react';
-import { Box, Stack } from 'styled-system/jsx';
+import { Box, Stack, type BoxProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
+import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
-import { useBreakpoints, useInteractions } from '~/lib/viewport';
+import {
+  useBreakpoints,
+  useInteractions,
+  useOrientation,
+} from '~/lib/viewport';
 import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
-import { FeatureFlags, useFeatureFlags } from './lib/features';
 
 const Bio = () => {
   return (
@@ -42,9 +46,9 @@ const LoadMore = (props: PropsWithChildren & { onClick: () => void }) => (
 );
 
 const ContentContainer = (
-  props: PropsWithChildren & { state: 'foreground' | 'background' },
+  props: BoxProps & { state: 'foreground' | 'background' },
 ) => {
-  const { children, state } = props;
+  const { children, state, ...boxProps } = props;
   return (
     <Box
       transition={`
@@ -53,6 +57,7 @@ const ContentContainer = (
       `}
       width="100%"
       height="100%"
+      {...boxProps}
       {...(state === 'background'
         ? { opacity: 0.5, scale: 0.99 }
         : { opacity: 1, scale: 1 })}
@@ -68,6 +73,7 @@ const App = () => {
   const { features } = useFeatureFlags();
   const { isMobile } = useBreakpoints();
   const { hasTouch } = useInteractions();
+  const { isLandscape } = useOrientation();
   const { isOpen, openProjectViewer, projectId } = useProjectViewer();
   const {
     results: projects,
@@ -80,6 +86,8 @@ const App = () => {
   );
   const canLoadMore = status !== 'Exhausted';
   const isLoading = status === 'LoadingFirstPage';
+  const isViewerEnabled =
+    hasTouch && !isLandscape && features.get(FeatureFlags.PROJECT_VIEWER);
 
   return (
     <Root>
@@ -88,7 +96,10 @@ const App = () => {
       </VizContainer>
       {projects && !isLoading && (
         <ContentOverlay animation="fade-in 340ms linear">
-          <ContentContainer state={isOpen ? 'background' : 'foreground'}>
+          <ContentContainer
+            state={isOpen ? 'background' : 'foreground'}
+            px={isMobile && isLandscape ? 12 : 0}
+          >
             <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
               <Bio />
               <Stack gap={2}>
@@ -97,12 +108,10 @@ const App = () => {
                     <ProjectItem
                       key={project._id}
                       isSelected={isOpen && projectId === project._id}
-                      isViewerEnabled={features.get(
-                        FeatureFlags.PROJECT_VIEWER,
-                      )}
+                      isViewerEnabled={isViewerEnabled}
                       item={project}
                       onSelect={(_, target) => {
-                        if ((isMobile || hasTouch) && !!project.embedId) {
+                        if (project.embedId) {
                           openProjectViewer(
                             project,
                             target.getBoundingClientRect(),

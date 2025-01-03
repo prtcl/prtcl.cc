@@ -71,5 +71,7 @@ export const ProjectItem = memo<ProjectItemProps>(
     );
   },
   (prev, next) =>
-    prev.item._id === next.item._id && prev.isSelected === next.isSelected,
+    prev.item._id === next.item._id &&
+    prev.isSelected === next.isSelected &&
+    prev.isViewerEnabled === next.isViewerEnabled,
 );
