@@ -1,5 +1,5 @@
 import { animated, useSpring } from '@react-spring/web';
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { Flex, Stack } from 'styled-system/jsx';
 import { Badge } from '~/ui/Badge';
 import { Link } from '~/ui/Link';
@@ -14,13 +14,14 @@ export const formatTimestamp = (ts: number) =>
 export interface ProjectItemProps {
   isSelected: boolean;
   item: ProjectEntity;
-  onSelect: (projectId: ProjectId) => void;
+  onSelect: (projectId: ProjectId, container: HTMLDivElement) => void;
 }
 
 export const ProjectItem = memo<ProjectItemProps>(
   function ProjectItem(props) {
     const { isSelected, item, onSelect } = props;
     const { _id, title, url, category, publishedAt } = item;
+    const containerRef = useRef<HTMLDivElement>(null);
     const styles = useSpring({
       from: { opacity: 1, marginBlock: '0rem' },
       to: isSelected
@@ -29,7 +30,7 @@ export const ProjectItem = memo<ProjectItemProps>(
     });
 
     return (
-      <animated.div style={styles}>
+      <animated.div ref={containerRef} style={styles}>
         <Stack direction="column" gap={1}>
           <Preview projectId={_id}>
             <Link
@@ -39,7 +40,7 @@ export const ProjectItem = memo<ProjectItemProps>(
               target="_blank"
               onClick={(e) => {
                 e.preventDefault();
-                onSelect(_id);
+                onSelect(_id, containerRef.current);
               }}
             >
               {title}

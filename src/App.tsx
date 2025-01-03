@@ -94,9 +94,12 @@ const App = () => {
                       key={project._id}
                       isSelected={isOpen && projectId === project._id}
                       item={project}
-                      onSelect={() => {
+                      onSelect={(_, target) => {
                         if ((isMobile || hasTouch) && !!project.embedId) {
-                          openProjectViewer(project);
+                          openProjectViewer(
+                            project,
+                            target.getBoundingClientRect(),
+                          );
                         } else {
                           window.open(project.url, '_blank');
                         }

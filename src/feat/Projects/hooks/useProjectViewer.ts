@@ -17,10 +17,11 @@ export type ProjectViewerState = {
   isOpen: boolean;
   projectId: ProjectId | null;
   viewerType: ViewerType | null;
+  origin: DOMRect | null;
 };
 
 export type ProjectViewerContextValue = ProjectViewerState & {
-  openProjectViewer: (project: ProjectEntity) => void;
+  openProjectViewer: (project: ProjectEntity, origin: DOMRect) => void;
   closeViewer: () => void;
 };
 
@@ -36,7 +37,11 @@ export enum Actions {
 type ProjectViewerActions =
   | {
       type: Actions.OPEN_PROJECT_VIEWER;
-      payload: { projectId: ProjectId; viewerType: ViewerType };
+      payload: {
+        projectId: ProjectId;
+        viewerType: ViewerType;
+        origin: DOMRect;
+      };
     }
   | { type: Actions.CLOSE_VIEWER };
 
@@ -46,8 +51,7 @@ const reducer = (
 ): ProjectViewerState => {
   switch (action.type) {
     case Actions.OPEN_PROJECT_VIEWER: {
-      const { projectId, viewerType } = action.payload;
-      return { ...state, isOpen: true, projectId, viewerType };
+      return { ...state, ...action.payload, isOpen: true };
     }
     case Actions.CLOSE_VIEWER: {
       return { ...state, isOpen: false };
@@ -70,19 +74,23 @@ const getViewerType = (project: ProjectEntity): ViewerType => {
   return ViewerType.TEXT;
 };
 
+const getInitialState = (): ProjectViewerState => ({
+  isOpen: false,
+  origin: null,
+  projectId: null,
+  viewerType: null,
+});
+
 export const useProjectViewerState = (): ProjectViewerContextValue => {
-  const [state, dispatch] = useReducer(reducer, {}, () => ({
-    isOpen: false,
-    projectId: null,
-    viewerType: null,
-  }));
+  const [state, dispatch] = useReducer(reducer, {}, () => getInitialState());
   const openProjectViewer = useCallback(
-    (projectId: ProjectEntity) => {
+    (projectId: ProjectEntity, origin: DOMRect) => {
       dispatch({
         type: Actions.OPEN_PROJECT_VIEWER,
         payload: {
           projectId: projectId._id,
           viewerType: getViewerType(projectId),
+          origin,
         },
       });
     },
