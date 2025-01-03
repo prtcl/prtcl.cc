@@ -4,6 +4,7 @@ import { Box, Stack, type BoxProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
+import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
 import {
   useBreakpoints,
@@ -13,7 +14,6 @@ import {
 import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
-import { FeatureFlags, useFeatureFlags } from './lib/features';
 
 const Bio = () => {
   return (
