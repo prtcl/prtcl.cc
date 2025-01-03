@@ -1,17 +1,14 @@
 import { useQuery } from 'convex/react';
-import { memo, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { type PropsWithChildren } from 'react';
-import { Box, Stack } from 'styled-system/jsx';
+import { Box } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { debounce } from '~/lib/debounce';
 import { useInteractions } from '~/lib/viewport';
-import { Badge } from '~/ui/Badge';
 import * as HoverCard from '~/ui/HoverCard';
 import { Image } from '~/ui/Image';
-import { Link } from '~/ui/Link';
 import { Loader } from '~/ui/Loader';
-import { Text } from '~/ui/Text';
-import type { ProjectEntity, ProjectId } from '../types';
+import type { ProjectId } from '../types';
 
 const InnerPreview = (props: { projectId: ProjectId }) => {
   const { projectId } = props;
@@ -75,7 +72,6 @@ const InnerPreview = (props: { projectId: ProjectId }) => {
 export const Preview = (props: PropsWithChildren<{ projectId: ProjectId }>) => {
   const { children, projectId } = props;
   const { hasHover } = useInteractions();
-
   if (!hasHover) {
     return children;
   }
@@ -89,55 +85,3 @@ export const Preview = (props: PropsWithChildren<{ projectId: ProjectId }>) => {
     </HoverCard.Root>
   );
 };
-
-export const formatTimestamp = (ts: number) =>
-  new Date(ts).toLocaleDateString('en-US');
-
-export interface ProjectItemProps {
-  isPreviewEnabled: boolean;
-  isViewerEnabled: boolean;
-  item: ProjectEntity;
-  onSelect: (projectId: ProjectId) => void;
-}
-
-export const ProjectItem = memo<ProjectItemProps>(
-  function ProjectItem(props) {
-    const { item, isPreviewEnabled, isViewerEnabled, onSelect } = props;
-    const { _id, title, url, category, publishedAt } = item;
-
-    return (
-      <Stack key={_id} direction="column" gap={1}>
-        {isPreviewEnabled ? (
-          <Preview projectId={_id}>
-            <Link
-              href={url}
-              color="text"
-              fontWeight={500}
-              {...(isViewerEnabled
-                ? {
-                    onClick: (e) => {
-                      e.preventDefault();
-                      onSelect(_id);
-                    },
-                  }
-                : {})}
-            >
-              {title}
-            </Link>
-          </Preview>
-        ) : (
-          <Link href={url} color="text" fontWeight={500}>
-            {title}
-          </Link>
-        )}
-        <Stack direction="row" gap={2}>
-          <Badge>{category}</Badge>
-          <Text fontSize="xs" color="zinc.700">
-            {formatTimestamp(publishedAt)}
-          </Text>
-        </Stack>
-      </Stack>
-    );
-  },
-  (prev, next) => prev.item._id === next.item._id,
-);

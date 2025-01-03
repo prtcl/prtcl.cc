@@ -15,6 +15,7 @@ export type Presets = 'slide-up' | 'scale' | 'subtle';
 
 type DialogContextValue = {
   isOpen: boolean;
+  onOpenChange: (updates: boolean) => void;
   preset: Presets;
 };
 
@@ -24,8 +25,7 @@ const DialogContext = createContext<DialogContextValue>(
 
 const InnerOverlay = styled(animated.div, {
   base: {
-    background: 'rgba(255, 255, 255, 0.68)',
-    backdropFilter: 'blur(0.125rem)',
+    background: 'transparent',
     position: 'fixed',
     inset: 0,
     zIndex: 2,
@@ -37,7 +37,7 @@ export type OverlayProps = HTMLStyledProps<'div'>;
 export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
   function Overlay(props, ref) {
     const { children, ...overlayProps } = props;
-    const { isOpen } = useContext(DialogContext);
+    const { isOpen, onOpenChange } = useContext(DialogContext);
     const transitions = useTransition(isOpen, {
       from: { opacity: 0 },
       enter: { opacity: 1 },
@@ -48,7 +48,11 @@ export const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
     return transitions((styles, shouldRender) => {
       if (shouldRender) {
         return (
-          <RxDialog.Overlay forceMount asChild>
+          <RxDialog.Overlay
+            asChild
+            forceMount
+            onClick={() => onOpenChange(false)}
+          >
             <InnerOverlay {...overlayProps} ref={ref} style={styles}>
               {children}
             </InnerOverlay>
@@ -88,17 +92,17 @@ const contentStyle = cva({
   },
 });
 
+const presetConfig: SpringConfig = {
+  ...config.default,
+  clamp: true,
+  mass: 1,
+};
+
 const getPresetTransitionConfig = (
   preset: Presets,
 ): Required<
   Pick<UseTransitionProps<boolean>, 'from' | 'enter' | 'leave' | 'config'>
 > => {
-  const presetConfig: SpringConfig = {
-    ...config.default,
-    clamp: true,
-    mass: 1,
-  };
-
   switch (preset) {
     case 'slide-up': {
       return {
@@ -118,7 +122,10 @@ const getPresetTransitionConfig = (
           opacity: 0.84,
           transform: 'translate3d(-50%, -49%, 0) scale(0.88)',
         },
-        enter: { opacity: 1, transform: 'translate3d(-50%, -50%, 0) scale(1)' },
+        enter: {
+          opacity: 1,
+          transform: 'translate3d(-50%, -50%, 0) scale(1)',
+        },
         leave: {
           opacity: 0,
           transform: 'translate3d(-50%, -47%, 0) scale(0.92)',
@@ -162,33 +169,31 @@ export const Content = forwardRef<HTMLDivElement, DialogContentProps>(
       expires: true,
     });
 
-    return (
-      <RxDialog.Portal forceMount>
-        {transitions((styles, shouldRender) => {
-          if (shouldRender) {
-            return (
-              <RxDialog.Content
-                ref={ref}
-                aria-describedby={undefined}
-                asChild
-                forceMount
-                onOpenAutoFocus={onOpenAutoFocus}
-              >
-                <InnerContent {...contentProps} style={styles}>
-                  {children}
-                </InnerContent>
-              </RxDialog.Content>
-            );
-          }
+    return transitions((styles, shouldRender) => {
+      if (shouldRender) {
+        return (
+          <RxDialog.Content
+            ref={ref}
+            aria-describedby={undefined}
+            asChild
+            forceMount
+            onOpenAutoFocus={onOpenAutoFocus}
+          >
+            <InnerContent {...contentProps} style={styles}>
+              {children}
+            </InnerContent>
+          </RxDialog.Content>
+        );
+      }
 
-          return null;
-        })}
-      </RxDialog.Portal>
-    );
+      return null;
+    });
   },
 );
 
 export const Title = styled(RxDialog.Title);
+export const Trigger = styled(RxDialog.Trigger);
+export const Portal = styled(RxDialog.Portal);
 
 export type DialogRootProps = Pick<
   RxDialog.DialogProps,
@@ -206,7 +211,6 @@ export const Root = (props: DialogRootProps) => {
       if (!changes) {
         onClose();
       }
-
       if (onOpenChange) {
         onOpenChange(changes);
       }
@@ -215,7 +219,9 @@ export const Root = (props: DialogRootProps) => {
   );
 
   return (
-    <DialogContext.Provider value={{ isOpen, preset }}>
+    <DialogContext.Provider
+      value={{ isOpen, preset, onOpenChange: handleOpenChange }}
+    >
       <RxDialog.Root modal open={isOpen} onOpenChange={handleOpenChange}>
         {children}
       </RxDialog.Root>
