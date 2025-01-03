@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from 'react';
+import { forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Flex, type FlexProps } from 'styled-system/jsx';
 import { ErrorBoundary } from '~/lib/errors';
@@ -10,7 +10,6 @@ const Overlay = forwardRef<HTMLDivElement, FlexProps>(
   function Overlay(props, ref) {
     const { children, ...flexProps } = props;
     const { closeViewer, isOpen } = useProjectViewer();
-    const touchStartY = useRef(0);
     if (!isOpen) {
       return null;
     }
@@ -20,18 +19,8 @@ const Overlay = forwardRef<HTMLDivElement, FlexProps>(
         ref={ref}
         position="fixed"
         inset={0}
-        bg="purple/25"
         onClick={() => closeViewer()}
-        onTouchStart={(e) => {
-          touchStartY.current = e.touches[0].clientY;
-        }}
-        onTouchMove={(e) => {
-          const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
-          if (deltaY > 75) {
-            e.preventDefault();
-            closeViewer();
-          }
-        }}
+        onTouchMove={() => closeViewer()}
         {...flexProps}
       >
         {children}
@@ -49,14 +38,18 @@ const NotFound = () =>
   );
 
 export const ProjectViewer = () => {
-  const { isOpen, projectId, viewerType } = useProjectViewer();
+  const { isOpen, projectId, viewerType, origin } = useProjectViewer();
   return (
     <ErrorBoundary fallback={() => <NotFound />}>
       {createPortal(
         <>
           <Overlay />
           {[ViewerType.SOUND, ViewerType.VIDEO].includes(viewerType) && (
-            <EmbedViewer projectId={projectId} isOpen={isOpen} />
+            <EmbedViewer
+              projectId={projectId}
+              isOpen={isOpen}
+              origin={origin}
+            />
           )}
         </>,
         document.body,
