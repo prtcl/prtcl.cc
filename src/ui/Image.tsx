@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type SyntheticEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { styled } from 'styled-system/jsx';
 import type { HTMLStyledProps } from 'styled-system/types';
 
@@ -30,10 +30,16 @@ const serializeOptions = (options: ImageTransformOptions): string =>
 const createTransformUrl = (src: string, options: ImageTransformOptions) =>
   `https://prtcl.cc/cdn-cgi/image/${serializeOptions(options)}/${src}`;
 
-const Img = styled('img', {
+export const Img = styled('img', {
   base: {
-    height: 'auto',
+    backgroundColor: 'transparent',
+    border: 'none',
+    display: 'block',
+    height: '100%',
+    imageRendering: '-webkit-optimize-contrast',
     objectFit: 'cover',
+    outline: 'none',
+    printColorAdjust: 'exact',
     transition: 'opacity 275ms cubic-bezier(.79,.31,.59,.83)',
     width: '100%',
   },
@@ -43,7 +49,7 @@ export type ImageProps = HTMLStyledProps<'img'> & {
   alt?: string;
   loading?: 'lazy' | 'eager';
   options?: ImageTransformOptions;
-  src?: string;
+  src: string;
   srcSet?: string;
   useAnimation?: boolean;
   useHighRes?: boolean;
@@ -52,7 +58,7 @@ export type ImageProps = HTMLStyledProps<'img'> & {
 export const Image = (props: ImageProps) => {
   const {
     loading = 'lazy',
-    options,
+    options = defaultOptions,
     src: initialSrc,
     useAnimation = false,
     useHighRes,
@@ -60,28 +66,14 @@ export const Image = (props: ImageProps) => {
     ...imgProps
   } = props;
   const [hasLoaded, setHasLoaded] = useState(false);
-  const handleLoad = useCallback(
-    (e: SyntheticEvent<HTMLImageElement>) => {
-      setHasLoaded(true);
-      onLoad?.(e);
-    },
-    [onLoad],
-  );
-  const { src, srcSet } = useMemo<{
-    src: string;
-    srcSet: string | undefined;
-  }>(() => {
-    return {
-      src: initialSrc ? createTransformUrl(initialSrc, options) : undefined,
-      srcSet:
-        useHighRes && initialSrc
-          ? [
-              `${createTransformUrl(initialSrc, options)} 1x`,
-              `${createTransformUrl(initialSrc, { ...options, dpr: 2 })} 2x`,
-            ].join(',')
-          : undefined,
-    };
-  }, [initialSrc, options, useHighRes]);
+  const src = initialSrc ? createTransformUrl(initialSrc, options) : '';
+  const srcSet =
+    useHighRes && initialSrc
+      ? [
+          `${createTransformUrl(initialSrc, options)} 1x`,
+          `${createTransformUrl(initialSrc, { ...options, dpr: 2 })} 2x`,
+        ].join(',')
+      : undefined;
 
   return (
     <Img
@@ -90,8 +82,11 @@ export const Image = (props: ImageProps) => {
       // NOTE: `src` must come after `srcSet` due to a Safari loading issue:
       //  https://bugs.webkit.org/show_bug.cgi?id=190031
       src={src}
-      onLoad={handleLoad}
       loading={loading}
+      onLoad={(e: SyntheticEvent<HTMLImageElement>) => {
+        setHasLoaded(true);
+        onLoad?.(e);
+      }}
       {...(useAnimation
         ? {
             opacity: hasLoaded ? 1 : 0,
