@@ -98,7 +98,7 @@ const App = () => {
         <ContentOverlay animation="fade-in 340ms linear">
           <ContentContainer
             state={isOpen ? 'background' : 'foreground'}
-            px={isMobile && isLandscape ? 12 : 0}
+            px={isMobile && hasTouch && isLandscape ? 12 : 0}
           >
             <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
               <Bio />

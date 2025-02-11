@@ -11,11 +11,12 @@ export const Root = styled('main', {
 
 export const VizContainer = styled(Box, {
   base: {
-    height: '100%',
+    height: '100vh',
     inset: 0,
+    minHeight: '100lvh',
     pointerEvents: 'none',
     position: 'fixed',
-    width: '100%',
+    width: '100vw',
     zIndex: 0,
   },
 });

@@ -49,7 +49,7 @@ export function isCanvasMutableRef(value: unknown): value is CanvasRef {
   );
 }
 
-export function invariantCanvasRef(value: unknown) {
+export function invariantCanvasRef(value: unknown): asserts value is CanvasRef {
   if (!isCanvasMutableRef(value)) {
     throw new Error('Invalid canvas ref');
   }

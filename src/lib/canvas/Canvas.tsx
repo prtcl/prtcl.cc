@@ -1,24 +1,19 @@
-import {
-  forwardRef,
-  type CanvasHTMLAttributes,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { styled, type HTMLStyledProps } from 'styled-system/jsx';
 import { CanvasApi } from './lib/CanvasApi';
-import { isCanvasMutableRef, type CanvasRef } from './types';
+import { isCanvasMutableRef } from './types';
+
+type CanvasState = {
+  isReady: boolean;
+  canvas: CanvasApi;
+};
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [state, setState] = useState<{
-    isReady: boolean;
-    canvas: CanvasApi;
-  }>(() => ({
+  const [state, setState] = useState<CanvasState>(() => ({
     isReady: false,
     canvas: undefined,
   }));
-
   const canvasProps = useMemo<CanvasProps>(
     () => ({
       ref: canvasRef,
@@ -38,29 +33,29 @@ export const useCanvas = () => {
   };
 };
 
-export interface CanvasProps extends CanvasHTMLAttributes<HTMLCanvasElement> {
-  ref: CanvasRef;
-  onReady: (ref: CanvasRef) => void;
+const InnerCanvas = styled('canvas', {
+  base: {
+    height: '100vh',
+    minHeight: '100lvh',
+    width: '100vw',
+  },
+});
+
+export interface CanvasProps extends HTMLStyledProps<'canvas'> {
+  onReady: () => void;
 }
 
 export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function Canvas(props, innerRef) {
     const { onReady, ...canvasProps } = props;
     const hasInitialized = useRef(false);
-
     useEffect(() => {
       if (isCanvasMutableRef(innerRef)) {
         hasInitialized.current = true;
-        onReady(innerRef);
+        onReady();
       }
     }, [innerRef, onReady]);
 
-    return (
-      <canvas
-        {...canvasProps}
-        ref={innerRef}
-        style={{ width: '100%', height: '100%' }}
-      />
-    );
+    return <InnerCanvas ref={innerRef} {...canvasProps} />;
   },
 );
