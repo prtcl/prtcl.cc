@@ -69,7 +69,7 @@ const ContentContainer = (
 
 const LOAD_ITEMS_COUNT = 7;
 
-const App = () => {
+export const App = () => {
   const { features } = useFeatureFlags();
   const { isMobile } = useBreakpoints();
   const { hasTouch } = useInteractions();
@@ -136,5 +136,3 @@ const App = () => {
     </Root>
   );
 };
-
-export default App;
