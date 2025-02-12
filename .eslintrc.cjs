@@ -46,7 +46,7 @@ module.exports = {
     'arrow-body-style': ['off', 'as-needed'],
     'implicit-arrow-linebreak': 'off',
     'consistent-return': 'off',
-    curly: ['error', 'all'],
+    curly: ['error', 'multi-line'],
     'import/no-cycle': 'off',
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
