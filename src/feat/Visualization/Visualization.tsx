@@ -4,7 +4,7 @@ import { Flex } from 'styled-system/jsx';
 import { Canvas, useCanvas } from '~/lib/canvas';
 import { debounce } from '~/lib/debounce';
 import { useBreakpoints } from '~/lib/viewport';
-import useVisualization from './hooks/useVisualization';
+import { useVisualization } from './hooks/useVisualization';
 
 export const Visualization = () => {
   const { isMobile } = useBreakpoints();
@@ -13,24 +13,21 @@ export const Visualization = () => {
   const { shapes } = useVisualization();
 
   useEffect(() => {
-    const resize = debounce(() => {
-      const rect = containerRef.current.getBoundingClientRect();
-      canvas.resize(rect);
-    }, 500);
-
-    window.addEventListener('resize', resize);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      resize.cancel();
-    };
-  }, [canvas]);
+    if (!isMobile) {
+      const resize = debounce(() => {
+        const rect = containerRef.current.getBoundingClientRect();
+        canvas.resize(rect);
+      }, 500);
+      window.addEventListener('resize', resize);
+      return () => {
+        window.removeEventListener('resize', resize);
+        resize.cancel();
+      };
+    }
+  }, [canvas, isMobile]);
 
   useFrames(() => {
-    if (!isReady) {
-      return;
-    }
-
+    if (!isReady) return;
     const { width, height } = canvas.size;
 
     canvas.alpha(0.05);
@@ -41,7 +38,6 @@ export const Visualization = () => {
       width,
       height,
     });
-
     shapes.forEach((shape) => {
       const driftX = shape.drift.x.next() * (width / (isMobile ? 2 : 4));
       const driftY = shape.drift.y.next() * (height / 4);
@@ -55,7 +51,6 @@ export const Visualization = () => {
         g: shape.color.g.value(),
         b: shape.color.b.value(),
       });
-
       canvas.drawPolygon(
         {
           coords: shape.points.map((point) => {

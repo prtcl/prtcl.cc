@@ -15,7 +15,6 @@ export type VisualizationState = {
 const getInitialState = (): VisualizationState => {
   const shapes: Shape[] = [];
   let shapeCount = 0;
-
   while (shapeCount < N_SHAPES) {
     const pos: Pos = {
       x: new Drunk({ step: 0.01 }),
@@ -23,16 +22,13 @@ const getInitialState = (): VisualizationState => {
     };
     const points: PolyPoint[] = [];
     let pointCount = 0;
-
     while (pointCount < N_POINTS) {
       points.push({
         x: new Drunk({ step: 0.01 }),
         y: new Drunk({ step: 0.01 }),
       });
-
       pointCount += 1;
     }
-
     shapes.push({
       points,
       pos,
@@ -46,7 +42,6 @@ const getInitialState = (): VisualizationState => {
         y: new Env({ duration: ms('5s'), from: -1, to: 1 }),
       },
     });
-
     shapeCount += 1;
   }
 
@@ -57,7 +52,7 @@ const getInitialState = (): VisualizationState => {
   };
 };
 
-const useVisualization = () => {
+export const useVisualization = () => {
   const [state] = useState<VisualizationState>(() => getInitialState());
 
   useMetro(
@@ -75,7 +70,6 @@ const useVisualization = () => {
         shape.color.r.next();
         shape.color.g.next();
         shape.color.b.next();
-
         shape.drift.x.reset({
           duration: dt.next(),
           ...(Math.random() >= 0.5
@@ -109,5 +103,3 @@ const useVisualization = () => {
 
   return state;
 };
-
-export default useVisualization;

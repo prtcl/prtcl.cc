@@ -8,7 +8,9 @@ export const Button = styled('button', {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    transition: 'background 226ms linear',
+    outline: 'none',
+    userSelect: 'none',
+    WebkitTapHighlightColor: 'transparent',
     width: 'fit-content',
     _disabled: {
       cursor: 'not-allowed',
@@ -27,9 +29,6 @@ export const Button = styled('button', {
       ghost: {
         bg: 'transparent',
         color: 'text',
-      },
-      _active: {
-        bg: 'zinc.600',
       },
     },
   },

@@ -6,6 +6,7 @@ import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
 import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
+import { useScrollDelta } from '~/lib/scroll';
 import {
   useBreakpoints,
   useInteractions,
@@ -69,7 +70,7 @@ const ContentContainer = (
 
 const LOAD_ITEMS_COUNT = 7;
 
-const App = () => {
+export const App = () => {
   const { features } = useFeatureFlags();
   const { isMobile } = useBreakpoints();
   const { hasTouch } = useInteractions();
@@ -88,6 +89,14 @@ const App = () => {
   const isLoading = status === 'LoadingFirstPage';
   const isViewerEnabled =
     hasTouch && !isLandscape && features.get(FeatureFlags.PROJECT_VIEWER);
+  useScrollDelta(
+    () => {
+      if (status === 'CanLoadMore') {
+        loadMore(LOAD_ITEMS_COUNT);
+      }
+    },
+    { threshold: 50 },
+  );
 
   return (
     <Root>
@@ -98,7 +107,7 @@ const App = () => {
         <ContentOverlay animation="fade-in 340ms linear">
           <ContentContainer
             state={isOpen ? 'background' : 'foreground'}
-            px={isMobile && isLandscape ? 12 : 0}
+            px={isMobile && hasTouch && isLandscape ? 12 : 0}
           >
             <Stack direction="column" gap={4} px={[3, 4]} pt={8} pb={12}>
               <Bio />
@@ -136,5 +145,3 @@ const App = () => {
     </Root>
   );
 };
-
-export default App;
