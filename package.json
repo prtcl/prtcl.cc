@@ -14,13 +14,13 @@
     "build": "vite build --mode=production",
     "clean": "rm -rf node_modules | true && rm -r dist | true",
     "deploy": "convex deploy --cmd 'npm run build'",
-    "dev": "concurrently  \"convex dev\" \"vite dev --mode=development --host\"",
+    "dev": "concurrently \"convex dev\" \"vite dev --mode=development\"",
     "generate-screenshots": "npx tsx scripts/generate-screenshots.ts",
     "import-screenshots": "npx tsx scripts/import-screenshots.ts",
     "lint": "eslint src convex",
     "panda": "panda codegen --clean",
     "prettier": "prettier src --write",
-    "preview": "npm run build && concurrently  \"convex dev\" \"vite preview\"",
+    "preview": "npm run build && concurrently \"convex dev\" \"vite preview\"",
     "setup": "npm ci && npm run panda",
     "typecheck": "tsc --noEmit --pretty --skipLibCheck",
     "upload-image": "npx tsx scripts/upload-image.ts"
@@ -28,7 +28,6 @@
   "dependencies": {
     "@prtcl/plonk": "^1.0.1",
     "@prtcl/plonk-hooks": "^1.0.1",
-    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-hover-card": "^1.1.2",
     "@react-spring/web": "^9.7.5",
     "convex": "^1.17.0",
