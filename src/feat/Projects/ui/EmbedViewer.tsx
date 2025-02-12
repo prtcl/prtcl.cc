@@ -1,6 +1,7 @@
 import { animated, useTransition } from '@react-spring/web';
 import { useQuery } from 'convex/react';
-import { type CSSProperties } from 'react';
+import { useRef, type CSSProperties } from 'react';
+import usePrevious from 'react-use/lib/usePrevious';
 import { Flex, styled, type FlexProps } from 'styled-system/jsx';
 import { api } from '~/convex/api';
 import { MediaEmbed, Service } from '~/ui/MediaEmbed';
@@ -66,6 +67,21 @@ const calculateOffsetStyles = (
   };
 };
 
+const usePositionStyles = (props: {
+  embedCode: EmbedCodeEntity;
+  isOpen: boolean;
+  origin: DOMRect;
+}) => {
+  const { embedCode, isOpen, origin } = props;
+  const prevEmbedCode = usePrevious(embedCode);
+  const position = useRef({});
+  if (isOpen && embedCode && !prevEmbedCode) {
+    position.current = calculateOffsetStyles(embedCode, origin);
+  }
+
+  return position.current;
+};
+
 export const EmbedViewer = (props: {
   isOpen: boolean;
   origin: DOMRect | null;
@@ -78,13 +94,12 @@ export const EmbedViewer = (props: {
     enter: { opacity: 1, scale: 1 },
     leave: { opacity: 0, scale: 0.88 },
   });
+  const positionStyles = usePositionStyles({ embedCode, isOpen, origin });
 
   return transitions((styles, shouldRender) => {
     if (shouldRender) {
       return (
-        <ViewerPosition
-          style={{ ...styles, ...calculateOffsetStyles(embedCode, origin) }}
-        >
+        <ViewerPosition style={{ ...styles, ...positionStyles }}>
           <Container>
             <MediaEmbed
               service={embedCode.service}
