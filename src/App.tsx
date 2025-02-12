@@ -6,6 +6,7 @@ import { ProjectItem, useProjectViewer } from '~/feat/Projects';
 import { Visualization } from '~/feat/Visualization';
 import { FeatureFlags, useFeatureFlags } from '~/lib/features';
 import { VizContainer, ContentOverlay, Root } from '~/lib/layout';
+import { useScrollDelta } from '~/lib/scroll';
 import {
   useBreakpoints,
   useInteractions,
@@ -88,6 +89,14 @@ export const App = () => {
   const isLoading = status === 'LoadingFirstPage';
   const isViewerEnabled =
     hasTouch && !isLandscape && features.get(FeatureFlags.PROJECT_VIEWER);
+  useScrollDelta(
+    () => {
+      if (status === 'CanLoadMore') {
+        loadMore(LOAD_ITEMS_COUNT);
+      }
+    },
+    { threshold: 50 },
+  );
 
   return (
     <Root>
