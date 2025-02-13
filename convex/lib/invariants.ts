@@ -118,14 +118,14 @@ export function invariantUploadToken(token: unknown): asserts token is string {
   }
 }
 
-export function isEmbedService(value: unknown): value is Services {
+export function isEmbedService(value: unknown): value is Service {
   const services = new Set<Services>(Object.values(Service));
   return typeof value === 'string' && services.has(value as Services);
 }
 
 export function invariantEmbedService(
   value: unknown,
-): asserts value is Services {
+): asserts value is Service {
   if (!isEmbedService(value)) {
     throw new Error('Invalid service type');
   }
