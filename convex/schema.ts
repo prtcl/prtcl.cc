@@ -10,9 +10,9 @@ const categories = v.union(
 );
 
 const services = v.union(
-  v.literal(Service.BANDCAMP as string),
-  v.literal(Service.YOUTUBE as string),
-  v.literal(Service.SOUNDCLOUD as string),
+  v.literal(Service.BANDCAMP),
+  v.literal(Service.YOUTUBE),
+  v.literal(Service.SOUNDCLOUD),
 );
 
 const projects = defineTable({
