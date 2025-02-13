@@ -1,13 +1,7 @@
 import { paginationOptsValidator } from 'convex/server';
-import { v } from 'convex/values';
-import { query } from './_generated/server';
-import {
-  invariantActiveContent,
-  invariantActiveEmbed,
-  invariantActiveImage,
-  invariantActiveProject,
-  invariantPublicUrl,
-} from './lib/invariants';
+import { ConvexError, v } from 'convex/values';
+import type { Doc, Id } from './_generated/dataModel';
+import { query, type QueryCtx } from './_generated/server';
 
 export const loadProjects = query({
   args: {
@@ -23,13 +17,26 @@ export const loadProjects = query({
   },
 });
 
+const getProjectOrNotFound = async (
+  ctx: QueryCtx,
+  projectId: Id<'projects'>,
+): Promise<Doc<'projects'>> => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project || project.deletedAt !== null) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
+
 export const loadProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
-
-    return project;
+    return await getProjectOrNotFound(ctx, projectId);
   },
 });
 
@@ -38,21 +45,27 @@ export const loadProjectPreview = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.previewImageId) {
       const previewImage = await ctx.db.get(project.previewImageId);
-      invariantActiveImage(previewImage);
+
+      if (!previewImage || previewImage.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Preview not found',
+          code: 404,
+        });
+      }
 
       const publicUrl = await ctx.storage.getUrl(previewImage.storageId);
-      invariantPublicUrl(publicUrl);
 
-      return {
-        ...previewImage,
-        alt: previewImage.alt || project.title,
-        publicUrl,
-      };
+      if (publicUrl) {
+        return {
+          ...previewImage,
+          alt: previewImage.alt || project.title,
+          publicUrl,
+        };
+      }
     }
 
     return null;
@@ -64,21 +77,27 @@ export const loadProjectCoverImage = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.coverImageId) {
       const coverImage = await ctx.db.get(project.coverImageId);
-      invariantActiveImage(coverImage);
+
+      if (!coverImage || coverImage.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Cover image not found',
+          code: 404,
+        });
+      }
 
       const publicUrl = await ctx.storage.getUrl(coverImage.storageId);
-      invariantPublicUrl(publicUrl);
 
-      return {
-        ...coverImage,
-        alt: coverImage.alt || project.title,
-        publicUrl,
-      };
+      if (publicUrl) {
+        return {
+          ...coverImage,
+          alt: coverImage.alt || project.title,
+          publicUrl,
+        };
+      }
     }
 
     return null;
@@ -90,12 +109,17 @@ export const loadProjectEmbed = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.embedId) {
       const embed = await ctx.db.get(project.embedId);
-      invariantActiveEmbed(embed);
+
+      if (!embed || embed.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Embed not found',
+          code: 404,
+        });
+      }
 
       return {
         ...embed,
@@ -112,12 +136,17 @@ export const loadProjectContent = query({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.contentId) {
       const content = await ctx.db.get(project.contentId);
-      invariantActiveContent(content);
+
+      if (!content || content.deletedAt !== null) {
+        throw new ConvexError({
+          message: 'Content not found',
+          code: 404,
+        });
+      }
 
       return content;
     }
