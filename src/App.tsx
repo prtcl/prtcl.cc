@@ -91,7 +91,7 @@ export const App = () => {
     hasTouch && !isLandscape && features.get(FeatureFlags.PROJECT_VIEWER);
   useScrollDelta(
     () => {
-      if (status === 'CanLoadMore') {
+      if (canLoadMore) {
         loadMore(LOAD_ITEMS_COUNT);
       }
     },
