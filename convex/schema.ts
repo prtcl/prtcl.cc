@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
+import { Service } from './lib/types';
 
 const categories = v.union(
   v.literal('code'),
@@ -9,9 +10,9 @@ const categories = v.union(
 );
 
 const services = v.union(
-  v.literal('bandcamp'),
-  v.literal('youtube'),
-  v.literal('soundcloud'),
+  v.literal(Service.BANDCAMP),
+  v.literal(Service.YOUTUBE),
+  v.literal(Service.SOUNDCLOUD),
 );
 
 const projects = defineTable({
