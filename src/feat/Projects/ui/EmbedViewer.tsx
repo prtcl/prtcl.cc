@@ -71,10 +71,10 @@ const usePositionStyles = (props: {
   embedCode: EmbedCodeEntity;
   isOpen: boolean;
   origin: DOMRect;
-}) => {
+}): CSSProperties => {
   const { embedCode, isOpen, origin } = props;
   const prevEmbedCode = usePrevious(embedCode);
-  const position = useRef({});
+  const position = useRef<CSSProperties>({});
   if (isOpen && embedCode && !prevEmbedCode) {
     position.current = calculateOffsetStyles(embedCode, origin);
   }
