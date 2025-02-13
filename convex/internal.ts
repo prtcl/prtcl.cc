@@ -1,13 +1,11 @@
-import { v } from 'convex/values';
-import type { Id } from './_generated/dataModel';
-import { internalMutation, mutation, query } from './_generated/server';
+import { ConvexError, v } from 'convex/values';
+import type { Doc, Id } from './_generated/dataModel';
 import {
-  invariantActiveProject,
-  invariantEmbedService,
-  invariantImage,
-  invariantUploadToken,
-} from './lib/invariants';
-import { Service, type Services } from './lib/types';
+  internalMutation,
+  mutation,
+  query,
+  type MutationCtx,
+} from './_generated/server';
 
 export const collectAllProjects = query({
   args: {},
@@ -76,6 +74,7 @@ export const unarchiveProject = internalMutation({
       .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
       .order('desc')
       .take(1);
+
     const lastOrder = projects[0].order;
 
     return await ctx.db.patch(args.id, {
@@ -129,6 +128,22 @@ export const createImage = mutation({
   },
 });
 
+const getProjectOrNotFound = async (
+  ctx: MutationCtx,
+  projectId: Id<'projects'>,
+) => {
+  const project = await ctx.db.get(projectId);
+
+  if (!project) {
+    throw new ConvexError({
+      message: 'Project not found',
+      code: 404,
+    });
+  }
+
+  return project;
+};
+
 export const attachImagePreview = mutation({
   args: {
     previewImageId: v.id('images'),
@@ -139,11 +154,11 @@ export const attachImagePreview = mutation({
     const { previewImageId, projectId, token } = args;
     invariantUploadToken(token);
 
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.previewImageId) {
       const existingPreviewImage = await ctx.db.get(project.previewImageId);
+
       if (existingPreviewImage) {
         await ctx.db.patch(existingPreviewImage._id, {
           deletedAt: Date.now(),
@@ -152,7 +167,7 @@ export const attachImagePreview = mutation({
     }
 
     const targetPreviewImage = await ctx.db.get(previewImageId);
-    invariantImage(targetPreviewImage);
+    invariantImageEntity(targetPreviewImage);
 
     return await ctx.db.patch(project._id, {
       previewImageId,
@@ -160,6 +175,13 @@ export const attachImagePreview = mutation({
     });
   },
 });
+
+enum Service {
+  BANDCAMP = 'bandcamp',
+  SOUNDCLOUD = 'soundcloud',
+  YOUTUBE = 'youtube',
+}
+type Services = `${Service}`;
 
 const detectEmbedService = (embedCode: string): Services | void => {
   if (embedCode.includes('bandcamp.com')) {
@@ -180,11 +202,11 @@ export const attachProjectEmbed = internalMutation({
   },
   handler: async (ctx, args) => {
     const { projectId, src } = args;
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.embedId) {
       const existingEmbed = await ctx.db.get(project.embedId);
+
       if (existingEmbed) {
         await ctx.db.patch(existingEmbed._id, {
           deletedAt: Date.now(),
@@ -215,11 +237,11 @@ export const attachProjectCoverImage = internalMutation({
     projectId: v.id('projects'),
   },
   handler: async (ctx, { coverImageId, projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    const project = await getProjectOrNotFound(ctx, projectId);
 
     if (project.coverImageId) {
       const existingCoverImage = await ctx.db.get(project.coverImageId);
+
       if (existingCoverImage) {
         await ctx.db.patch(existingCoverImage._id, {
           deletedAt: Date.now(),
@@ -228,7 +250,7 @@ export const attachProjectCoverImage = internalMutation({
     }
 
     const targetCoverImage = await ctx.db.get(coverImageId);
-    invariantImage(targetCoverImage);
+    invariantImageEntity(targetCoverImage);
 
     return await ctx.db.patch(projectId, {
       coverImageId: targetCoverImage._id,
@@ -236,3 +258,33 @@ export const attachProjectCoverImage = internalMutation({
     });
   },
 });
+
+function invariantUploadToken(token: unknown): asserts token is string {
+  if (!process.env.UPLOAD_TOKEN) {
+    throw new Error('No upload token set!');
+  }
+  if (typeof token !== 'string' || token !== process.env.UPLOAD_TOKEN) {
+    throw new Error('Unauthorized');
+  }
+}
+
+function isEmbedService(value: unknown): value is Services {
+  const services = new Set<Services>(Object.values(Service));
+  return typeof value === 'string' && services.has(value as Services);
+}
+
+function invariantEmbedService(value: unknown): asserts value is Services {
+  if (!isEmbedService(value)) {
+    throw new Error('Service string is invalid');
+  }
+}
+
+function isImageEntity(value: unknown): value is Doc<'images'> {
+  return typeof value === 'object' && value !== null && 'storageId' in value;
+}
+
+function invariantImageEntity(value: unknown): asserts value is Doc<'images'> {
+  if (!isImageEntity(value)) {
+    throw new Error('Image entity is invalid or not found');
+  }
+}
