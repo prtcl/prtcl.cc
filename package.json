@@ -35,24 +35,22 @@
   },
   "devDependencies": {
     "@pandacss/dev": "^0.39.0",
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^25.7.0",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.3",
-    "concurrently": "^8.2.2",
-    "dotenv": "^16.4.5",
-    "image-size": "^1.1.1",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.4.2",
     "oxlint": "^1.64.0",
-    "postcss": "^8.4.38",
-    "postcss-cli": "^11.0.0",
-    "postcss-preset-env": "^9.5.11",
-    "prettier": "^3.2.5",
+    "postcss": "^8.5.14",
+    "postcss-cli": "^11.0.1",
+    "postcss-preset-env": "^11.3.0",
+    "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "vite": "^5.4.10",
     "vite-plugin-html": "^3.2.2",
-    "vite-tsconfig-paths": "^5.1.0",
-    "yargs": "^17.7.2"
+    "vite-tsconfig-paths": "^5.1.0"
   }
 }
