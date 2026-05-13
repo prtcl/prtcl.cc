@@ -28,14 +28,10 @@
   "dependencies": {
     "@prtcl/plonk": "^1.7.0",
     "@prtcl/plonk-hooks": "^1.7.0",
-    "@radix-ui/react-hover-card": "^1.1.2",
-    "@react-spring/web": "^9.7.5",
     "convex": "^1.38.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
-    "react-markdown": "^9.0.1",
-    "react-use": "^17.5.1"
+    "react-icons": "^4.12.0"
   },
   "devDependencies": {
     "@pandacss/dev": "^0.39.0",
