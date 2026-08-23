@@ -11,10 +11,42 @@ type Bug = {
   tick: (state: p.TimerState) => void;
 };
 
+type Dyn = {
+  tick: () => THREE.Color;
+};
+
 type VisualizationState = {
   sx: p.Scale;
   sy: p.Scale;
   bugs: Bug[];
+  dyn: Dyn;
+};
+
+const makeDyn = (): Dyn => {
+  const ina = new p.Integrator({ factor: 0.005 });
+  const gen = new p.Sine({ duration: p.ms('0.33hz') });
+  const df = new p.Drunk({ min: 0.03, max: 0.07, step: 0.05 });
+  const rs = new p.Scale({
+    from: { min: -1, max: 1 },
+    to: { min: 0, max: 33 },
+  });
+  const color = new THREE.Color();
+
+  const tick = () => {
+    const no = ina.next(df.next());
+    const nr = ina.next(rs.scale(p.tanh(gen.next(), 2)));
+    // Blend rgba(nr, 13, 1, no * 0.25) over white
+    const a = no * 0.15;
+    color.setRGB(
+      1 - a * (1 - nr / 255),
+      1 - a * (1 - 13 / 255),
+      1 - a * (1 - 1 / 255),
+    );
+
+    return color;
+  };
+
+  return { tick };
 };
 
 const N_BUGS_MOBILE = 32;
@@ -121,12 +153,12 @@ const getInitialState = (isMobile: boolean): VisualizationState => {
   const bugs = Array.from({ length: count }, (_, k) =>
     makeBug(k, Math.round(br.next()), sx, sy, isMobile),
   );
-  return { sx, sy, bugs };
+  return { sx, sy, bugs, dyn: makeDyn() };
 };
 
 const Scene = (props: { state: VisualizationState }) => {
   const { state } = props;
-  const { viewport } = useThree();
+  const { viewport, scene } = useThree();
   const groupRef = useRef<THREE.Group>(null);
   const startTime = useRef(performance.now());
   const iterations = useRef(0);
@@ -165,17 +197,14 @@ const Scene = (props: { state: VisualizationState }) => {
       totalElapsed,
     } as p.TimerState;
 
+    scene.background = state.dyn.tick();
+
     for (const bug of state.bugs) {
       bug.tick(timerState);
     }
   });
 
-  return (
-    <>
-      <color attach="background" args={['#fff']} />
-      <group ref={groupRef} />
-    </>
-  );
+  return <group ref={groupRef} />;
 };
 
 export const Visualization = () => {
