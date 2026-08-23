@@ -26,17 +26,29 @@ const VizContainer = styled(Box, {
 
 const Bio = () => {
   return (
-    <Box maxWidth="26rem" width="100%">
-      <Stack gap={3} px={3} py={8}>
-        <Box>
+    <Box maxWidth={['26rem', '32rem']} width="100%">
+      <Stack direction="column" gap={[4, 3]} px={3} py={8}>
+        <Stack gap={3}>
           <Text color="white">
             Cory O&apos;Brien is a software engineer and sound artist who lives
-            in London
+            in London.
           </Text>
-        </Box>
-        <Link href="mailto:cory@prtcl.cc" color="white">
-          cory@prtcl.cc
-        </Link>
+          <Text color="white">
+            He currently works as an Engineering Lead at Reuters News, and
+            spends most days field recording or patching in Symbolic Sound Kyma.
+          </Text>
+        </Stack>
+        <Stack gap={[4, 3]} direction="row" alignItems="center">
+          <Link href="https://coryobrien.bandcamp.com" color="white">
+            Bandcamp
+          </Link>
+          <Link href="https://github.com/prtcl" color="white">
+            Github
+          </Link>
+          <Link href="mailto:cory@prtcl.cc" color="white">
+            cory@prtcl.cc
+          </Link>
+        </Stack>
       </Stack>
     </Box>
   );
