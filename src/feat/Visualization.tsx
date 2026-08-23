@@ -49,7 +49,7 @@ const makeDyn = (): Dyn => {
   return { tick };
 };
 
-const N_BUGS_MOBILE = 32;
+const N_BUGS_MOBILE = 27;
 const N_BUGS_DESKTOP = 23;
 
 const makeBug = (
