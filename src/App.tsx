@@ -1,6 +1,7 @@
 import { Box, Center, Stack, styled } from 'styled-system/jsx';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
+import { Visualization } from './feat/Visualization';
 
 const Root = styled('main', {
   base: {
@@ -26,14 +27,16 @@ const VizContainer = styled(Box, {
 const Bio = () => {
   return (
     <Box maxWidth="26rem" width="100%">
-      <Stack gap={3} p={3}>
+      <Stack gap={3} px={3} py={8}>
         <Box>
-          <Text>
+          <Text color="white">
             Cory O&apos;Brien is a software engineer and sound artist who lives
             in London
           </Text>
         </Box>
-        <Link href="mailto:cory@prtcl.cc">cory@prtcl.cc</Link>
+        <Link href="mailto:cory@prtcl.cc" color="white">
+          cory@prtcl.cc
+        </Link>
       </Stack>
     </Box>
   );
@@ -42,13 +45,15 @@ const Bio = () => {
 export const App = () => {
   return (
     <Root>
-      <VizContainer>{/* <Visualization /> */}</VizContainer>
+      <VizContainer>
+        <Visualization />
+      </VizContainer>
       <Center
         alignItems="center"
-        backdropFilter="blur(5px)"
         minHeight={['100%', '100vh']}
+        mixBlendMode="difference"
+        position="relative"
         width="100%"
-        zIndex={1}
       >
         <Bio />
       </Center>

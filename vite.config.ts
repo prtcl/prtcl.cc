@@ -38,7 +38,7 @@ const html = () => {
       tag: 'meta',
       attrs: {
         name: 'theme-color',
-        content: '#fff',
+        content: '#ccc',
       },
     },
     {

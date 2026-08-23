@@ -22,6 +22,12 @@ export type Rect = {
   height: number;
 };
 
+export type Circle = {
+  x: number;
+  y: number;
+  radius: number;
+};
+
 export type Size = {
   width: number;
   height: number;
@@ -82,6 +88,13 @@ export class CanvasApi {
   drawRect = (rect: Rect) => {
     const { x, y, width, height } = rect;
     this.context.fillRect(x, y, width, height);
+  };
+
+  drawCircle = (circle: Circle) => {
+    const { x, y, radius } = circle;
+    this.context.beginPath();
+    this.context.arc(x, y, radius, 0, Math.PI * 2);
+    this.context.fill();
   };
 
   drawPolygon = (poly: Polygon, opts?: { shouldFill?: boolean }) => {
