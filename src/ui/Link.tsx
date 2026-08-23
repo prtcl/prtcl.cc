@@ -3,10 +3,10 @@ import { styled } from 'styled-system/jsx';
 export const Link = styled('a', {
   base: {
     color: 'text',
-    textDecoration: 'none',
+    textDecoration: 'underline',
     width: 'fit-content',
     _hover: {
-      textDecoration: 'underline',
+      textDecoration: 'none',
     },
   },
 });

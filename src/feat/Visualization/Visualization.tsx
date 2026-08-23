@@ -13,21 +13,21 @@ export const Visualization = () => {
   const { shapes } = useVisualization();
 
   useEffect(() => {
-    if (!isMobile) {
-      const resize = debounce(() => {
-        const rect = containerRef.current.getBoundingClientRect();
-        canvas.resize(rect);
-      }, 500);
-      window.addEventListener('resize', resize);
-      return () => {
-        window.removeEventListener('resize', resize);
-        resize.cancel();
-      };
-    }
-  }, [canvas, isMobile]);
+    if (!canvas) return;
+    const resize = debounce(
+      () => canvas.resize(containerRef.current!.getBoundingClientRect()),
+      500,
+    );
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      resize.cancel();
+    };
+  }, [canvas]);
 
   useFrames(() => {
-    if (!isReady) return;
+    if (!isReady || !canvas) return;
     const { width, height } = canvas.size;
 
     canvas.alpha(0.05);
