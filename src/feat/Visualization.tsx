@@ -1,14 +1,14 @@
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer, DepthOfField } from '@react-three/postprocessing';
 import { useEffect, useRef, useState } from 'react';
 import * as p from '@prtcl/plonk';
-import { useFrames } from '@prtcl/plonk-hooks';
-import { Flex } from 'styled-system/jsx';
-import { Canvas, CanvasApi, useCanvas } from '~/lib/canvas';
-import { debounce } from '~/lib/debounce';
+import * as THREE from 'three';
 import { useBreakpoints } from '~/lib/viewport';
 
 type Bug = {
   id: number;
-  tick: (state: p.TimerState, canvas: CanvasApi) => void;
+  meshes: THREE.Mesh[];
+  tick: (state: p.TimerState) => void;
 };
 
 type VisualizationState = {
@@ -31,7 +31,6 @@ const makeBug = (
 
   const rx = new p.Rand({ min: 0, max: 1 });
   const ry = new p.Rand({ min: 0, max: 1 });
-
   const sd = new p.Rand({ min: 809, max: 6472 });
 
   const px = new p.Slew({ duration: sd.value(), value: rx.next() });
@@ -40,26 +39,45 @@ const makeBug = (
   const dx = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
   const dy = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
 
-  const size = Math.round(p.rand({ min: 2, max: 27 }));
+  const size = Math.round(p.rand({ min: 2, max: isMobile ? 27 : 17 }));
 
   const lsd = new p.Drunk({ min: 0.01, max: 0.15, step: 0.01 });
   const lz = new p.Lorenz({ damping: 0.25, rate: lsd.next() });
   const los = new p.Scale({
     from: { min: -1, max: 1 },
-    to: { min: 0, max: 1 },
+    to: { min: 0.88, max: 1 },
   });
   const lrs = new p.Scale({
     from: { min: -1, max: 1 },
     to: { min: size / 4, max: size },
   });
+  const lzs = new p.Scale({
+    from: { min: -1, max: 1 },
+    to: { min: -50, max: 100 },
+  });
 
-  const tick = (state: p.TimerState, canvas: CanvasApi) => {
+  const outerMat = new THREE.MeshBasicMaterial({
+    color: '#000',
+    transparent: true,
+    depthTest: true,
+    depthWrite: true,
+  });
+  const innerMat = new THREE.MeshBasicMaterial({
+    color: '#000',
+    transparent: true,
+    depthTest: true,
+    depthWrite: true,
+  });
+
+  const outerMesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), outerMat);
+  const innerMesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), innerMat);
+
+  const tick = (state: p.TimerState) => {
     if (
       state.iterations === 1 ||
       state.totalElapsed - lastInterval > updateInterval
     ) {
       lastInterval = state.totalElapsed;
-
       px.setValue(rx.next());
       py.setValue(ry.next());
       px.setDuration(sd.next());
@@ -79,18 +97,20 @@ const makeBug = (
 
     const x = sx.scale(cx);
     const y = sy.scale(cy);
-
+    const z = lzs.scale(wig.z);
     const r = lrs.scale(wig.z);
     const o = los.scale(wig.z);
 
-    canvas.fill({ r: 0, g: 0, b: 0, a: o * 0.96 });
-    canvas.drawCircle({ x, y, radius: r });
+    outerMesh.position.set(x, y, z);
+    outerMesh.scale.setScalar(r);
+    outerMat.opacity = o * 0.96;
 
-    canvas.fill({ r: 0, g: 0, b: 0, a: o });
-    canvas.drawCircle({ x, y, radius: r / (Math.E * 3) });
+    innerMesh.position.set(x, y, z);
+    innerMesh.scale.setScalar(r / (Math.E * 3));
+    innerMat.opacity = o;
   };
 
-  return { id, tick };
+  return { id, meshes: [outerMesh, innerMesh], tick };
 };
 
 const getInitialState = (isMobile: boolean): VisualizationState => {
@@ -101,55 +121,76 @@ const getInitialState = (isMobile: boolean): VisualizationState => {
   const bugs = Array.from({ length: count }, (_, k) =>
     makeBug(k, Math.round(br.next()), sx, sy, isMobile),
   );
-
   return { sx, sy, bugs };
 };
 
-export const Visualization = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { isMobile } = useBreakpoints();
-  const { canvas, props: canvasProps, isReady } = useCanvas();
-  const [state] = useState<VisualizationState>(() => getInitialState(isMobile));
+const Scene = (props: { state: VisualizationState }) => {
+  const { state } = props;
+  const { viewport } = useThree();
+  const groupRef = useRef<THREE.Group>(null);
+  const startTime = useRef(performance.now());
+  const iterations = useRef(0);
 
   useEffect(() => {
-    if (!canvas) return;
-    const applyBounds = () => {
-      const bounds = containerRef.current!.getBoundingClientRect();
-      canvas.resize(bounds);
-      const qw = bounds.width / 8;
-      const qh = bounds.height / 8;
-
-      state.sx.setRanges({ to: { min: -qw, max: bounds.width + qw } });
-      state.sy.setRanges({ to: { min: -qh, max: bounds.height + qh } });
-    };
-    applyBounds();
-
-    const handleResize = debounce(applyBounds, 500);
-    window.addEventListener('resize', handleResize);
+    const group = groupRef.current!;
+    for (const bug of state.bugs) {
+      for (const mesh of bug.meshes) {
+        group.add(mesh);
+      }
+    }
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      handleResize.cancel();
+      for (const bug of state.bugs) {
+        for (const mesh of bug.meshes) {
+          group.remove(mesh);
+        }
+      }
     };
-  }, [canvas, state]);
+  }, [state]);
 
-  useFrames(({ state: timerState }) => {
-    if (!isReady || !canvas) return;
-    const { width, height } = canvas.size;
+  useEffect(() => {
+    const { width, height } = viewport;
+    const qw = width / 8;
+    const qh = height / 8;
+    state.sx.setRanges({ to: { min: -width / 2 - qw, max: width / 2 + qw } });
+    state.sy.setRanges({ to: { min: height / 2 + qh, max: -height / 2 - qh } });
+  }, [viewport, state]);
 
-    canvas.alpha(0.5);
-    canvas.fill({ r: 255, g: 255, b: 255 });
-    canvas.drawRect({ x: 0, y: 0, width, height });
-    canvas.alpha(1);
+  useFrame(() => {
+    const totalElapsed = p.now() - startTime.current;
+    iterations.current += 1;
+
+    const timerState = {
+      iterations: iterations.current,
+      totalElapsed,
+    } as p.TimerState;
 
     for (const bug of state.bugs) {
-      bug.tick(timerState, canvas);
+      bug.tick(timerState);
     }
   });
 
   return (
-    <Flex ref={containerRef} width="100%" height="100%">
-      <Canvas {...canvasProps} />
-    </Flex>
+    <>
+      <color attach="background" args={['#fff']} />
+      <group ref={groupRef} />
+    </>
+  );
+};
+
+export const Visualization = () => {
+  const { isMobile } = useBreakpoints();
+  const [state] = useState(() => getInitialState(isMobile));
+
+  return (
+    <Canvas
+      camera={{ fov: 60, near: 1, far: 2000, position: [0, 0, 600] }}
+      style={{ width: '100%', height: '100%' }}
+    >
+      <Scene state={state} />
+      <EffectComposer>
+        <DepthOfField focusDistance={100} focalLength={0.01} bokehScale={2} />
+      </EffectComposer>
+    </Canvas>
   );
 };
