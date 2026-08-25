@@ -30,12 +30,11 @@ const Bio = () => {
       <Stack direction="column" gap={[4, 3]} px={3} py={8}>
         <Stack gap={3}>
           <Text color="white">
-            Cory O&apos;Brien is a software engineer and sound artist who lives
-            in London.
+            Cory O&apos;Brien is a software engineer and sound artist who lives in London.
           </Text>
           <Text color="white">
-            He currently works as an Engineering Lead at Reuters News, and
-            spends most days field recording or patching in Symbolic Sound Kyma.
+            He currently works at Reuters News as lead engineer, and spends most days field
+            recording or patching in Symbolic Sound Kyma.
           </Text>
         </Stack>
         <Stack gap={[4, 3]} direction="row" alignItems="center">
