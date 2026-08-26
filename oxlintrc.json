@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "jsx-a11y", "import"],
+  "categories": {},
+  "rules": {},
+  "settings": {
+    "options": {
+      "typeAware": true,
+      "typeCheck": true
+    },
+    "react": {
+      "version": "19.0.0"
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {},
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/dist",
+    "**/styled-system",
+    "**/_generated",
+    "**/*.timestamp*",
+    "**/.vite",
+    "**/.cache"
+  ]
+}

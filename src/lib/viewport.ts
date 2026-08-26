@@ -1,4 +1,4 @@
-import useMedia from 'react-use/lib/useMedia';
+import { useMedia } from 'react-use';
 
 export const useInteractions = () => {
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

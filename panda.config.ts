@@ -6,40 +6,52 @@ import {
 } from '@pandacss/dev';
 
 const globalCss = defineGlobalStyles({
-  'html, body, #root': {
-    height: '100%',
-    width: '100%',
-  },
   ':root': {
     fontSize: '16px',
     fontFamily:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif',
+      "-apple-system-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
     fontWeight: 400,
-    lineHeight: '1.42em',
-    MozOsxFontSmoothing: 'grayscale',
+    lineHeight: '24px',
+    fontFeatureSettings: '"kern" 1',
+    fontKerning: 'normal',
     textRendering: 'optimizeLegibility',
-    WebkitFontSmoothing: 'antialiased',
+    WebkitFontSmoothing: 'subpixel-antialiased',
+    MozOsxFontSmoothing: 'grayscale',
   },
-  '@media (max-width: 640px)': {
-    ':root': {
-      fontSize: '18px',
-    },
+  html: {
+    width: '100%',
+    height: '100%',
+    touchAction: 'manipulation',
+  },
+  body: {
+    bg: 'white',
+  },
+  'html, body, #root': {
+    height: '100%',
+    touchAction: 'pan-y',
+    width: '100%',
+  },
+  '*': {
+    WebkitTapHighlightColor: 'transparent',
   },
   '*::selection': {
     backgroundColor: 'rgba(84, 253, 255, 0.5)',
     color: 'text',
   },
+  'h1, h2, h3': {
+    fontFamily:
+      "-apple-system-headline, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+  },
+  button: {
+    fontFamily:
+      "-apple-system-short-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+  },
 });
 
 const semanticTokens = defineSemanticTokens({
   colors: {
-    primary: {
-      value: '#0022d1',
-    },
     text: {
-      DEFAULT: { value: '#3c3c3c' },
-      lighter: { value: '#b1b1b1' },
-      darker: { value: '#818181' },
+      DEFAULT: { value: '#0c0c0c' },
     },
   },
 });
@@ -56,13 +68,13 @@ export const keyframes = defineKeyframes({
 });
 
 export default defineConfig({
-  globalCss,
-  include: ['./src/**/*.{js,jsx,ts,tsx}', './packages/**/*.{js,jsx,ts,tsx}'],
-  jsxFramework: 'react',
-  outdir: 'styled-system',
-  prefix: 'prtcl',
+  presets: ['@pandacss/preset-panda'],
   preflight: true,
-  separator: '-',
+  jsxFramework: 'react',
+  include: ['./src/**/*.{ts,tsx}'],
+  exclude: [],
+  globalCss,
+  outdir: 'styled-system',
   theme: {
     keyframes,
     semanticTokens,
