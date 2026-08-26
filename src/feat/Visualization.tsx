@@ -18,10 +18,7 @@ class Dyn {
   ina = new p.Integrator({ factor: 0.005 });
   gen = new p.Sine({ duration: p.ms('0.33hz') });
   df = new p.Drunk({ min: 0.03, max: 0.07, step: 0.05 });
-  rs = new p.Scale({
-    from: { min: -1, max: 1 },
-    to: { min: 0, max: 33 },
-  });
+  rs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0, max: 33 } });
   color = new t.Color();
 
   tick() {
@@ -45,19 +42,14 @@ class Point {
   state: { x: number; y: number; z: number; r: number; o: number };
 
   constructor() {
-    const outerMat = new t.MeshBasicMaterial({
+    const meshParams: t.MeshBasicMaterialParameters = {
       color: '#000',
       transparent: true,
       depthTest: true,
       depthWrite: true,
-    });
-    const innerMat = new t.MeshBasicMaterial({
-      color: '#000',
-      transparent: true,
-      depthTest: true,
-      depthWrite: true,
-    });
-
+    };
+    const outerMat = new t.MeshBasicMaterial({ ...meshParams });
+    const innerMat = new t.MeshBasicMaterial({ ...meshParams });
     const outerMesh = new t.Mesh(new t.CircleGeometry(1, 32), outerMat);
     const innerMesh = new t.Mesh(new t.CircleGeometry(1, 32), innerMat);
 
@@ -212,11 +204,11 @@ class Bug {
     });
   }
 
-  tick(state: p.TimerState) {
+  tick(iterations: number, totalElapsed: number) {
     const { updateInterval, sx, sy, isMobile } = this.opts;
 
-    if (state.iterations === 1 || state.totalElapsed - this.lastInterval > updateInterval) {
-      this.lastInterval = state.totalElapsed;
+    if (iterations === 1 || totalElapsed - this.lastInterval > updateInterval) {
+      this.lastInterval = totalElapsed;
       this.opts.updateInterval = this.jitter.next();
       this.position.update();
     }
@@ -302,15 +294,10 @@ const Scene = (props: { state: VisualizationState }) => {
     const totalElapsed = p.now() - startTime.current;
     iterations.current += 1;
 
-    const timerState = {
-      iterations: iterations.current,
-      totalElapsed,
-    } as p.TimerState;
-
     scene.background = state.dyn.tick();
 
     for (const bug of state.bugs) {
-      bug.tick(timerState);
+      bug.tick(iterations.current, totalElapsed);
     }
   });
 
