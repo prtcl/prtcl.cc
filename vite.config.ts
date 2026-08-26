@@ -1,7 +1,11 @@
 import react from '@vitejs/plugin-react';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type HtmlTagDescriptor } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const html = () => {
   const author = "Cory O'Brien";
@@ -46,8 +50,7 @@ const html = () => {
       tag: 'meta',
       attrs: {
         name: 'viewport',
-        content:
-          'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
+        content: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
       },
     },
   ];
@@ -101,7 +104,11 @@ export default defineConfig(() => {
     css: {
       devSourcemap: true,
     },
-    plugins: [tsconfigPaths(), react({ include: '**/*.{jsx,tsx}' }), html()],
+    plugins: [
+      tsconfigPaths({ root: projectRoot, projects: ['./tsconfig.lib.json'] }),
+      react({ include: '**/*.{jsx,tsx}' }),
+      html(),
+    ],
     resolve: {
       extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs'],
     },

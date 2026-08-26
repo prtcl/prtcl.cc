@@ -31,10 +31,12 @@ const argv = yargs(hideBin(process.argv))
     description: 'Absolute image file path',
   })
   .required('image', 'Image file is required')
-  .parse();
+  .parseSync();
 
-if (UPLOAD_TOKEN && (CONVEX_URL || argv.target) && argv.image) {
-  main(argv.target || CONVEX_URL, UPLOAD_TOKEN, argv.image)
+const deploymentUrl = argv.target || CONVEX_URL;
+
+if (UPLOAD_TOKEN && deploymentUrl && argv.image) {
+  main(deploymentUrl, UPLOAD_TOKEN, argv.image)
     .then(() => process.exit(1))
     .catch(console.error);
 } else {

@@ -22,5 +22,5 @@
     "types": ["node"]
   },
   "include": ["./**/*"],
-  "exclude": ["./_generated", "dist", "node_modules"]
+  "exclude": ["./_generated", "dist", "**/node_modules"]
 }

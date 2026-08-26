@@ -19,7 +19,7 @@
     "prepare": "panda codegen",
     "prettier": "prettier src --write",
     "preview": "npm run build && concurrently \"convex dev\" \"vite preview\"",
-    "typecheck": "tsgo --noEmit --pretty"
+    "typecheck": "tsgo --noEmit --pretty -p tsconfig.lib.json && tsgo --noEmit --pretty -p tsconfig.node.json && tsgo --noEmit --pretty -p scripts && tsgo --noEmit --pretty -p convex"
   },
   "dependencies": {
     "@prtcl/plonk": "^1.7.0",
@@ -40,6 +40,7 @@
     "@types/node": "^25.7.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/yargs": "^17.0.35",
     "@typescript/native-preview": "^7.0.0-dev.20260513.1",
     "@vitejs/plugin-react": "^6.0.1",
     "concurrently": "^9.2.1",
