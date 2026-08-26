@@ -36,6 +36,10 @@ const Bio = () => {
             He currently works at Reuters News as lead engineer, and spends most days field
             recording or patching in Symbolic Sound Kyma.
           </Text>
+          <Text color="white">
+            Research areas: systems/cybernetics, ocean wildlife, audio synthesis and physical
+            modeling.
+          </Text>
         </Stack>
         <Stack gap={[4, 3]} direction="row" alignItems="center">
           <Link href="https://coryobrien.bandcamp.com" color="white">
