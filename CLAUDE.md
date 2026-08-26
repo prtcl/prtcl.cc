@@ -20,7 +20,7 @@ npm run lint
 npm run typecheck
 ```
 
-Deploy is via GitHub Actions on push to main — builds, runs Convex deploy, then SCPs the dist to the server.
+Deploy is local via `npm run deploy` (`bin/deploy.sh`). Requires `.env.production` with `VPS_HOST`, `VPS_USER`, and `VPS_PATH`. Builds locally, deploys Convex, then rsyncs `dist/` directly to the nginx root on the VPS.
 
 ## Visualization
 
