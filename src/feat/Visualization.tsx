@@ -9,32 +9,26 @@ const N_BUGS_MOBILE = 17;
 const N_BUGS_DESKTOP = 17;
 const N_POINTS = 3;
 
-type Dyn = {
-  tick: () => t.Color;
-};
-
-const makeDyn = (): Dyn => {
-  const ina = new p.Integrator({ factor: 0.005 });
-  const gen = new p.Sine({ duration: p.ms('0.33hz') });
-  const df = new p.Drunk({ min: 0.03, max: 0.07, step: 0.05 });
-  const rs = new p.Scale({
+class Dyn {
+  ina = new p.Integrator({ factor: 0.005 });
+  gen = new p.Sine({ duration: p.ms('0.33hz') });
+  df = new p.Drunk({ min: 0.03, max: 0.07, step: 0.05 });
+  rs = new p.Scale({
     from: { min: -1, max: 1 },
     to: { min: 0, max: 33 },
   });
-  const color = new t.Color();
+  color = new t.Color();
 
-  const tick = () => {
-    const no = ina.next(df.next());
-    const nr = ina.next(rs.scale(p.tanh(gen.next(), 2)));
+  tick() {
+    const no = this.ina.next(this.df.next());
+    const nr = this.ina.next(this.rs.scale(p.tanh(this.gen.next(), 2)));
     // Blend rgba(nr, 13, 1, no * 0.25) over white
     const a = no * 0.15;
-    color.setRGB(1 - a * (1 - nr / 255), 1 - a * (1 - 13 / 255), 1 - a * (1 - 1 / 255));
+    this.color.setRGB(1 - a * (1 - nr / 255), 1 - a * (1 - 13 / 255), 1 - a * (1 - 1 / 255));
 
-    return color;
-  };
-
-  return { tick };
-};
+    return this.color;
+  }
+}
 
 class Point {
   meshes: t.Mesh<t.CircleGeometry, t.MeshBasicMaterial, t.Object3DEventMap>[];
@@ -80,79 +74,105 @@ class Point {
   }
 }
 
-type Bug = {
-  id: number;
+class Wiggler {
+  lsd: p.Drunk;
+  lz: p.Lorenz;
+  los: p.Scale;
+  lrs: p.Scale;
+  lzs: p.Scale;
+
+  constructor(size: number) {
+    this.lsd = new p.Drunk({ min: 0.005, max: 0.15, step: 0.01 });
+    this.lz = new p.Lorenz({ damping: 0.25, rate: this.lsd.next() });
+    this.los = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0.88, max: 1 } });
+    this.lrs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: size / 4, max: size } });
+    this.lzs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: -50, max: 100 } });
+  }
+
+  next() {
+    const wig = this.lz.next();
+    this.lz.setRate(this.lsd.next());
+    return {
+      wx: wig.x * 0.25,
+      wy: wig.y * 0.075,
+      z: this.lzs.scale(wig.z),
+      r: this.lrs.scale(wig.z),
+      o: this.los.scale(wig.z),
+    };
+  }
+}
+
+class Position {
+  rx: p.Rand;
+  ry: p.Rand;
+  sd: p.Rand;
+  px: p.Slew;
+  py: p.Slew;
+  dx: p.Drunk;
+  dy: p.Drunk;
+
+  constructor() {
+    this.rx = new p.Rand({ min: 0, max: 1 });
+    this.ry = new p.Rand({ min: 0, max: 1 });
+    this.sd = new p.Rand({ min: 809, max: 6472 });
+    this.px = new p.Slew({ duration: this.sd.value(), value: this.rx.next() });
+    this.py = new p.Slew({ duration: this.sd.value(), value: this.ry.next() });
+    this.dx = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
+    this.dy = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
+  }
+
+  update() {
+    this.px.setValue(this.rx.next());
+    this.py.setValue(this.ry.next());
+    this.px.setDuration(this.sd.next());
+    this.py.setDuration(this.sd.value());
+  }
+
+  next() {
+    return {
+      x: this.px.next() + this.dx.next(),
+      y: this.py.next() + this.dy.next(),
+    };
+  }
+}
+
+class Bug {
+  lastInterval = 0;
   points: Point[];
-  tick: (state: p.TimerState) => void;
-};
+  opts: { id: number; updateInterval: number; sx: p.Scale; sy: p.Scale; isMobile: boolean };
+  wiggler: Wiggler;
+  position: Position;
 
-const makeBug = (
-  id: number,
-  updateInterval: number,
-  sx: p.Scale,
-  sy: p.Scale,
-  isMobile: boolean,
-): Bug => {
-  let lastInterval = 0;
+  constructor(id: number, updateInterval: number, sx: p.Scale, sy: p.Scale, isMobile: boolean) {
+    const size = Math.round(p.rand({ min: 2, max: isMobile ? 27 : 17 }));
+    this.opts = { id, updateInterval, sx, sy, isMobile };
+    this.wiggler = new Wiggler(size);
+    this.position = new Position();
+    this.points = Array.from({ length: N_POINTS }, () => new Point());
+  }
 
-  const rx = new p.Rand({ min: 0, max: 1 });
-  const ry = new p.Rand({ min: 0, max: 1 });
-  const sd = new p.Rand({ min: 809, max: 6472 });
+  tick(state: p.TimerState) {
+    const { updateInterval, sx, sy, isMobile } = this.opts;
 
-  const px = new p.Slew({ duration: sd.value(), value: rx.next() });
-  const py = new p.Slew({ duration: sd.value(), value: ry.next() });
-
-  const dx = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
-  const dy = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
-
-  const size = Math.round(p.rand({ min: 2, max: isMobile ? 27 : 17 }));
-
-  const lsd = new p.Drunk({ min: 0.005, max: 0.15, step: 0.01 });
-  const lz = new p.Lorenz({ damping: 0.25, rate: lsd.next() });
-  const los = new p.Scale({
-    from: { min: -1, max: 1 },
-    to: { min: 0.88, max: 1 },
-  });
-  const lrs = new p.Scale({
-    from: { min: -1, max: 1 },
-    to: { min: size / 4, max: size },
-  });
-  const lzs = new p.Scale({
-    from: { min: -1, max: 1 },
-    to: { min: -50, max: 100 },
-  });
-
-  const points: Point[] = Array.from({ length: N_POINTS }, () => new Point());
-
-  const tick = (state: p.TimerState) => {
-    if (state.iterations === 1 || state.totalElapsed - lastInterval > updateInterval) {
-      lastInterval = state.totalElapsed;
-      px.setValue(rx.next());
-      py.setValue(ry.next());
-      px.setDuration(sd.next());
-      py.setDuration(sd.value());
+    if (state.iterations === 1 || state.totalElapsed - this.lastInterval > updateInterval) {
+      this.lastInterval = state.totalElapsed;
+      this.position.update();
     }
 
-    const wig = lz.next();
-    lz.setRate(lsd.next());
-
-    const wx = wig.x * 0.25;
-    const wy = wig.y * 0.075;
+    const { wx, wy, z, r, o } = this.wiggler.next();
+    const pos = this.position.next();
 
     const cxScale = isMobile ? 1 : 0.42;
     const cyScale = isMobile ? 1 : 0.66;
-    const cx = (px.next() + dx.next() + wx) * cxScale + (1 - cxScale) / 2;
-    const cy = (py.next() + dy.next() + wy) * cyScale + (1 - cyScale) / 2;
+    const cx = (pos.x + wx) * cxScale + (1 - cxScale) / 2;
+    const cy = (pos.y + wy) * cyScale + (1 - cyScale) / 2;
 
     const x = sx.scale(cx);
     const y = sy.scale(cy);
-    const z = lzs.scale(wig.z);
-    const r = lrs.scale(wig.z);
-    const o = los.scale(wig.z);
 
-    for (let i = points.length - 1; i >= 0; i--) {
-      const point = points[i];
-      const prev = points[i - 1]?.state;
+    for (let i = this.points.length - 1; i >= 0; i--) {
+      const point = this.points[i];
+      const prev = this.points[i - 1]?.state;
 
       if (i === 0) {
         point.update(x, y, z, r, o);
@@ -160,10 +180,8 @@ const makeBug = (
         point.update(prev.x, prev.y, prev.z, prev.r, o * 0.68 * Math.pow(0.68, i));
       }
     }
-  };
-
-  return { id, points, tick };
-};
+  }
+}
 
 type VisualizationState = {
   sx: p.Scale;
@@ -177,10 +195,11 @@ const getInitialState = (isMobile: boolean): VisualizationState => {
   const sy = new p.Scale({ from: { min: 0, max: 1 }, to: { min: 0, max: 1 } });
   const br = new p.Drunk({ min: 100, max: 2000 });
   const count = isMobile ? N_BUGS_MOBILE : N_BUGS_DESKTOP;
-  const bugs = Array.from({ length: count }, (_, k) =>
-    makeBug(k, Math.round(br.next()), sx, sy, isMobile),
+  const bugs = Array.from(
+    { length: count },
+    (_, k) => new Bug(k, Math.round(br.next()), sx, sy, isMobile),
   );
-  return { sx, sy, bugs, dyn: makeDyn() };
+  return { sx, sy, bugs, dyn: new Dyn() };
 };
 
 const Scene = (props: { state: VisualizationState }) => {
