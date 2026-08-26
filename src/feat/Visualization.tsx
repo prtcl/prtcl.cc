@@ -9,6 +9,11 @@ const N_BUGS_MOBILE = 17;
 const N_BUGS_DESKTOP = 17;
 const N_POINTS = 3;
 
+/*
+ * Drives a very slow, nearly imperceptible warm tint on the scene background.
+ * Two sequential calls to the same Integrator couple the opacity and color drift —
+ * they share state so the two values are organically entangled rather than independent.
+ */
 class Dyn {
   ina = new p.Integrator({ factor: 0.005 });
   gen = new p.Sine({ duration: p.ms('0.33hz') });
@@ -30,6 +35,10 @@ class Dyn {
   }
 }
 
+/*
+ * A single rendered particle: two concentric circles (outer body, inner highlight)
+ * sharing position and z-depth. state is kept so Bug can cascade it down the trail.
+ */
 class Point {
   meshes: t.Mesh<t.CircleGeometry, t.MeshBasicMaterial, t.Object3DEventMap>[];
   materials: t.MeshBasicMaterial[];
@@ -74,14 +83,21 @@ class Point {
   }
 }
 
+/*
+ * A sine oscillator passed through a single Integrator (one-pole lowpass).
+ * The integrator lags behind the sine, creating a softened, slightly delayed wobble.
+ */
 class Wobbler {
   gen: p.Sine;
   slew: p.Integrator;
   amp: p.Scale;
 
   constructor(range: number) {
+    /* random period per bug */
     this.gen = new p.Sine({ duration: p.rand({ min: p.ms('1hz'), max: p.ms('3hz') }) });
+    /* lags behind the sine, softening the edge */
     this.slew = new p.Integrator({ factor: 0.5 });
+    /* range is size-derived, so bigger bugs wobble wider */
     this.amp = new p.Scale({ from: { min: -1, max: 1 }, to: { min: -range, max: range } });
   }
 
@@ -90,6 +106,11 @@ class Wobbler {
   }
 }
 
+/*
+ * A Lorenz strange attractor driving depth (z), radius (r), and opacity (o) simultaneously.
+ * The attractor's rate is itself driven by a Drunk, so the chaotic character wanders
+ * over time rather than settling into a fixed orbit.
+ */
 class Wiggler {
   lsd: p.Drunk;
   lz: p.Lorenz;
@@ -98,10 +119,14 @@ class Wiggler {
   lzs: p.Scale;
 
   constructor(size: number) {
+    /* wanders the attractor rate, keeping it from settling */
     this.lsd = new p.Drunk({ min: 0.005, max: 0.15, step: 0.01 });
     this.lz = new p.Lorenz({ damping: 0.25, rate: this.lsd.next() });
+    /* opacity floor keeps bugs from fully vanishing */
     this.los = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0.88, max: 1 } });
+    /* radius swings between quarter and full size */
     this.lrs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: size / 4, max: size } });
+    /* asymmetric depth: bugs lean toward camera */
     this.lzs = new p.Scale({ from: { min: -1, max: 1 }, to: { min: -50, max: 100 } });
   }
 
@@ -118,6 +143,11 @@ class Wiggler {
   }
 }
 
+/*
+ * x/y position in normalized [0,1] space. A Slew interpolates toward random targets,
+ * with a Drunk layered on top for continuous micro-drift between jumps.
+ * update() picks a new random target; next() advances the interpolation one frame.
+ */
 class Position {
   rx: p.Rand;
   ry: p.Rand;
@@ -130,9 +160,12 @@ class Position {
   constructor() {
     this.rx = new p.Rand({ min: 0, max: 1 });
     this.ry = new p.Rand({ min: 0, max: 1 });
+    /* randomizes slew duration on each target jump */
     this.sd = new p.Rand({ min: 809, max: 6472 });
+    /* smoothly interpolates to the next random target */
     this.px = new p.Slew({ duration: this.sd.value(), value: this.rx.next() });
     this.py = new p.Slew({ duration: this.sd.value(), value: this.ry.next() });
+    /* micro-drift layered on top of the slew */
     this.dx = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
     this.dy = new p.Drunk({ min: -0.25, max: 0.25, step: 0.001 });
   }
@@ -152,6 +185,11 @@ class Position {
   }
 }
 
+/*
+ * Composes Position, Wiggler, and Wobbler into a single animated particle.
+ * tick() is the integration point: each generator is sampled, then combined
+ * into final world-space coordinates before being handed to the Point trail.
+ */
 class Bug {
   lastInterval = 0;
   points: Point[];
@@ -186,6 +224,7 @@ class Bug {
     const { wx, wy, z, r, o } = this.wiggler.next();
     const pos = this.position.next();
 
+    /* cx/cy: compose position + lorenz wiggle, then scale to viewport center */
     const cxScale = isMobile ? 1 : 0.42;
     const cyScale = isMobile ? 1 : 0.66;
     const cx = (pos.x + wx) * cxScale + (1 - cxScale) / 2;
@@ -194,6 +233,7 @@ class Bug {
     const x = sx.scale(cx);
     const y = sy.scale(cy) + this.wobbler.next();
 
+    /* Trail: cascade previous point's position down to the next, with exponential opacity decay */
     for (let i = this.points.length - 1; i >= 0; i--) {
       const point = this.points[i];
       const prev = this.points[i - 1]?.state;
