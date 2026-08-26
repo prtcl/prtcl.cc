@@ -30,11 +30,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/node_modules",
-    "dist",
-    "styled-system"
-  ]
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/node_modules", "dist", "styled-system"]
 }

@@ -1,9 +1,4 @@
-import {
-  PureComponent,
-  type ErrorInfo,
-  type PropsWithChildren,
-  type ReactNode,
-} from 'react';
+import { PureComponent, type ErrorInfo, type PropsWithChildren, type ReactNode } from 'react';
 import { ConvexError } from 'convex/values';
 import { Flex } from 'styled-system/jsx';
 import { Text } from '~/ui/Text';
@@ -27,10 +22,7 @@ export const Fallback = (props: { title: string }) => {
   );
 };
 
-export class ErrorBoundary extends PureComponent<
-  ErrorBoundaryProps,
-  ErrorState
-> {
+export class ErrorBoundary extends PureComponent<ErrorBoundaryProps, ErrorState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };

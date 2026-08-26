@@ -24,9 +24,7 @@ export const uploadImageFile = async (
   }
 };
 
-export const getImageDimensions = async (
-  file: File,
-): Promise<ImageDimensions | void> => {
+export const getImageDimensions = async (file: File): Promise<ImageDimensions | void> => {
   const buffer = await file.arrayBuffer();
   const dimensions = sizeOf(Buffer.from(buffer));
 

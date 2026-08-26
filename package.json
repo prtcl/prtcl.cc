@@ -17,7 +17,7 @@
     "dev": "concurrently \"convex dev\" \"vite dev --mode=development\"",
     "lint": "oxlint src convex",
     "prepare": "panda codegen",
-    "prettier": "prettier src --write",
+    "prettier": "prettier . --write",
     "preview": "npm run build && concurrently \"convex dev\" \"vite preview\"",
     "typecheck": "tsgo --noEmit --pretty -p tsconfig.lib.json && tsgo --noEmit --pretty -p tsconfig.node.json && tsgo --noEmit --pretty -p scripts && tsgo --noEmit --pretty -p convex"
   },

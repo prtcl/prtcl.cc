@@ -20,9 +20,7 @@ export function isImageDimensions(value: unknown): value is ImageDimensions {
   );
 }
 
-export function invariantImageDimensions(
-  value: unknown,
-): asserts value is ImageDimensions {
+export function invariantImageDimensions(value: unknown): asserts value is ImageDimensions {
   if (!isImageDimensions(value)) {
     throw new Error('Payload is not an image dimensions object');
   }
@@ -32,9 +30,7 @@ export function isUploadResponse(value: unknown): value is UploadResponse {
   return typeof value === 'object' && value !== null && 'storageId' in value;
 }
 
-export function invariantUploadResponse(
-  value: unknown,
-): asserts value is UploadResponse {
+export function invariantUploadResponse(value: unknown): asserts value is UploadResponse {
   if (!isUploadResponse(value)) {
     throw new Error('Response is not an upload response');
   }

@@ -3,16 +3,8 @@ import dotenv from 'dotenv';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { api } from '../convex/_generated/api';
-import {
-  getImageDimensions,
-  loadImageFile,
-  uploadImageFile,
-} from './lib/helpers';
-import {
-  type ImagePayload,
-  invariantImageDimensions,
-  invariantUploadResponse,
-} from './lib/types';
+import { getImageDimensions, loadImageFile, uploadImageFile } from './lib/helpers';
+import { type ImagePayload, invariantImageDimensions, invariantUploadResponse } from './lib/types';
 
 dotenv.config({ path: '.env.local' });
 
@@ -44,19 +36,14 @@ if (UPLOAD_TOKEN && deploymentUrl && argv.image) {
   process.exit(0);
 }
 
-async function main(
-  deploymentUrl: string,
-  uploadToken: string,
-  sourceImagePath: string,
-) {
+async function main(deploymentUrl: string, uploadToken: string, sourceImagePath: string) {
   const client = new ConvexClient(deploymentUrl);
 
   try {
     const file = await loadImageFile('', sourceImagePath);
-    const { uploadUrl } = await client.mutation(
-      api.internal.generateUploadUrl,
-      { token: uploadToken },
-    );
+    const { uploadUrl } = await client.mutation(api.internal.generateUploadUrl, {
+      token: uploadToken,
+    });
 
     const uploadResponse = await uploadImageFile(uploadUrl, file);
     invariantUploadResponse(uploadResponse);
