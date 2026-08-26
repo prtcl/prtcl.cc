@@ -1,13 +1,7 @@
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { internalMutation, mutation, query } from './_generated/server';
-import {
-  invariantActiveProject,
-  invariantEmbedService,
-  invariantImage,
-  invariantUploadToken,
-} from './lib/invariants';
-import { Service, type Services } from './lib/types';
+import { invariantUploadToken } from './lib/invariants';
 
 export const collectAllProjects = query({
   args: {},
@@ -124,114 +118,6 @@ export const createImage = mutation({
       deletedAt: null,
       naturalHeight,
       naturalWidth,
-      updatedAt: Date.now(),
-    });
-  },
-});
-
-export const attachImagePreview = mutation({
-  args: {
-    previewImageId: v.id('images'),
-    projectId: v.id('projects'),
-    token: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const { previewImageId, projectId, token } = args;
-    invariantUploadToken(token);
-
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
-
-    if (project.previewImageId) {
-      const existingPreviewImage = await ctx.db.get(project.previewImageId);
-      if (existingPreviewImage) {
-        await ctx.db.patch(existingPreviewImage._id, {
-          deletedAt: Date.now(),
-        });
-      }
-    }
-
-    const targetPreviewImage = await ctx.db.get(previewImageId);
-    invariantImage(targetPreviewImage);
-
-    return await ctx.db.patch(project._id, {
-      previewImageId,
-      updatedAt: Date.now(),
-    });
-  },
-});
-
-const detectEmbedService = (embedCode: string): Services | void => {
-  if (embedCode.includes('bandcamp.com')) {
-    return Service.BANDCAMP;
-  }
-  if (embedCode.includes('soundcloud.com')) {
-    return Service.SOUNDCLOUD;
-  }
-  if (embedCode.includes('youtube.com')) {
-    return Service.YOUTUBE;
-  }
-};
-
-export const attachProjectEmbed = internalMutation({
-  args: {
-    projectId: v.id('projects'),
-    src: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const { projectId, src } = args;
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
-
-    if (project.embedId) {
-      const existingEmbed = await ctx.db.get(project.embedId);
-      if (existingEmbed) {
-        await ctx.db.patch(existingEmbed._id, {
-          deletedAt: Date.now(),
-        });
-      }
-    }
-
-    const service = detectEmbedService(src);
-    invariantEmbedService(service);
-
-    const embedId = await ctx.db.insert('embeds', {
-      deletedAt: null,
-      service,
-      src,
-      updatedAt: Date.now(),
-    });
-
-    return await ctx.db.patch(project._id, {
-      embedId,
-      updatedAt: Date.now(),
-    });
-  },
-});
-
-export const attachProjectCoverImage = internalMutation({
-  args: {
-    coverImageId: v.id('images'),
-    projectId: v.id('projects'),
-  },
-  handler: async (ctx, { coverImageId, projectId }) => {
-    const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
-
-    if (project.coverImageId) {
-      const existingCoverImage = await ctx.db.get(project.coverImageId);
-      if (existingCoverImage) {
-        await ctx.db.patch(existingCoverImage._id, {
-          deletedAt: Date.now(),
-        });
-      }
-    }
-
-    const targetCoverImage = await ctx.db.get(coverImageId);
-    invariantImage(targetCoverImage);
-
-    return await ctx.db.patch(projectId, {
-      coverImageId: targetCoverImage._id,
       updatedAt: Date.now(),
     });
   },

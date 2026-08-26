@@ -17,12 +17,12 @@ const services = v.union(
 
 const projects = defineTable({
   category: categories,
-  contentId: v.union(v.id('content'), v.null()),
-  coverImageId: v.union(v.id('images'), v.null()),
+  contentId: v.optional(v.union(v.id('content'), v.null())),
+  coverImageId: v.optional(v.union(v.id('images'), v.null())),
   deletedAt: v.union(v.number(), v.null()),
-  embedId: v.union(v.id('embeds'), v.null()),
+  embedId: v.optional(v.union(v.id('embeds'), v.null())),
   order: v.number(),
-  previewImageId: v.union(v.id('images'), v.null()),
+  previewImageId: v.optional(v.union(v.id('images'), v.null())),
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
   updatedAt: v.union(v.number(), v.null()),

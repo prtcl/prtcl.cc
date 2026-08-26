@@ -1,8 +1,5 @@
 import type { Doc, Id } from '../../convex/_generated/dataModel';
 
-export type ProjectId = Id<'projects'>;
-export type ProjectEntity = Id<'projects'>;
-
 export type ImagePayload = Omit<
   Doc<'images'>,
   '_id' | '_creationTime' | 'deletedAt' | 'updatedAt' | 'aspectRatio'
@@ -40,24 +37,5 @@ export function invariantUploadResponse(
 ): asserts value is UploadResponse {
   if (!isUploadResponse(value)) {
     throw new Error('Response is not an upload response');
-  }
-}
-
-export function invariantProjectId(value: unknown): asserts value is ProjectId {
-  if (typeof value !== 'string') {
-    throw new Error('Value is not a product ID');
-  }
-}
-
-export function invariantProjectEntity(
-  value: unknown,
-): asserts value is ProjectEntity {
-  if (
-    typeof value !== 'object' ||
-    value === null ||
-    !('url' in value) ||
-    !('title' in value)
-  ) {
-    throw new Error('Value is not a project');
   }
 }
