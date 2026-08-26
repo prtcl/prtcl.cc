@@ -35,6 +35,12 @@ The homepage animation lives in `src/feat/Visualization.tsx`. It's a composition
 
 The overall design intent is a higher-dimensional stochastic system — each generator operates independently at its own timescale, and Bug.tick() is the integration point that projects them all into 3D world space.
 
+## Notes
+
+**Don't break the mix-blend-mode.** The text overlay (`Center` in `App.tsx`) uses `mixBlendMode="difference"` with white text to invert through the dark circles. This is intentional. Adding `backdropFilter` to anything in the overlay, or making the R3F canvas transparent, will break it silently.
+
+**plonk generators are stateful.** Calling `.next()` advances internal state — calling it twice in a tick produces two different values. Order of calls within a frame matters.
+
 ## Convex backend
 
 Handles projects data and feature flags. Mid-migration as part of the current redesign — schema and queries are provisional. Don't over-index on the current data model.
