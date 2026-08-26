@@ -74,6 +74,22 @@ class Point {
   }
 }
 
+class Wobbler {
+  gen: p.Sine;
+  slew: p.Integrator;
+  amp: p.Scale;
+
+  constructor(range: number) {
+    this.gen = new p.Sine({ duration: p.rand({ min: p.ms('1hz'), max: p.ms('3hz') }) });
+    this.slew = new p.Integrator({ factor: 0.5 });
+    this.amp = new p.Scale({ from: { min: -1, max: 1 }, to: { min: -range, max: range } });
+  }
+
+  next() {
+    return this.amp.scale(this.slew.next(this.gen.next()));
+  }
+}
+
 class Wiggler {
   lsd: p.Drunk;
   lz: p.Lorenz;
@@ -141,14 +157,21 @@ class Bug {
   points: Point[];
   opts: { id: number; updateInterval: number; sx: p.Scale; sy: p.Scale; isMobile: boolean };
   wiggler: Wiggler;
+  wobbler: Wobbler;
   position: Position;
+  jitter: p.Rand;
 
   constructor(id: number, updateInterval: number, sx: p.Scale, sy: p.Scale, isMobile: boolean) {
     const size = Math.round(p.rand({ min: 2, max: isMobile ? 27 : 17 }));
     this.opts = { id, updateInterval, sx, sy, isMobile };
     this.wiggler = new Wiggler(size);
+    this.wobbler = new Wobbler(p.rand({ max: size / 2 }));
     this.position = new Position();
     this.points = Array.from({ length: N_POINTS }, () => new Point());
+    this.jitter = new p.Rand({
+      min: Math.max(0, updateInterval - updateInterval / 4),
+      max: updateInterval + updateInterval / 4,
+    });
   }
 
   tick(state: p.TimerState) {
@@ -156,6 +179,7 @@ class Bug {
 
     if (state.iterations === 1 || state.totalElapsed - this.lastInterval > updateInterval) {
       this.lastInterval = state.totalElapsed;
+      this.opts.updateInterval = this.jitter.next();
       this.position.update();
     }
 
@@ -168,7 +192,7 @@ class Bug {
     const cy = (pos.y + wy) * cyScale + (1 - cyScale) / 2;
 
     const x = sx.scale(cx);
-    const y = sy.scale(cy);
+    const y = sy.scale(cy) + this.wobbler.next();
 
     for (let i = this.points.length - 1; i >= 0; i--) {
       const point = this.points[i];
