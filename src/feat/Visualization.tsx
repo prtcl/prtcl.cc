@@ -2,24 +2,15 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, DepthOfField } from '@react-three/postprocessing';
 import { useEffect, useRef, useState } from 'react';
 import * as p from '@prtcl/plonk';
-import * as THREE from 'three';
+import * as t from 'three';
 import { useBreakpoints } from '~/lib/viewport';
 
-type Bug = {
-  id: number;
-  meshes: THREE.Mesh[];
-  tick: (state: p.TimerState) => void;
-};
+const N_BUGS_MOBILE = 17;
+const N_BUGS_DESKTOP = 17;
+const N_POINTS = 3;
 
 type Dyn = {
-  tick: () => THREE.Color;
-};
-
-type VisualizationState = {
-  sx: p.Scale;
-  sy: p.Scale;
-  bugs: Bug[];
-  dyn: Dyn;
+  tick: () => t.Color;
 };
 
 const makeDyn = (): Dyn => {
@@ -30,18 +21,14 @@ const makeDyn = (): Dyn => {
     from: { min: -1, max: 1 },
     to: { min: 0, max: 33 },
   });
-  const color = new THREE.Color();
+  const color = new t.Color();
 
   const tick = () => {
     const no = ina.next(df.next());
     const nr = ina.next(rs.scale(p.tanh(gen.next(), 2)));
     // Blend rgba(nr, 13, 1, no * 0.25) over white
     const a = no * 0.15;
-    color.setRGB(
-      1 - a * (1 - nr / 255),
-      1 - a * (1 - 13 / 255),
-      1 - a * (1 - 1 / 255),
-    );
+    color.setRGB(1 - a * (1 - nr / 255), 1 - a * (1 - 13 / 255), 1 - a * (1 - 1 / 255));
 
     return color;
   };
@@ -49,8 +36,55 @@ const makeDyn = (): Dyn => {
   return { tick };
 };
 
-const N_BUGS_MOBILE = 27;
-const N_BUGS_DESKTOP = 23;
+class Point {
+  meshes: t.Mesh<t.CircleGeometry, t.MeshBasicMaterial, t.Object3DEventMap>[];
+  materials: t.MeshBasicMaterial[];
+  state: { x: number; y: number; z: number; r: number; o: number };
+
+  constructor() {
+    const outerMat = new t.MeshBasicMaterial({
+      color: '#000',
+      transparent: true,
+      depthTest: true,
+      depthWrite: true,
+    });
+    const innerMat = new t.MeshBasicMaterial({
+      color: '#000',
+      transparent: true,
+      depthTest: true,
+      depthWrite: true,
+    });
+
+    const outerMesh = new t.Mesh(new t.CircleGeometry(1, 32), outerMat);
+    const innerMesh = new t.Mesh(new t.CircleGeometry(1, 32), innerMat);
+
+    this.meshes = [outerMesh, innerMesh];
+    this.materials = [outerMat, innerMat];
+    this.state = { x: 0, y: 0, z: 0, r: 0, o: 0 };
+  }
+
+  update(x: number, y: number, z: number, r: number, o: number) {
+    this.meshes.at(0)!.position.set(x, y, z);
+    this.meshes.at(0)!.scale.setScalar(r);
+    this.materials.at(0)!.opacity = o * 0.96;
+
+    this.meshes.at(1)!.position.set(x, y, z);
+    this.meshes.at(1)!.scale.setScalar(r / (Math.E * 3));
+    this.materials.at(1)!.opacity = o;
+
+    this.state.x = x;
+    this.state.y = y;
+    this.state.z = z;
+    this.state.r = r;
+    this.state.o = o;
+  }
+}
+
+type Bug = {
+  id: number;
+  points: Point[];
+  tick: (state: p.TimerState) => void;
+};
 
 const makeBug = (
   id: number,
@@ -73,7 +107,7 @@ const makeBug = (
 
   const size = Math.round(p.rand({ min: 2, max: isMobile ? 27 : 17 }));
 
-  const lsd = new p.Drunk({ min: 0.01, max: 0.15, step: 0.01 });
+  const lsd = new p.Drunk({ min: 0.005, max: 0.15, step: 0.01 });
   const lz = new p.Lorenz({ damping: 0.25, rate: lsd.next() });
   const los = new p.Scale({
     from: { min: -1, max: 1 },
@@ -88,27 +122,10 @@ const makeBug = (
     to: { min: -50, max: 100 },
   });
 
-  const outerMat = new THREE.MeshBasicMaterial({
-    color: '#000',
-    transparent: true,
-    depthTest: true,
-    depthWrite: true,
-  });
-  const innerMat = new THREE.MeshBasicMaterial({
-    color: '#000',
-    transparent: true,
-    depthTest: true,
-    depthWrite: true,
-  });
-
-  const outerMesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), outerMat);
-  const innerMesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), innerMat);
+  const points: Point[] = Array.from({ length: N_POINTS }, () => new Point());
 
   const tick = (state: p.TimerState) => {
-    if (
-      state.iterations === 1 ||
-      state.totalElapsed - lastInterval > updateInterval
-    ) {
+    if (state.iterations === 1 || state.totalElapsed - lastInterval > updateInterval) {
       lastInterval = state.totalElapsed;
       px.setValue(rx.next());
       py.setValue(ry.next());
@@ -133,16 +150,26 @@ const makeBug = (
     const r = lrs.scale(wig.z);
     const o = los.scale(wig.z);
 
-    outerMesh.position.set(x, y, z);
-    outerMesh.scale.setScalar(r);
-    outerMat.opacity = o * 0.96;
+    for (let i = points.length - 1; i >= 0; i--) {
+      const point = points[i];
+      const prev = points[i - 1]?.state;
 
-    innerMesh.position.set(x, y, z);
-    innerMesh.scale.setScalar(r / (Math.E * 3));
-    innerMat.opacity = o;
+      if (i === 0) {
+        point.update(x, y, z, r, o);
+      } else {
+        point.update(prev.x, prev.y, prev.z, prev.r, o * 0.68 * Math.pow(0.68, i));
+      }
+    }
   };
 
-  return { id, meshes: [outerMesh, innerMesh], tick };
+  return { id, points, tick };
+};
+
+type VisualizationState = {
+  sx: p.Scale;
+  sy: p.Scale;
+  bugs: Bug[];
+  dyn: Dyn;
 };
 
 const getInitialState = (isMobile: boolean): VisualizationState => {
@@ -159,22 +186,22 @@ const getInitialState = (isMobile: boolean): VisualizationState => {
 const Scene = (props: { state: VisualizationState }) => {
   const { state } = props;
   const { viewport, scene } = useThree();
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<t.Group>(null);
   const startTime = useRef(performance.now());
   const iterations = useRef(0);
 
   useEffect(() => {
     const group = groupRef.current!;
     for (const bug of state.bugs) {
-      for (const mesh of bug.meshes) {
-        group.add(mesh);
+      for (const point of bug.points) {
+        group.add(...point.meshes);
       }
     }
 
     return () => {
       for (const bug of state.bugs) {
-        for (const mesh of bug.meshes) {
-          group.remove(mesh);
+        for (const point of bug.points) {
+          group.remove(...point.meshes);
         }
       }
     };
