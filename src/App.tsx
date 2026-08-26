@@ -37,8 +37,7 @@ const Bio = () => {
             recording or patching in Symbolic Sound Kyma.
           </Text>
           <Text color="white">
-            Research areas: systems/cybernetics, ocean wildlife, audio synthesis and physical
-            modeling.
+            Primarily interested in emergent systems and resonant, sustaining sound fields.
           </Text>
         </Stack>
         <Stack gap={[4, 3]} direction="row" alignItems="center">
