@@ -1,6 +1,5 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
-import { Service } from './lib/types';
 
 const categories = v.union(
   v.literal('code'),
@@ -9,38 +8,15 @@ const categories = v.union(
   v.literal('video'),
 );
 
-const services = v.union(
-  v.literal(Service.BANDCAMP),
-  v.literal(Service.YOUTUBE),
-  v.literal(Service.SOUNDCLOUD),
-);
-
 const projects = defineTable({
   category: categories,
-  contentId: v.optional(v.union(v.id('content'), v.null())),
-  coverImageId: v.optional(v.union(v.id('images'), v.null())),
   deletedAt: v.union(v.number(), v.null()),
-  embedId: v.optional(v.union(v.id('embeds'), v.null())),
   order: v.number(),
-  previewImageId: v.optional(v.union(v.id('images'), v.null())),
   publishedAt: v.union(v.number(), v.null()),
   title: v.string(),
   updatedAt: v.union(v.number(), v.null()),
   url: v.string(),
 }).index('deletedByOrder', ['deletedAt', 'order']);
-
-const embeds = defineTable({
-  deletedAt: v.union(v.number(), v.null()),
-  service: services,
-  src: v.string(),
-  updatedAt: v.union(v.number(), v.null()),
-});
-
-const content = defineTable({
-  content: v.union(v.string(), v.null()),
-  deletedAt: v.union(v.number(), v.null()),
-  updatedAt: v.union(v.number(), v.null()),
-});
 
 const images = defineTable({
   alt: v.union(v.string(), v.null()),
@@ -55,16 +31,7 @@ const images = defineTable({
   updatedAt: v.number(),
 });
 
-export const features = defineTable({
-  description: v.union(v.string(), v.null()),
-  key: v.string(),
-  value: v.boolean(),
-});
-
 export default defineSchema({
-  content,
-  embeds,
-  features,
   images,
   projects,
 });

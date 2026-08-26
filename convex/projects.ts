@@ -1,7 +1,7 @@
 import { paginationOptsValidator } from 'convex/server';
 import { v } from 'convex/values';
 import { query } from './_generated/server';
-import { invariantActiveProject } from './lib/invariants';
+import { invariantNotDeleted, invariantProject } from './lib/invariants';
 
 export const loadProjects = query({
   args: {
@@ -21,7 +21,8 @@ export const loadProject = query({
   args: { projectId: v.id('projects') },
   handler: async (ctx, { projectId }) => {
     const project = await ctx.db.get(projectId);
-    invariantActiveProject(project);
+    invariantProject(project);
+    invariantNotDeleted(project);
 
     return project;
   },
