@@ -42,7 +42,7 @@ const html = () => {
       tag: 'meta',
       attrs: {
         name: 'theme-color',
-        content: '#ccc',
+        content: '#f7f7f7',
       },
     },
     {
