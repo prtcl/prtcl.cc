@@ -112,7 +112,7 @@ class Wiggler {
 
   constructor(size: number) {
     /* wanders the attractor rate, keeping it from settling */
-    this.lsd = new p.Drunk({ min: 0.005, max: 0.15, step: 0.01 });
+    this.lsd = new p.Drunk({ min: 0.005, max: 0.08, step: 0.01 });
     this.lz = new p.Lorenz({ damping: 0.25, rate: this.lsd.next() });
     /* opacity floor keeps bugs from fully vanishing */
     this.los = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0.88, max: 1 } });
