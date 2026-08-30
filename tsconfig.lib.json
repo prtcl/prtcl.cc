@@ -20,7 +20,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,
     "paths": {
