@@ -1,4 +1,7 @@
+import { useQuery } from 'convex/react';
+import ReactMarkdown from 'react-markdown';
 import { Box, Center, Stack, styled } from 'styled-system/jsx';
+import { api } from '~/convex/api';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
 import { Visualization } from './feat/Visualization';
@@ -25,6 +28,8 @@ const VizContainer = styled(Box, {
 });
 
 const Bio = () => {
+  const summary = useQuery(api.summaries.getActiveSummary);
+
   return (
     <Box maxWidth={['26rem', '32rem']} width="100%">
       <Stack direction="column" gap={[4, 3]} px={3} py={8}>
@@ -36,9 +41,20 @@ const Bio = () => {
             He currently works at Reuters News as lead engineer, and spends most days field
             recording or patching in Symbolic Sound Kyma.
           </Text>
-          <Text color="white">
-            Primarily interested in emergent systems and resonant, sustaining sound fields.
-          </Text>
+          {summary && (
+            <ReactMarkdown
+              components={{
+                a: ({ href, children }) => (
+                  <Link href={href ?? '#'} color="white">
+                    {children}
+                  </Link>
+                ),
+                p: ({ children }) => <Text color="white">{children}</Text>,
+              }}
+            >
+              {summary.content}
+            </ReactMarkdown>
+          )}
         </Stack>
         <Stack gap={[4, 3]} direction="row" alignItems="center">
           <Link href="https://coryobrien.bandcamp.com" color="white">
