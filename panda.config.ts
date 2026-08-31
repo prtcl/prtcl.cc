@@ -51,7 +51,7 @@ const globalCss = defineGlobalStyles({
 const semanticTokens = defineSemanticTokens({
   colors: {
     text: {
-      DEFAULT: { value: '#0c0c0c' },
+      DEFAULT: { value: '#fff' },
     },
   },
 });
