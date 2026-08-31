@@ -22,6 +22,7 @@
     "typecheck": "tsgo --noEmit --pretty -p tsconfig.lib.json && tsgo --noEmit --pretty -p tsconfig.node.json && tsgo --noEmit --pretty -p scripts && tsgo --noEmit --pretty -p convex"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.122.0",
     "@prtcl/plonk": "^1.7.0",
     "@prtcl/plonk-hooks": "^1.7.0",
     "@react-three/fiber": "^9.7.0",

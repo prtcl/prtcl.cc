@@ -8,9 +8,14 @@
  * @module
  */
 
+import type * as generation from "../generation.js";
 import type * as internal_ from "../internal.js";
+import type * as lib_anthropic from "../lib/anthropic.js";
 import type * as lib_invariants from "../lib/invariants.js";
+import type * as lib_prompts from "../lib/prompts.js";
+import type * as migrations from "../migrations.js";
 import type * as projects from "../projects.js";
+import type * as summaries from "../summaries.js";
 
 import type {
   ApiFromModules,
@@ -19,9 +24,14 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  generation: typeof generation;
   internal: typeof internal_;
+  "lib/anthropic": typeof lib_anthropic;
   "lib/invariants": typeof lib_invariants;
+  "lib/prompts": typeof lib_prompts;
+  migrations: typeof migrations;
   projects: typeof projects;
+  summaries: typeof summaries;
 }>;
 
 /**
