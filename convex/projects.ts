@@ -11,9 +11,9 @@ export const loadProjects = query({
   handler: async (ctx, { paginationOpts }) => {
     return await ctx.db
       .query('projects')
-      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .withIndex('byReleaseDate')
       .filter((q) => q.neq(q.field('publishedAt'), null))
-      .order('asc')
+      .order('desc')
       .paginate(paginationOpts);
   },
 });

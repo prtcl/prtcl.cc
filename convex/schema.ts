@@ -18,7 +18,9 @@ const projects = defineTable({
   title: v.string(),
   updatedAt: v.union(v.number(), v.null()),
   url: v.string(),
-}).index('deletedByOrder', ['deletedAt', 'order']);
+})
+  .index('deletedByOrder', ['deletedAt', 'order'])
+  .index('byReleaseDate', ['releaseDate']);
 
 const images = defineTable({
   alt: v.union(v.string(), v.null()),
