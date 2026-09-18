@@ -1,5 +1,5 @@
 import { ClientOnly, createFileRoute, Outlet } from '@tanstack/react-router';
-import { Box, Center, styled } from 'styled-system/jsx';
+import { Box, Flex, styled } from 'styled-system/jsx';
 import { Visualization } from '~/feat/Visualization';
 
 const Layout = () => {
@@ -18,15 +18,9 @@ const Layout = () => {
           <Visualization />
         </Box>
       </ClientOnly>
-      <Center
-        alignItems="center"
-        minHeight={['100%', '100vh']}
-        mixBlendMode="difference"
-        position="relative"
-        width="100%"
-      >
+      <Flex width="100%" height="100%" mixBlendMode="difference">
         <Outlet />
-      </Center>
+      </Flex>
     </styled.main>
   );
 };
