@@ -3,10 +3,14 @@ import { useQuery } from 'convex/react';
 import ReactMarkdown from 'react-markdown';
 import { Box, Center, Stack } from 'styled-system/jsx';
 import { api } from '~/convex/api';
+import { useVisualization } from '~/feat/Visualization';
+import { Button } from '~/ui/Button';
 import { Link } from '~/ui/Link';
 import { Text } from '~/ui/Text';
+import { WaveIcon } from '~/ui/icons';
 
 const Bio = () => {
+  const { reset } = useVisualization();
   const summary = useQuery(api.summaries.getActiveSummary);
   if (!summary) return null;
 
@@ -37,6 +41,9 @@ const Bio = () => {
             <Link href="mailto:cory@prtcl.cc">cory@prtcl.cc</Link>
           </Stack>
         </Stack>
+        <Button onClick={() => reset()} visual="ghost" width="100%" py={[3, 1.5]} my={[-3, -1.5]}>
+          <WaveIcon size="xl" />
+        </Button>
       </Box>
     </Center>
   );

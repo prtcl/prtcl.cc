@@ -1,6 +1,13 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, DepthOfField } from '@react-three/postprocessing';
-import { useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type PropsWithChildren,
+} from 'react';
 import * as p from '@prtcl/plonk';
 import * as t from 'three';
 import { useBreakpoints } from '~/lib/viewport';
@@ -112,7 +119,7 @@ class Wiggler {
 
   constructor(size: number) {
     /* wanders the attractor rate, keeping it from settling */
-    this.lsd = new p.Drunk({ min: 0.005, max: 0.08, step: 0.01 });
+    this.lsd = new p.Drunk({ min: 0.001, max: 0.1, step: 0.01 });
     this.lz = new p.Lorenz({ damping: 0.25, rate: this.lsd.next() });
     /* opacity floor keeps bugs from fully vanishing */
     this.los = new p.Scale({ from: { min: -1, max: 1 }, to: { min: 0.88, max: 1 } });
@@ -258,6 +265,38 @@ const getInitialState = (isMobile: boolean): VisualizationState => {
   return { sx, sy, bugs, dyn: new Dyn() };
 };
 
+const VisualizationContext = createContext<{ state: VisualizationState; reset: () => void } | null>(
+  null,
+);
+
+export const VisualizationProvider = (props: PropsWithChildren) => {
+  const { children } = props;
+  const { isMobile } = useBreakpoints();
+  const [state, update] = useState(() => getInitialState(isMobile));
+
+  return (
+    <VisualizationContext
+      value={{
+        state,
+        reset: () => {
+          update(getInitialState(isMobile));
+        },
+      }}
+    >
+      {children}
+    </VisualizationContext>
+  );
+};
+
+export const useVisualization = () => {
+  const context = useContext(VisualizationContext);
+  if (!context) {
+    throw new Error('did you forget VisualizationProvider?');
+  }
+
+  return context;
+};
+
 const Scene = (props: { state: VisualizationState }) => {
   const { state } = props;
   const { viewport, scene } = useThree();
@@ -305,9 +344,7 @@ const Scene = (props: { state: VisualizationState }) => {
 };
 
 export const Visualization = () => {
-  const { isMobile } = useBreakpoints();
-  const [state] = useState(() => getInitialState(isMobile));
-
+  const { state } = useVisualization();
   return (
     <Canvas
       camera={{ fov: 60, near: 1, far: 2000, position: [0, 0, 600] }}

@@ -29,6 +29,10 @@ export const Button = styled('button', {
       ghost: {
         bg: 'transparent',
         color: 'text',
+        transition: ['opacity 250ms linear', 'initial'],
+        _active: {
+          opacity: [0.5, 0.8],
+        },
       },
     },
   },
