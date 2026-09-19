@@ -10,13 +10,17 @@ const categories = v.union(
 
 const projects = defineTable({
   category: categories,
+  context: v.optional(v.string()),
   deletedAt: v.union(v.number(), v.null()),
   order: v.number(),
   publishedAt: v.union(v.number(), v.null()),
+  releaseDate: v.optional(v.number()),
   title: v.string(),
   updatedAt: v.union(v.number(), v.null()),
   url: v.string(),
-}).index('deletedByOrder', ['deletedAt', 'order']);
+})
+  .index('deletedByOrder', ['deletedAt', 'order'])
+  .index('byReleaseDate', ['releaseDate']);
 
 const images = defineTable({
   alt: v.union(v.string(), v.null()),
@@ -31,7 +35,18 @@ const images = defineTable({
   updatedAt: v.number(),
 });
 
+const summaryStatus = v.union(v.literal('draft'), v.literal('published'), v.literal('deleted'));
+
+const summaries = defineTable({
+  content: v.string(),
+  inputs: v.array(v.id('projects')),
+  model: v.optional(v.string()),
+  status: summaryStatus,
+  updatedAt: v.number(),
+});
+
 export default defineSchema({
   images,
   projects,
+  summaries,
 });

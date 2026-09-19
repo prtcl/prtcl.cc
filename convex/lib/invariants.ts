@@ -26,6 +26,12 @@ export function invariantUploadToken(token: unknown): asserts token is string {
   }
 }
 
+export function invariantApiKey(value: unknown, name = 'API key'): asserts value is string {
+  if (!value || typeof value !== 'string') {
+    throw new ConvexError({ message: `${name} is not configured`, code: 500 });
+  }
+}
+
 export function isObjectLike(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }

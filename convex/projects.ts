@@ -1,6 +1,7 @@
 import { paginationOptsValidator } from 'convex/server';
 import { v } from 'convex/values';
-import { query } from './_generated/server';
+import type { Doc } from './_generated/dataModel';
+import { internalQuery, query } from './_generated/server';
 import { invariantNotDeleted, invariantProject } from './lib/invariants';
 
 export const loadProjects = query({
@@ -10,9 +11,9 @@ export const loadProjects = query({
   handler: async (ctx, { paginationOpts }) => {
     return await ctx.db
       .query('projects')
-      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .withIndex('byReleaseDate')
       .filter((q) => q.neq(q.field('publishedAt'), null))
-      .order('asc')
+      .order('desc')
       .paginate(paginationOpts);
   },
 });
@@ -25,5 +26,17 @@ export const loadProject = query({
     invariantNotDeleted(project);
 
     return project;
+  },
+});
+
+export const getRecentProjects = internalQuery({
+  args: {},
+  handler: async (ctx): Promise<Doc<'projects'>[]> => {
+    return await ctx.db
+      .query('projects')
+      .withIndex('deletedByOrder', (q) => q.eq('deletedAt', null))
+      .filter((q) => q.neq(q.field('publishedAt'), null))
+      .order('asc')
+      .take(3);
   },
 });

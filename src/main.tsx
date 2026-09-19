@@ -1,8 +1,9 @@
+import { RouterProvider } from '@tanstack/react-router';
 import { ConvexReactClient, ConvexProvider } from 'convex/react';
 import { createRoot } from 'react-dom/client';
 import { ErrorBoundary, Fallback } from '~/lib/errors';
-import { App } from './App';
 import './main.css';
+import { getRouter } from './router';
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const root = createRoot(document.getElementById('root') as HTMLElement);
@@ -10,7 +11,7 @@ const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <ErrorBoundary fallback={() => <Fallback title="Error" />}>
     <ConvexProvider client={convex}>
-      <App />
+      <RouterProvider router={getRouter()} />
     </ConvexProvider>
   </ErrorBoundary>,
 );

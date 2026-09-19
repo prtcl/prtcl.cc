@@ -1,7 +1,6 @@
 import type { IconType } from 'react-icons';
-import { FiChevronsLeft } from 'react-icons/fi';
 import { PiWaves } from 'react-icons/pi';
-import { RxChevronLeft, RxCross2, RxLink1 } from 'react-icons/rx';
+import { RxChevronDown, RxCross2, RxLink1, RxArrowLeft } from 'react-icons/rx';
 import { cva, type RecipeVariantProps } from 'styled-system/css';
 import { styled, type HTMLStyledProps } from 'styled-system/jsx';
 
@@ -32,9 +31,9 @@ export const iconStyles = cva({
         height: '1.5rem',
       },
       '2xl': {
-        fontSize: '1.75rem',
-        width: '1.75rem',
-        height: '1.75rem',
+        fontSize: '2rem',
+        width: '2rem',
+        height: '2rem',
       },
     },
   },
@@ -48,8 +47,8 @@ export const makeIcon = (icon: IconType) => styled(icon, iconStyles);
 export type IconVariantProps = RecipeVariantProps<typeof iconStyles>;
 export type IconProps = HTMLStyledProps<'svg'> & IconVariantProps;
 
-export const BackIcon = makeIcon(FiChevronsLeft);
-export const ChevronLeftIcon = makeIcon(RxChevronLeft);
+export const ArrowLeftIcon = makeIcon(RxArrowLeft);
+export const ChevronDownIcon = makeIcon(RxChevronDown);
 export const CloseIcon = makeIcon(RxCross2);
 export const LinkIcon = makeIcon(RxLink1);
 export const WaveIcon = makeIcon(PiWaves);
